@@ -1,0 +1,92 @@
+[
+  {
+    "text": "Developed REST APIs using Django and FastAPI serving 1M+ requests daily",
+    "tags": ["Python", "Django", "FastAPI", "REST APIs", "Backend"],
+    "category": "experience",
+    "impact": "Improved API response time by 40%"
+  },
+  {
+    "text": "Implemented microservices architecture with Docker and Kubernetes on AWS",
+    "tags": ["Microservices", "Docker", "Kubernetes", "AWS", "DevOps"],
+    "category": "experience",
+    "impact": "Reduced deployment time from 2 hours to 15 minutes"
+  },
+  {
+    "text": "Managed PostgreSQL databases and Redis caching layer for high performance",
+    "tags": ["PostgreSQL", "Redis", "Database", "Performance"],
+    "category": "experience",
+    "impact": "Achieved 99.9% uptime and sub-100ms response times"
+  },
+  {
+    "text": "Built full-stack e-commerce platform using React and Node.js",
+    "tags": ["React", "Node.js", "JavaScript", "Full-stack", "E-commerce"],
+    "category": "project",
+    "impact": "Generated $500K in revenue in first year"
+  },
+  {
+    "text": "Integrated payment processing with Stripe API and implemented security best practices",
+    "tags": ["Stripe", "API", "Security", "Payment Processing"],
+    "category": "experience",
+    "impact": "Zero security incidents over 2 years"
+  },
+  {
+    "text": "Led development team of 5 engineers and conducted code reviews",
+    "tags": ["Leadership", "Team Management", "Code Review", "Mentoring"],
+    "category": "experience",
+    "impact": "Improved code quality and reduced bugs by 60%"
+  },
+  {
+    "text": "Implemented CI/CD pipelines using GitHub Actions and automated testing",
+    "tags": ["CI/CD", "GitHub Actions", "Testing", "Automation"],
+    "category": "experience",
+    "impact": "Reduced deployment failures by 80%"
+  },
+  {
+    "text": "Created data analytics dashboard using Python and Chart.js",
+    "tags": ["Python", "Data Analytics", "Chart.js", "Dashboard"],
+    "category": "project",
+    "impact": "Provided insights that increased conversion rate by 25%"
+  },
+  {
+    "text": "Optimized database queries and improved application performance",
+    "tags": ["Database", "Performance", "SQL", "Optimization"],
+    "category": "experience",
+    "impact": "Reduced page load times by 50%"
+  },
+  {
+    "text": "Collaborated with product managers to define technical requirements",
+    "tags": ["Product Management", "Requirements", "Collaboration"],
+    "category": "experience",
+    "impact": "Delivered 15+ features on time and under budget"
+  },
+  {
+    "text": "Mentored junior developers and conducted technical interviews",
+    "tags": ["Mentoring", "Interviewing", "Leadership", "Teaching"],
+    "category": "experience",
+    "impact": "Helped 8 developers advance to senior roles"
+  },
+  {
+    "text": "Implemented automated testing with 90% code coverage",
+    "tags": ["Testing", "Automation", "Quality Assurance"],
+    "category": "experience",
+    "impact": "Reduced production bugs by 70%"
+  },
+  {
+    "text": "Designed and implemented scalable cloud infrastructure",
+    "tags": ["Cloud", "Infrastructure", "Scalability", "AWS"],
+    "category": "experience",
+    "impact": "Supported 10x user growth without performance issues"
+  },
+  {
+    "text": "Built machine learning models for customer behavior prediction",
+    "tags": ["Machine Learning", "Python", "Data Science", "Predictive Analytics"],
+    "category": "project",
+    "impact": "Improved customer retention by 30%"
+  },
+  {
+    "text": "Managed cross-functional teams across multiple time zones",
+    "tags": ["Project Management", "Remote Work", "Leadership", "Communication"],
+    "category": "experience",
+    "impact": "Successfully delivered 20+ projects on schedule"
+  }
+] 
