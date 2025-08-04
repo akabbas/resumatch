@@ -1,0 +1,33 @@
+Business Systems Analyst (CRM/RevOps)
+
+We are looking for a Business Systems Analyst to join our team and help optimize our CRM and revenue operations systems. You will work closely with business stakeholders to analyze requirements, design solutions, and implement improvements to our sales and revenue processes.
+
+Key Responsibilities:
+- Analyze business requirements and translate them into technical specifications
+- Configure and optimize CRM systems (Salesforce) and CPQ platforms
+- Develop and maintain integrations between business systems
+- Create and maintain reports and dashboards for business intelligence
+- Lead user acceptance testing and provide end-user training
+- Document business processes and system configurations
+- Collaborate with cross-functional teams to implement solutions
+- Provide ongoing support and troubleshooting for business systems
+
+Required Skills:
+- Experience with Salesforce CRM and business systems analysis
+- Strong analytical and problem-solving abilities
+- Experience with requirements gathering and documentation
+- Knowledge of business process mapping and optimization
+- Proficiency in SQL and data analysis
+- Experience with Agile methodologies and project management
+- Excellent communication and stakeholder management skills
+- Understanding of revenue operations and sales processes
+
+Preferred Qualifications:
+- Experience with Oracle CPQ or similar CPQ systems
+- Knowledge of ERP systems and integrations
+- Experience with Python scripting and automation
+- Familiarity with REST API development
+- Experience with data visualization tools
+- Understanding of quote-to-cash processes
+- Experience with user training and change management
+- Knowledge of business intelligence and reporting tools 

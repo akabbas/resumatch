@@ -1,0 +1,33 @@
+Data Analyst (RevOps/CRM focus)
+
+We are looking for a Data Analyst to join our team and help drive insights from our CRM and revenue operations data. You will be responsible for analyzing sales data, creating reports, and providing actionable insights to support business decisions.
+
+Key Responsibilities:
+- Analyze CRM and sales data to identify trends and opportunities
+- Create and maintain reports and dashboards for business intelligence
+- Develop SQL queries to extract and analyze data from multiple sources
+- Build automated reporting solutions using Python and data tools
+- Collaborate with sales and operations teams to understand data needs
+- Provide insights on sales performance, pipeline, and revenue metrics
+- Develop data validation and quality assurance processes
+- Create visualizations and presentations for stakeholders
+
+Required Skills:
+- Strong SQL skills and experience with data analysis
+- Proficiency in Python for data processing and automation
+- Experience with CRM systems (Salesforce) and business intelligence tools
+- Knowledge of data visualization and reporting tools
+- Strong analytical and problem-solving abilities
+- Experience with Excel and data manipulation
+- Excellent communication and presentation skills
+- Understanding of sales and revenue operations
+
+Preferred Qualifications:
+- Experience with Oracle CPQ or similar CPQ systems
+- Knowledge of ERP systems and data integration
+- Experience with REST API development and data extraction
+- Familiarity with cloud data platforms (AWS, Azure)
+- Experience with business process automation
+- Understanding of quote-to-cash processes
+- Experience with Agile methodologies and project management
+- Knowledge of statistical analysis and modeling 

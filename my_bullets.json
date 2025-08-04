@@ -1,0 +1,132 @@
+[
+  {
+    "text": "Configured Oracle CPQ for multiple product lines, including guided selling, approval workflows, and custom BML rules",
+    "tags": ["Oracle CPQ", "Guided Selling", "Approval Workflows", "BML Rules", "Product Configuration"],
+    "category": "experience"
+  },
+  {
+    "text": "Maintained and enhanced CPQ ↔ Salesforce CRM integrations, including user-level fixes and field mapping",
+    "tags": ["Oracle CPQ", "Salesforce CRM", "Integration", "Field Mapping", "User Support"],
+    "category": "experience"
+  },
+  {
+    "text": "Assisted with REST API connections between CPQ and ERP for pricing, approvals, and order submissions",
+    "tags": ["REST API", "Oracle CPQ", "ERP Integration", "Pricing", "Approvals", "Order Management"],
+    "category": "experience"
+  },
+  {
+    "text": "Reduced manual quoting and reporting tasks by optimizing CRM and CPQ workflows",
+    "tags": ["CRM", "Oracle CPQ", "Workflow Optimization", "Automation", "Reporting"],
+    "category": "experience"
+  },
+  {
+    "text": "Wrote Python and SQL scripts to support pricing analysis, quote validation, and margin reporting",
+    "tags": ["Python", "SQL", "Pricing Analysis", "Quote Validation", "Margin Reporting", "Automation"],
+    "category": "experience"
+  },
+  {
+    "text": "Developed Excel tools and Power Query dashboards to automate quote tracking and sales KPIs",
+    "tags": ["Excel", "Power Query", "Dashboards", "Quote Tracking", "Sales KPIs", "Automation"],
+    "category": "experience"
+  },
+  {
+    "text": "Participated in Agile sprints using Jira and Azure DevOps for enhancement tracking and UAT",
+    "tags": ["Agile", "Jira", "Azure DevOps", "Sprint Planning", "UAT", "Enhancement Tracking"],
+    "category": "experience"
+  },
+  {
+    "text": "Provided documentation and light user support for 200+ global users in sales and operations teams",
+    "tags": ["Documentation", "User Support", "Global Teams", "Sales Operations", "Training"],
+    "category": "experience"
+  },
+  {
+    "text": "Collaborated with sales, IT, and finance stakeholders to align system functionality with business needs",
+    "tags": ["Cross-functional Collaboration", "Stakeholder Management", "Business Alignment", "System Functionality"],
+    "category": "experience"
+  },
+  {
+    "text": "Built and maintained REST API integrations across Oracle CPQ, Salesforce CRM, and ERP systems for real-time data synchronization",
+    "tags": ["REST API", "Oracle CPQ", "Salesforce CRM", "ERP Integration", "Real-time Data"],
+    "category": "experience"
+  },
+  {
+    "text": "Developed custom pricing rules, approval workflows, and guided selling flows in Oracle CPQ to support complex product configurations",
+    "tags": ["Oracle CPQ", "Pricing Rules", "Workflow Automation", "Product Configuration", "Guided Selling"],
+    "category": "experience"
+  },
+  {
+    "text": "Led UAT testing, stakeholder demos, and user training for 100+ global sales and operations users, increasing adoption and reducing errors",
+    "tags": ["UAT", "Stakeholder Management", "User Training", "Global Teams", "Adoption"],
+    "category": "experience"
+  },
+  {
+    "text": "Authored detailed technical documentation on API workflows, pricing logic, and business processes to support internal knowledge transfer",
+    "tags": ["Technical Documentation", "API Workflows", "Knowledge Transfer", "Process Documentation"],
+    "category": "experience"
+  },
+  {
+    "text": "Collaborated with Solution Architects and MuleSoft Business Analysts to gather and validate client requirements for enterprise integration projects",
+    "tags": ["Solution Architecture", "MuleSoft", "Business Analysis", "Enterprise Integration", "Requirements Gathering"],
+    "category": "experience"
+  },
+  {
+    "text": "Built task management application with React, Node.js, PostgreSQL, and JWT authentication. Deployed on AWS EC2 with Docker",
+    "tags": ["React", "Node.js", "PostgreSQL", "JWT", "AWS EC2", "Docker", "Full Stack"],
+    "category": "project"
+  },
+  {
+    "text": "Developed React frontend integrated with OpenWeatherMap API, highlighting data fetching and presentation skills",
+    "tags": ["React", "OpenWeatherMap API", "JavaScript", "Data Fetching", "Frontend"],
+    "category": "project"
+  },
+  {
+    "text": "Designed and implemented a web-based inventory management system to enable real-time stock tracking and order processing",
+    "tags": ["Inventory Management", "Real-time Tracking", "Web Development", "JavaScript", "Node.js"],
+    "category": "project"
+  },
+  {
+    "text": "Built a RESTful API for real-time integration with supplier databases, reducing order fulfillment times by 30%",
+    "tags": ["REST API", "Real-time Integration", "Database Integration", "Performance Optimization"],
+    "category": "project"
+  },
+  {
+    "text": "Created an API monitoring tool to track system health, latency, and performance of critical endpoints",
+    "tags": ["API Monitoring", "System Health", "Performance Monitoring", "Python", "Flask"],
+    "category": "project"
+  },
+  {
+    "text": "Built a custom alerting system that triggers notifications based on predefined thresholds, improving response times to API issues by 40%",
+    "tags": ["Alerting System", "Monitoring", "Automation", "Performance Optimization"],
+    "category": "project"
+  },
+  {
+    "text": "Developed an automation tool to streamline the process of generating quotes within Oracle CPQ, reducing generation time by 40%",
+    "tags": ["Automation", "Oracle CPQ", "Quote Generation", "Python", "REST API"],
+    "category": "project"
+  },
+  {
+    "text": "Implemented data validation and error-checking mechanisms, ensuring 100% accuracy in generated quotes",
+    "tags": ["Data Validation", "Error Checking", "Quality Assurance", "Accuracy"],
+    "category": "project"
+  },
+  {
+    "text": "Led the tool deployment across three business units, achieving widespread adoption and a 25% boost in productivity",
+    "tags": ["Deployment", "Change Management", "Adoption", "Productivity Improvement", "Leadership"],
+    "category": "project"
+  },
+  {
+    "text": "Gained hands-on exposure to Salesforce ecosystem tools, project documentation standards, and systems integration planning",
+    "tags": ["Salesforce", "Ecosystem Tools", "Documentation Standards", "Systems Integration"],
+    "category": "experience"
+  },
+  {
+    "text": "Assisted in data mapping exercises for CRM-ERP integrations, ensuring accurate field-level synchronization",
+    "tags": ["Data Mapping", "CRM-ERP Integration", "Field Synchronization", "Data Accuracy"],
+    "category": "experience"
+  },
+  {
+    "text": "Shadowed Salesforce CPQ implementation teams, learning configuration basics for product bundling and pricing rules",
+    "tags": ["Salesforce CPQ", "Implementation", "Product Bundling", "Pricing Rules", "Configuration"],
+    "category": "experience"
+  }
+] 
