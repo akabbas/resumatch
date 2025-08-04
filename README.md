@@ -170,6 +170,24 @@ python cli.py --job-file job.txt --experience-file exp.json --name "John Doe" --
 python cli.py --job-desc "..." --experience-file exp.json --use-openai --output resume.pdf
 ```
 
+### 🎯 Job Tailor Feature (New!)
+
+The Job Tailor feature analyzes job descriptions and matches them with your experience bullets:
+
+```bash
+# Use sample bullets with job description
+python job_tailor_cli.py --job-desc "Senior Python Developer..." --use-sample-bullets --output tailored_resume.json
+
+# Use custom bullets from JSON file
+python job_tailor_cli.py --job-file job.txt --bullets examples/sample_bullets.json --output resume.json
+
+# Use custom bullets from text file
+python job_tailor_cli.py --job-file job.txt --bullets bullets.txt --output resume.txt --format text
+
+# Generate text output with top 6 bullets
+python job_tailor_cli.py --job-desc "..." --bullets bullets.json --output resume.txt --format text --top-n 6
+```
+
 ### Python API
 
 ```python
@@ -183,6 +201,35 @@ generator.generate_resume(
     name="Your Name",
     contact_info="email@example.com | phone | location"
 )
+```
+
+### Job Tailor API
+
+```python
+from job_matcher import ResumeTailor, BulletPoint
+
+# Create bullet points
+bullets = [
+    BulletPoint(
+        text="Developed REST APIs using Django and FastAPI",
+        tags=["Python", "Django", "FastAPI", "REST APIs"],
+        category="experience"
+    ),
+    # ... more bullets
+]
+
+# Initialize tailor
+tailor = ResumeTailor()
+
+# Tailor resume to job description
+tailored_resume = tailor.tailor_resume(
+    job_description="Senior Python Developer...",
+    bullets=bullets,
+    top_n=8
+)
+
+print(f"Job Title: {tailored_resume['job_title']}")
+print(f"Top Skills: {', '.join(tailored_resume['skills'][:5])}")
 ```
 
 ## 📊 Input Formats
@@ -216,6 +263,33 @@ generator.generate_resume(
 }
 ```
 
+### Bullet Point Formats (Job Tailor)
+
+For the Job Tailor feature, you can use bullet points in two formats:
+
+#### JSON Format
+```json
+[
+  {
+    "text": "Developed REST APIs using Django and FastAPI serving 1M+ requests daily",
+    "tags": ["Python", "Django", "FastAPI", "REST APIs", "Backend"],
+    "category": "experience",
+    "impact": "Improved API response time by 40%"
+  }
+]
+```
+
+#### Text Format
+```
+TEXT: Developed REST APIs using Django and FastAPI serving 1M+ requests daily
+TAGS: Python, Django, FastAPI, REST APIs, Backend
+
+TEXT: Implemented microservices architecture with Docker and Kubernetes on AWS
+TAGS: Microservices, Docker, Kubernetes, AWS, DevOps
+```
+
+**💡 Pro tip**: Copy `examples/sample_bullets.json` or `examples/sample_bullets.txt` and customize!
+
 ## 🎯 Features
 
 ### Smart Analysis
@@ -223,12 +297,15 @@ generator.generate_resume(
 - **Technical skill recognition** from 100+ built-in terms
 - **Optional OpenAI integration** for enhanced extraction
 - **URL scraping** for job postings
+- **Job description analysis** with title, skills, and experience level extraction
 
 ### Intelligent Matching
 - **Relevance scoring** combines keyword matches with similarity
 - **Experience filtering** only includes relevant positions
 - **Skill highlighting** shows matched skills for each role
 - **Automatic ranking** by relevance
+- **Bullet point matching** with keyword and fuzzy scoring
+- **Modular experience system** for easy customization
 
 ### Professional Output
 - **ATS-optimized** formatting (no tables, graphics)
