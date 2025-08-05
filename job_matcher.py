@@ -148,7 +148,7 @@ class JobDescriptionAnalyzer:
             stop_words='english',
             use_maxsum=True,
             nr_candidates=20,
-            top_k=10
+            top_n=10
         )
         
         # Add KeyBERT keywords that look like skills

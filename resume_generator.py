@@ -179,7 +179,7 @@ class KeywordExtractor:
             stop_words='english',
             use_maxsum=True,
             nr_candidates=20,
-            top_k=10
+            top_n=10
         )
         
         # Extract noun phrases and named entities
