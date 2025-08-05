@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResuMatch - Smart Resume Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 0;
+        }
+        .feature-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        .form-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 1rem 0;
+        }
+        .nav-tabs .nav-link {
+            border: none;
+            color: #6c757d;
+            font-weight: 500;
+        }
+        .nav-tabs .nav-link.active {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 25px;
+            padding: 0.75rem 2rem;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .alert {
+            border-radius: 10px;
+            border: none;
+        }
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        .loading {
+            display: none;
+        }
+        .sample-data-btn {
+            background: #28a745;
+            border: none;
+            border-radius: 20px;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+        .download-section {
+            background: #e8f5e8;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="display-4 fw-bold mb-3">
+                        <i class="fas fa-magic me-3"></i>ResuMatch
+                    </h1>
+                    <p class="lead mb-4">AI-powered resume generation that matches your experience to job descriptions</p>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <i class="fas fa-brain fa-2x mb-2"></i>
+                                <h6>Smart Analysis</h6>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <i class="fas fa-bullseye fa-2x mb-2"></i>
+                                <h6>Perfect Match</h6>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <i class="fas fa-file-pdf fa-2x mb-2"></i>
+                                <h6>ATS Ready</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mt-5">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Tabs -->
+        <ul class="nav nav-tabs" id="resumeTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="generate-tab" data-bs-toggle="tab" data-bs-target="#generate" type="button" role="tab">
+                    <i class="fas fa-file-pdf me-2"></i>Generate Resume
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="tailor-tab" data-bs-toggle="tab" data-bs-target="#tailor" type="button" role="tab">
+                    <i class="fas fa-cut me-2"></i>Job Tailor
+                </button>
+            </li>
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="resumeTabsContent">
+            <!-- Generate Resume Tab -->
+            <div class="tab-pane fade show active" id="generate" role="tabpanel">
+                <div class="form-section">
+                    <h3 class="mb-4"><i class="fas fa-file-pdf me-2"></i>Generate ATS-Optimized Resume</h3>
+                    
+                    <form id="resumeForm" method="POST" action="/generate">
+                        <!-- Personal Information -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="name" class="form-label">Your Name</label>
+                                <input type="text" class="form-control" id="name" name="name" value="Your Name" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="contact_info" class="form-label">Contact Information</label>
+                                <input type="text" class="form-control" id="contact_info" name="contact_info" 
+                                       value="email@example.com | phone | location" required>
+                                <div class="form-text">Format: email | phone | location</div>
+                            </div>
+                        </div>
+
+                        <!-- Job Description -->
+                        <div class="mb-4">
+                            <label for="job_description" class="form-label">Job Description</label>
+                            <textarea class="form-control" id="job_description" name="job_description" rows="8" 
+                                      placeholder="Paste the job description here..." required></textarea>
+                            <div class="form-text">Copy and paste the full job description from the job posting</div>
+                        </div>
+
+                        <!-- Experience Format Selection -->
+                        <div class="mb-4">
+                            <label class="form-label">Experience Data Format</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="experience_format" id="json_format" value="json" checked>
+                                <label class="form-check-label" for="json_format">
+                                    JSON Format (Recommended)
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="experience_format" id="text_format" value="text">
+                                <label class="form-check-label" for="text_format">
+                                    Plain Text Format
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- JSON Experience -->
+                        <div id="json_experience" class="mb-4">
+                            <label for="experience_json" class="form-label">Experience Data (JSON)</label>
+                            <textarea class="form-control" id="experience_json" name="experience_json" rows="15" 
+                                      placeholder='{"summary": "Your professional summary...", "experience": [...], "skills": [...]}'></textarea>
+                            <button type="button" class="btn sample-data-btn mt-2" onclick="loadSampleData()">
+                                <i class="fas fa-download me-2"></i>Load Sample Data
+                            </button>
+                        </div>
+
+                        <!-- Text Experience -->
+                        <div id="text_experience" class="mb-4" style="display: none;">
+                            <label for="experience_text" class="form-label">Experience Data (Text)</label>
+                            <textarea class="form-control" id="experience_text" name="experience_text" rows="15" 
+                                      placeholder="Enter your experience in plain text format..."></textarea>
+                        </div>
+
+                        <!-- Advanced Options -->
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="use_openai" name="use_openai">
+                                    <label class="form-check-label" for="use_openai">
+                                        Use OpenAI for enhanced keyword extraction
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="include_projects" name="include_projects" checked>
+                                    <label class="form-check-label" for="include_projects">
+                                        Include projects section
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="max_pages" class="form-label">Max Pages</label>
+                                <select class="form-select" id="max_pages" name="max_pages">
+                                    <option value="1">1 Page</option>
+                                    <option value="2" selected>2 Pages</option>
+                                    <option value="3">3 Pages</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-magic me-2"></i>Generate Resume
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Loading Indicator -->
+                    <div class="loading text-center mt-4" id="loading">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2">Generating your resume...</p>
+                    </div>
+
+                    <!-- Download Section -->
+                    <div class="download-section" id="downloadSection">
+                        <h4><i class="fas fa-download me-2"></i>Resume Generated Successfully!</h4>
+                        <p>Your ATS-optimized resume is ready for download.</p>
+                        <a href="#" class="btn btn-success" id="downloadLink">
+                            <i class="fas fa-download me-2"></i>Download Resume
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Job Tailor Tab -->
+            <div class="tab-pane fade" id="tailor" role="tabpanel">
+                <div class="form-section">
+                    <h3 class="mb-4"><i class="fas fa-cut me-2"></i>Job Tailor - Match Bullets to Jobs</h3>
+                    
+                    <form id="tailorForm" method="POST" action="/tailor">
+                        <!-- Job Description -->
+                        <div class="mb-4">
+                            <label for="tailor_job_description" class="form-label">Job Description</label>
+                            <textarea class="form-control" id="tailor_job_description" name="job_description" rows="8" 
+                                      placeholder="Paste the job description here..." required></textarea>
+                        </div>
+
+                        <!-- Bullets -->
+                        <div class="mb-4">
+                            <label for="bullets_text" class="form-label">Experience Bullets</label>
+                            <textarea class="form-control" id="bullets_text" name="bullets_text" rows="15" 
+                                      placeholder="Enter your experience bullets in the format:
+TEXT: Your bullet point description
+TAGS: skill1, skill2, skill3
+
+TEXT: Another bullet point
+TAGS: skill4, skill5" required></textarea>
+                            <button type="button" class="btn sample-data-btn mt-2" onclick="loadSampleBullets()">
+                                <i class="fas fa-download me-2"></i>Load Sample Bullets
+                            </button>
+                        </div>
+
+                        <!-- Top N Selection -->
+                        <div class="mb-4">
+                            <label for="top_n" class="form-label">Number of Top Bullets to Return</label>
+                            <select class="form-select" id="top_n" name="top_n">
+                                <option value="5">5 Bullets</option>
+                                <option value="8" selected>8 Bullets</option>
+                                <option value="10">10 Bullets</option>
+                                <option value="12">12 Bullets</option>
+                            </select>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-cut me-2"></i>Tailor Resume
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Tailor Results -->
+                    <div id="tailorResults" class="mt-4" style="display: none;">
+                        <h4><i class="fas fa-chart-bar me-2"></i>Tailored Results</h4>
+                        <div id="tailorResultsContent"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-light mt-5 py-4">
+        <div class="container text-center">
+            <p class="mb-0">&copy; 2024 ResuMatch. AI-powered resume generation.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Handle experience format switching
+        document.querySelectorAll('input[name="experience_format"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const jsonSection = document.getElementById('json_experience');
+                const textSection = document.getElementById('text_experience');
+                
+                if (this.value === 'json') {
+                    jsonSection.style.display = 'block';
+                    textSection.style.display = 'none';
+                } else {
+                    jsonSection.style.display = 'none';
+                    textSection.style.display = 'block';
+                }
+            });
+        });
+
+        // Handle resume form submission
+        document.getElementById('resumeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const loading = document.getElementById('loading');
+            const downloadSection = document.getElementById('downloadSection');
+            
+            loading.style.display = 'block';
+            downloadSection.style.display = 'none';
+            
+            fetch('/generate', {
+                method: 'POST',
+                body: new FormData(this)
+            })
+            .then(response => response.json())
+            .then(data => {
+                loading.style.display = 'none';
+                
+                if (data.success) {
+                    const downloadLink = document.getElementById('downloadLink');
+                    downloadLink.href = data.download_url;
+                    downloadSection.style.display = 'block';
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                loading.style.display = 'none';
+                alert('Error generating resume: ' + error);
+            });
+        });
+
+        // Handle tailor form submission
+        document.getElementById('tailorForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            fetch('/tailor', {
+                method: 'POST',
+                body: new FormData(this)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    displayTailorResults(data.result);
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                alert('Error tailoring resume: ' + error);
+            });
+        });
+
+        // Display tailor results
+        function displayTailorResults(result) {
+            const resultsDiv = document.getElementById('tailorResults');
+            const contentDiv = document.getElementById('tailorResultsContent');
+            
+            let html = `
+                <div class="alert alert-info">
+                    <h5>Job Analysis</h5>
+                    <p><strong>Job Title:</strong> ${result.job_title}</p>
+                    <p><strong>Experience Level:</strong> ${result.experience_level}</p>
+                    <p><strong>Industry:</strong> ${result.industry}</p>
+                </div>
+                
+                <div class="alert alert-success">
+                    <h5>Top Skills</h5>
+                    <p>${result.skills.join(', ')}</p>
+                </div>
+                
+                <div class="alert alert-warning">
+                    <h5>Top Matched Bullets</h5>
+                    <ol>
+            `;
+            
+            result.top_bullets.forEach((bullet, index) => {
+                html += `
+                    <li class="mb-2">
+                        <strong>${bullet.text}</strong><br>
+                        <small class="text-muted">Score: ${bullet.score.toFixed(2)} | Tags: ${bullet.tags.join(', ')}</small>
+                    </li>
+                `;
+            });
+            
+            html += `
+                    </ol>
+                </div>
+            `;
+            
+            contentDiv.innerHTML = html;
+            resultsDiv.style.display = 'block';
+        }
+
+        // Load sample data
+        function loadSampleData() {
+            fetch('/api/sample-data')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('job_description').value = data.job_description;
+                    document.getElementById('experience_json').value = JSON.stringify(data.experience, null, 2);
+                })
+                .catch(error => {
+                    alert('Error loading sample data: ' + error);
+                });
+        }
+
+        // Load sample bullets
+        function loadSampleBullets() {
+            fetch('/api/sample-data')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('tailor_job_description').value = data.job_description;
+                    document.getElementById('bullets_text').value = data.bullets;
+                })
+                .catch(error => {
+                    alert('Error loading sample data: ' + error);
+                });
+        }
+    </script>
+</body>
+</html> 
