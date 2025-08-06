@@ -280,7 +280,7 @@ class ResumeGenerator:
                     font-family: 'Times New Roman', Times, serif;
                     line-height: 1.2;
                     margin: 0;
-                    padding: 0.5in;
+                    padding: 0.3in;
                     color: #000;
                     max-width: 11in;
                     margin: 0 auto;
@@ -294,19 +294,28 @@ class ResumeGenerator:
                     line-height: 1.1;
                 }
                 .single-page .section {
-                    margin-bottom: 0.1in;
-                }
-                .single-page .job {
                     margin-bottom: 0.08in;
                 }
+                .single-page .job {
+                    margin-bottom: 0.06in;
+                }
                 .single-page .job-description li {
-                    margin-bottom: 0.01in;
+                    margin-bottom: 0.008in;
                 }
                 .single-page .skills {
-                    margin-bottom: 0.05in;
+                    margin-bottom: 0.04in;
                 }
                 .single-page .skill {
-                    margin-bottom: 0.02in;
+                    margin-bottom: 0.015in;
+                }
+                .single-page .project {
+                    margin-bottom: 0.06in;
+                }
+                .single-page .certification {
+                    margin-bottom: 0.012in;
+                }
+                .single-page .education-item {
+                    margin-bottom: 0.05in;
                 }
                 .header {
                     text-align: center;
@@ -329,7 +338,7 @@ class ResumeGenerator:
                     line-height: 1.3;
                 }
                 .section {
-                    margin-bottom: 0.15in;
+                    margin-bottom: 0.12in;
                 }
                 .section-title {
                     font-size: 12pt;
@@ -342,7 +351,7 @@ class ResumeGenerator:
                     letter-spacing: 0.5pt;
                 }
                 .job {
-                    margin-bottom: 0.1in;
+                    margin-bottom: 0.08in;
                 }
                 .job-header {
                     display: flex;
@@ -369,30 +378,30 @@ class ResumeGenerator:
                 .job-description {
                     margin-top: 0.02in;
                     font-size: 10pt;
-                    line-height: 1.2;
+                    line-height: 1.15;
                     text-align: left;
-                    padding-left: 0.2in;
+                    padding-left: 0.15in;
                 }
                 .job-description ul {
                     margin: 0;
-                    padding-left: 0.2in;
+                    padding-left: 0.15in;
                 }
                 .job-description li {
-                    margin-bottom: 0.02in;
+                    margin-bottom: 0.01in;
                 }
                 .skills {
                     display: block;
-                    margin-top: 0.05in;
+                    margin-top: 0.03in;
                 }
                 .skill {
                     display: inline-block;
-                    margin-right: 0.1in;
-                    margin-bottom: 0.02in;
+                    margin-right: 0.08in;
+                    margin-bottom: 0.015in;
                     font-size: 10pt;
                     color: #000;
                 }
                 .project {
-                    margin-bottom: 0.1in;
+                    margin-bottom: 0.08in;
                 }
                 .project-header {
                     display: flex;
@@ -409,22 +418,22 @@ class ResumeGenerator:
                 .project-description {
                     margin-top: 0.02in;
                     font-size: 10pt;
-                    line-height: 1.2;
-                    padding-left: 0.2in;
+                    line-height: 1.15;
+                    padding-left: 0.15in;
                 }
                 .certification {
-                    margin-bottom: 0.02in;
+                    margin-bottom: 0.015in;
                     font-size: 10pt;
-                    padding-left: 0.2in;
+                    padding-left: 0.15in;
                 }
                 .summary {
                     font-size: 10pt;
-                    line-height: 1.3;
+                    line-height: 1.25;
                     text-align: left;
-                    padding-left: 0.2in;
+                    padding-left: 0.15in;
                 }
                 .education-item {
-                    margin-bottom: 0.08in;
+                    margin-bottom: 0.06in;
                 }
                 .education-header {
                     display: flex;
@@ -450,8 +459,8 @@ class ResumeGenerator:
                 }
                 .education-details {
                     font-size: 10pt;
-                    line-height: 1.2;
-                    padding-left: 0.2in;
+                    line-height: 1.15;
+                    padding-left: 0.15in;
                 }
                 @media print {
                     body {
@@ -799,7 +808,7 @@ class ResumeGenerator:
         skill_scores.sort(key=lambda x: x[1], reverse=True)
         
         # Adjust number of skills based on max pages
-        max_skills = 8 if self.max_pages == 1 else 15
+        max_skills = 10 if self.max_pages == 1 else 18
         
         # Return skills with scores > 0, prioritizing highest scores
         relevant_skills = [skill for skill, score in skill_scores[:max_skills] if score > 0]
@@ -819,19 +828,19 @@ class ResumeGenerator:
         """Adjust content to fit within max pages"""
         if self.max_pages == 1:
             # For single page, be more aggressive with content reduction
-            resume_data.skills = relevant_skills[:8]  # Limit skills
+            resume_data.skills = relevant_skills[:10]  # Increased from 8 to 10
             
-            # Limit experience to top 3 most relevant
-            if len(resume_data.experience) > 3:
-                resume_data.experience = resume_data.experience[:3]
+            # Limit experience to top 4 most relevant (increased from 3)
+            if len(resume_data.experience) > 4:
+                resume_data.experience = resume_data.experience[:4]
             
-            # Limit projects to top 2
-            if resume_data.projects and len(resume_data.projects) > 2:
-                resume_data.projects = resume_data.projects[:2]
+            # Limit projects to top 3 (increased from 2)
+            if resume_data.projects and len(resume_data.projects) > 3:
+                resume_data.projects = resume_data.projects[:3]
             
-            # Limit certifications to top 3
-            if resume_data.certifications and len(resume_data.certifications) > 3:
-                resume_data.certifications = resume_data.certifications[:3]
+            # Limit certifications to top 4 (increased from 3)
+            if resume_data.certifications and len(resume_data.certifications) > 4:
+                resume_data.certifications = resume_data.certifications[:4]
             
             # Truncate summary if too long - cut at sentence boundary
             if len(resume_data.summary) > 250:
@@ -855,15 +864,15 @@ class ResumeGenerator:
                         resume_data.summary = truncated + "..."
         else:
             # For multiple pages, be more generous
-            resume_data.skills = relevant_skills[:15]
+            resume_data.skills = relevant_skills[:18]  # Increased from 15
             
-            # Limit experience to top 5
-            if len(resume_data.experience) > 5:
-                resume_data.experience = resume_data.experience[:5]
+            # Limit experience to top 6 (increased from 5)
+            if len(resume_data.experience) > 6:
+                resume_data.experience = resume_data.experience[:6]
             
-            # Limit projects to top 4
-            if resume_data.projects and len(resume_data.projects) > 4:
-                resume_data.projects = resume_data.projects[:4]
+            # Limit projects to top 5 (increased from 4)
+            if resume_data.projects and len(resume_data.projects) > 5:
+                resume_data.projects = resume_data.projects[:5]
         
         return resume_data
     
