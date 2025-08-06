@@ -723,6 +723,12 @@ class ResumeGenerator:
         relevant_skills = self._select_relevant_skills(resume_data.skills, keywords)
         print(f"Selected {len(relevant_skills)} relevant skills: {relevant_skills}")
         
+        # Optimize job titles to better match target position
+        resume_data = self._optimize_job_titles(resume_data, job_text, keywords)
+        
+        # Optimize summary to better match target job
+        resume_data = self._optimize_summary(resume_data, job_text, keywords)
+        
         # Adjust content based on max pages
         resume_data = self._adjust_content_for_pages(resume_data, relevant_skills)
         print(f"Max pages: {self.max_pages}, Experience items: {len(resume_data.experience)}, Projects: {len(resume_data.projects) if resume_data.projects else 0}")
@@ -857,6 +863,262 @@ class ResumeGenerator:
                 resume_data.projects = resume_data.projects[:4]
         
         return resume_data
+    
+    def _optimize_job_titles(self, resume_data: ResumeData, job_description: str, keywords: List[str]) -> ResumeData:
+        """Intelligently optimize job titles to better match target position while staying truthful"""
+        if not resume_data.experience:
+            return resume_data
+        
+        # Extract target job title from job description
+        target_title = self._extract_target_job_title(job_description)
+        
+        for experience in resume_data.experience:
+            # Only optimize if the current title is significantly different from target
+            if target_title and self._should_optimize_title(experience.title, target_title):
+                optimized_title = self._optimize_single_title(
+                    experience.title, 
+                    target_title, 
+                    experience.description,
+                    keywords
+                )
+                if optimized_title:
+                    print(f"Optimized job title: '{experience.title}' → '{optimized_title}'")
+                    experience.title = optimized_title
+        
+        return resume_data
+    
+    def _extract_target_job_title(self, job_description: str) -> str:
+        """Extract the target job title from the job description"""
+        # Common job title patterns
+        title_patterns = [
+            r'(?:looking for|seeking|hiring)\s+(?:a\s+)?([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\s+(?:Developer|Engineer|Analyst|Manager|Specialist|Consultant|Lead|Architect))',
+            r'(?:position|role|job)\s+(?:of\s+)?([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\s+(?:Developer|Engineer|Analyst|Manager|Specialist|Consultant|Lead|Architect))',
+            r'([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\s+(?:Developer|Engineer|Analyst|Manager|Specialist|Consultant|Lead|Architect))\s+(?:position|role|job)',
+        ]
+        
+        import re
+        for pattern in title_patterns:
+            match = re.search(pattern, job_description, re.IGNORECASE)
+            if match:
+                return match.group(1).strip()
+        
+        return ""
+    
+    def _should_optimize_title(self, current_title: str, target_title: str) -> bool:
+        """Determine if a title should be optimized based on similarity"""
+        if not target_title:
+            return False
+        
+        current_lower = current_title.lower()
+        target_lower = target_title.lower()
+        
+        # Don't optimize if titles are already similar
+        if current_lower == target_lower:
+            return False
+        
+        # Check if current title contains key words from target
+        target_words = target_lower.split()
+        current_words = current_lower.split()
+        
+        # If more than 50% of target words are in current title, don't optimize
+        matches = sum(1 for word in target_words if word in current_words)
+        if matches / len(target_words) > 0.5:
+            return False
+        
+        return True
+    
+    def _optimize_single_title(self, current_title: str, target_title: str, description: Union[str, List[str]], keywords: List[str]) -> str:
+        """Optimize a single job title to better match target while staying truthful"""
+        
+        # Convert description to string for analysis
+        if isinstance(description, list):
+            desc_text = " ".join(description)
+        else:
+            desc_text = description
+        
+        # Define title optimization rules based on experience level and skills
+        optimization_rules = {
+            # Senior level indicators
+            'senior': ['lead', 'senior', 'principal', 'staff', 'architect'],
+            'lead': ['senior', 'lead', 'principal', 'staff'],
+            'principal': ['senior', 'lead', 'principal', 'staff', 'architect'],
+            
+            # Developer variations
+            'developer': ['developer', 'engineer', 'programmer', 'software engineer'],
+            'engineer': ['engineer', 'developer', 'software engineer'],
+            'programmer': ['developer', 'engineer', 'software engineer'],
+            
+            # Specialization variations
+            'full stack': ['full stack', 'full-stack', 'fullstack', 'web developer'],
+            'frontend': ['frontend', 'front-end', 'ui developer', 'web developer'],
+            'backend': ['backend', 'back-end', 'api developer', 'server developer'],
+            'software': ['software', 'application', 'systems'],
+            
+            # Technology-specific variations
+            'python': ['python', 'software', 'application'],
+            'javascript': ['javascript', 'web', 'frontend'],
+            'react': ['react', 'frontend', 'web'],
+            'node': ['node', 'backend', 'server'],
+            'aws': ['cloud', 'devops', 'infrastructure'],
+            'data': ['data', 'analytics', 'business intelligence'],
+        }
+        
+        # Analyze current title and description
+        current_lower = current_title.lower()
+        desc_lower = desc_text.lower()
+        
+        # Find the best optimization based on target title and experience
+        best_title = current_title
+        
+        # Check if we can add seniority level
+        if 'senior' in target_title.lower() and 'senior' not in current_lower:
+            if any(word in desc_lower for word in ['lead', 'mentor', 'architect', 'design', 'senior', 'principal']):
+                best_title = f"Senior {current_title}"
+        
+        # Check if we can match the target role type
+        target_role_type = self._extract_role_type(target_title)
+        current_role_type = self._extract_role_type(current_title)
+        
+        if target_role_type and target_role_type != current_role_type:
+            # Only change if the description supports it
+            if self._description_supports_role_type(desc_lower, target_role_type):
+                best_title = best_title.replace(current_role_type, target_role_type)
+        
+        # Check if we can add technology specialization
+        tech_keywords = ['python', 'javascript', 'react', 'node', 'aws', 'data', 'full stack']
+        for tech in tech_keywords:
+            if tech in target_title.lower() and tech not in current_lower:
+                if tech in desc_lower or any(tech_word in desc_lower for tech_word in [tech, 'api', 'web', 'cloud']):
+                    # Add technology to title
+                    if 'developer' in best_title.lower():
+                        best_title = best_title.replace('Developer', f'{tech.title()} Developer')
+                    elif 'engineer' in best_title.lower():
+                        best_title = best_title.replace('Engineer', f'{tech.title()} Engineer')
+        
+        return best_title if best_title != current_title else current_title
+    
+    def _extract_role_type(self, title: str) -> str:
+        """Extract the role type from a job title"""
+        role_types = ['Developer', 'Engineer', 'Analyst', 'Manager', 'Specialist', 'Consultant', 'Lead', 'Architect']
+        title_lower = title.lower()
+        
+        for role_type in role_types:
+            if role_type.lower() in title_lower:
+                return role_type
+        
+        return ""
+    
+    def _description_supports_role_type(self, description: str, role_type: str) -> bool:
+        """Check if the job description supports a specific role type"""
+        role_indicators = {
+            'Developer': ['develop', 'code', 'program', 'build', 'create', 'implement'],
+            'Engineer': ['engineer', 'design', 'architect', 'system', 'infrastructure'],
+            'Analyst': ['analyze', 'data', 'report', 'insight', 'business', 'metrics'],
+            'Manager': ['manage', 'lead', 'team', 'supervise', 'coordinate', 'direct'],
+            'Specialist': ['specialize', 'expert', 'focus', 'domain', 'subject matter'],
+            'Consultant': ['consult', 'advise', 'recommend', 'strategy', 'solution'],
+            'Lead': ['lead', 'mentor', 'guide', 'senior', 'principal'],
+            'Architect': ['architect', 'design', 'system', 'infrastructure', 'platform']
+        }
+        
+        if role_type in role_indicators:
+            indicators = role_indicators[role_type]
+            return any(indicator in description for indicator in indicators)
+        
+        return False
+    
+    def _optimize_summary(self, resume_data: ResumeData, job_description: str, keywords: List[str]) -> ResumeData:
+        """Optimize the summary to better match the target job while staying truthful"""
+        if not resume_data.summary:
+            return resume_data
+        
+        # Extract key themes from job description
+        job_themes = self._extract_job_themes(job_description)
+        
+        # Check if summary already covers key themes
+        summary_lower = resume_data.summary.lower()
+        missing_themes = []
+        
+        for theme in job_themes:
+            if theme.lower() not in summary_lower:
+                missing_themes.append(theme)
+        
+        # If we have missing themes and they're supported by experience, enhance summary
+        if missing_themes and len(resume_data.summary) < 200:  # Only enhance if summary is short enough
+            enhanced_summary = self._enhance_summary_with_themes(resume_data.summary, missing_themes, keywords)
+            if enhanced_summary != resume_data.summary:
+                print(f"Enhanced summary with themes: {missing_themes[:3]}")
+                resume_data.summary = enhanced_summary
+        
+        return resume_data
+    
+    def _extract_job_themes(self, job_description: str) -> List[str]:
+        """Extract key themes from job description"""
+        themes = []
+        
+        # Technology themes
+        tech_keywords = ['python', 'javascript', 'react', 'node', 'aws', 'docker', 'kubernetes', 'sql', 'api', 'microservices']
+        for tech in tech_keywords:
+            if tech in job_description.lower():
+                themes.append(tech.title())
+        
+        # Role themes
+        role_keywords = ['senior', 'lead', 'architect', 'full stack', 'frontend', 'backend', 'devops', 'data']
+        for role in role_keywords:
+            if role in job_description.lower():
+                themes.append(role.title())
+        
+        # Industry themes
+        industry_keywords = ['startup', 'enterprise', 'saas', 'e-commerce', 'fintech', 'healthcare', 'ai', 'ml']
+        for industry in industry_keywords:
+            if industry in job_description.lower():
+                themes.append(industry.title())
+        
+        return themes[:5]  # Limit to top 5 themes
+    
+    def _enhance_summary_with_themes(self, current_summary: str, themes: List[str], keywords: List[str]) -> str:
+        """Enhance summary with missing themes if supported by keywords"""
+        if not themes:
+            return current_summary
+        
+        # Find themes that are supported by keywords
+        supported_themes = []
+        for theme in themes:
+            if any(theme.lower() in keyword.lower() for keyword in keywords):
+                supported_themes.append(theme)
+        
+        if not supported_themes:
+            return current_summary
+        
+        # Add supported themes to summary
+        theme_phrases = {
+            'Python': 'Python development',
+            'React': 'React applications',
+            'AWS': 'AWS cloud services',
+            'Docker': 'containerization with Docker',
+            'Microservices': 'microservices architecture',
+            'Senior': 'senior-level',
+            'Lead': 'leadership',
+            'Full Stack': 'full-stack development',
+            'DevOps': 'DevOps practices',
+            'Data': 'data-driven solutions'
+        }
+        
+        enhancement = []
+        for theme in supported_themes[:2]:  # Limit to 2 themes to avoid over-optimization
+            if theme in theme_phrases:
+                enhancement.append(theme_phrases[theme])
+        
+        if enhancement:
+            # Add enhancement to summary
+            if current_summary.endswith('.'):
+                enhanced = current_summary[:-1] + f" with expertise in {', '.join(enhancement)}."
+            else:
+                enhanced = current_summary + f" with expertise in {', '.join(enhancement)}."
+            
+            return enhanced
+        
+        return current_summary
 
 def main():
     """Example usage"""
