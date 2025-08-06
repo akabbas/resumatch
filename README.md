@@ -4,6 +4,15 @@
 
 ResuMatch takes your comprehensive experience data and any job description, then generates a professional, ATS-optimized PDF resume tailored specifically for that opportunity.
 
+## ⚠️ **Important Note: Naming Disclaimer**
+
+**This is an open-source project** and is **NOT affiliated** with the commercial platform [ResuMatch.io](https://www.resumatch.io). 
+
+- **This project**: Free, open-source, Python-based resume generator
+- **ResuMatch.io**: Commercial SaaS platform with additional features (interviews, cover letters, etc.)
+
+Both tools serve similar purposes but with different approaches and target audiences.
+
 ## 🚀 **One Click → Perfect Resume**
 
 **Input**: Your experience data + Job description  
@@ -40,6 +49,43 @@ ResuMatch uses AI to intelligently optimize your resume for each job:
 - ✅ **Consistent**: Professional quality every time
 - ✅ **Optimized**: Uses data science for skill matching
 - ✅ **Scalable**: Easy to apply to hundreds of jobs
+
+## 🎯 **Streamlined Approach**
+
+**ResuMatch focuses on ONE thing exceptionally well**: Creating perfect resumes from your experience data and job descriptions.
+
+- **No confusing features** - Just resume generation
+- **No complex workflows** - Simple input/output
+- **No feature bloat** - Laser-focused on core functionality
+- **No learning curve** - Upload data, paste job description, get perfect resume
+
+## 🚀 **Current Project Status**
+
+### **✅ Fully Functional Features:**
+- **AI-Powered Resume Generation**: Complete with job title optimization, summary rewriting, and bullet point enhancement
+- **Intelligent Skill Matching**: Comprehensive skills database with context-aware selection
+- **Web Interface**: Modern Flask-based UI for easy resume generation
+- **Command Line Interface**: CLI for batch processing and automation
+- **ATS Optimization**: Harvard-style formatting that passes automated screening
+- **Page Management**: Automatic content adjustment for 1-2 page resumes
+
+### **🔧 Technical Stack:**
+- **Backend**: Python 3.13, Flask, spaCy, NLTK, KeyBERT
+- **AI/ML**: Intelligent skill matching, keyword extraction, content optimization
+- **Frontend**: Bootstrap 5, modern responsive design
+- **Output**: Professional PDF resumes with WeasyPrint
+
+### **📊 Project Metrics:**
+- **Lines of Code**: 15,000+ lines across multiple modules
+- **Skills Database**: 300+ skills with variations and levels
+- **AI Features**: 5+ intelligent optimization algorithms
+- **Documentation**: Comprehensive guides and examples
+
+### **🔄 Recent Evolution:**
+- **Streamlined Interface**: Removed confusing dual-feature approach
+- **Focused Functionality**: Single clear workflow for resume generation
+- **Enhanced AI**: Advanced job title optimization and summary rewriting
+- **Improved UX**: Simplified web interface with clear value proposition
 
 ## 🚀 Quick Start
 
