@@ -29,13 +29,13 @@ class JobExperience:
     title: str
     company: str
     duration: str
-    description: str
+    description: Union[str, List[str]]
     skills_used: List[str] = None
 
 @dataclass
 class Project:
     name: str
-    description: str
+    description: Union[str, List[str]]
     technologies: List[str] = None
 
 @dataclass
@@ -277,121 +277,182 @@ class ResumeGenerator:
             <title>Professional Resume</title>
             <style>
                 body {
-                    font-family: Arial, sans-serif;
-                    line-height: 1.4;
+                    font-family: 'Times New Roman', Times, serif;
+                    line-height: 1.2;
                     margin: 0;
-                    padding: 15px;
-                    color: #333;
-                    max-width: 800px;
+                    padding: 0.5in;
+                    color: #000;
+                    max-width: 11in;
                     margin: 0 auto;
-                    font-size: 12px;
+                    font-size: 11pt;
+                    background: white;
                 }
                 .header {
                     text-align: center;
-                    border-bottom: 2px solid #2c3e50;
-                    padding-bottom: 15px;
-                    margin-bottom: 15px;
+                    border-bottom: 2pt solid #000;
+                    padding-bottom: 0.1in;
+                    margin-bottom: 0.2in;
                 }
                 .name {
-                    font-size: 24px;
+                    font-size: 18pt;
                     font-weight: bold;
-                    color: #2c3e50;
-                    margin-bottom: 3px;
+                    color: #000;
+                    margin-bottom: 0.05in;
+                    text-transform: uppercase;
+                    letter-spacing: 1pt;
                 }
                 .contact {
-                    font-size: 12px;
-                    color: #7f8c8d;
-                    margin-bottom: 8px;
+                    font-size: 10pt;
+                    color: #000;
+                    margin-bottom: 0.05in;
+                    line-height: 1.3;
                 }
                 .section {
-                    margin-bottom: 15px;
+                    margin-bottom: 0.15in;
                 }
                 .section-title {
-                    font-size: 16px;
+                    font-size: 12pt;
                     font-weight: bold;
-                    color: #2c3e50;
-                    border-bottom: 1px solid #bdc3c7;
-                    padding-bottom: 3px;
-                    margin-bottom: 10px;
+                    color: #000;
+                    text-transform: uppercase;
+                    border-bottom: 1pt solid #000;
+                    padding-bottom: 0.02in;
+                    margin-bottom: 0.08in;
+                    letter-spacing: 0.5pt;
                 }
                 .job {
-                    margin-bottom: 10px;
+                    margin-bottom: 0.1in;
+                }
+                .job-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: baseline;
+                    margin-bottom: 0.03in;
                 }
                 .job-title {
                     font-weight: bold;
-                    font-size: 14px;
-                    color: #34495e;
+                    font-size: 11pt;
+                    color: #000;
+                    text-transform: uppercase;
                 }
                 .job-company {
                     font-weight: bold;
-                    color: #7f8c8d;
-                    font-size: 12px;
+                    color: #000;
+                    font-size: 11pt;
                 }
                 .job-duration {
-                    color: #7f8c8d;
+                    color: #000;
+                    font-size: 10pt;
                     font-style: italic;
-                    font-size: 12px;
                 }
                 .job-description {
-                    margin-top: 3px;
-                    text-align: justify;
-                    font-size: 11px;
-                    line-height: 1.3;
+                    margin-top: 0.02in;
+                    font-size: 10pt;
+                    line-height: 1.2;
+                    text-align: left;
+                    padding-left: 0.2in;
+                }
+                .job-description ul {
+                    margin: 0;
+                    padding-left: 0.2in;
+                }
+                .job-description li {
+                    margin-bottom: 0.02in;
                 }
                 .skills {
-                    display: flex;
-                    flex-wrap: wrap;
-                    gap: 6px;
+                    display: block;
+                    margin-top: 0.05in;
                 }
                 .skill {
-                    background-color: #ecf0f1;
-                    padding: 3px 8px;
-                    border-radius: 12px;
-                    font-size: 10px;
-                    color: #2c3e50;
+                    display: inline-block;
+                    margin-right: 0.1in;
+                    margin-bottom: 0.02in;
+                    font-size: 10pt;
+                    color: #000;
                 }
                 .project {
-                    margin-bottom: 10px;
+                    margin-bottom: 0.1in;
+                }
+                .project-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: baseline;
+                    margin-bottom: 0.03in;
                 }
                 .project-name {
                     font-weight: bold;
-                    color: #34495e;
-                    font-size: 13px;
+                    color: #000;
+                    font-size: 11pt;
+                    text-transform: uppercase;
                 }
                 .project-description {
-                    margin-top: 3px;
-                    font-size: 11px;
-                    line-height: 1.3;
+                    margin-top: 0.02in;
+                    font-size: 10pt;
+                    line-height: 1.2;
+                    padding-left: 0.2in;
                 }
                 .certification {
-                    margin-bottom: 3px;
-                    font-size: 11px;
+                    margin-bottom: 0.02in;
+                    font-size: 10pt;
+                    padding-left: 0.2in;
                 }
                 .summary {
-                    text-align: justify;
-                    font-size: 12px;
-                    line-height: 1.5;
+                    font-size: 10pt;
+                    line-height: 1.3;
+                    text-align: left;
+                    padding-left: 0.2in;
+                }
+                .education-item {
+                    margin-bottom: 0.08in;
+                }
+                .education-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: baseline;
+                    margin-bottom: 0.03in;
+                }
+                .education-degree {
+                    font-weight: bold;
+                    font-size: 11pt;
+                    color: #000;
+                    text-transform: uppercase;
+                }
+                .education-school {
+                    font-weight: bold;
+                    color: #000;
+                    font-size: 11pt;
+                }
+                .education-date {
+                    color: #000;
+                    font-size: 10pt;
+                    font-style: italic;
+                }
+                .education-details {
+                    font-size: 10pt;
+                    line-height: 1.2;
+                    padding-left: 0.2in;
                 }
                 @media print {
                     body {
-                        padding: 0;
+                        padding: 0.5in;
                         margin: 0;
-                        font-size: 10px;
+                        font-size: 11pt;
+                        background: white;
                     }
                     .section {
                         page-break-inside: avoid;
                     }
                     .name {
-                        font-size: 20px;
+                        font-size: 18pt;
                     }
                     .section-title {
-                        font-size: 14px;
+                        font-size: 12pt;
                     }
-                    .job-title {
-                        font-size: 12px;
+                    .job-title, .project-name, .education-degree {
+                        font-size: 11pt;
                     }
-                    .job-description {
-                        font-size: 10px;
+                    .job-description, .project-description, .education-details {
+                        font-size: 10pt;
                     }
                 }
             </style>
@@ -406,26 +467,36 @@ class ResumeGenerator:
             
             {% if summary %}
             <div class="section">
-                <div class="section-title">Professional Summary</div>
+                <div class="section-title">Summary</div>
                 <div class="summary">{{ summary }}</div>
             </div>
             {% endif %}
             
             {% if experience %}
             <div class="section">
-                <div class="section-title">Professional Experience</div>
+                <div class="section-title">Experience</div>
                 {% for job in experience %}
                 <div class="job">
-                    <div class="job-title">{{ job.title }}</div>
-                    <div class="job-company">{{ job.company }} | <span class="job-duration">{{ job.duration }}</span></div>
-                    <div class="job-description">{{ job.description }}</div>
-                    {% if job.skills_used %}
-                    <div class="skills">
-                        {% for skill in job.skills_used[:5] %}
-                        <span class="skill">{{ skill }}</span>
-                        {% endfor %}
+                    <div class="job-header">
+                        <div class="job-title">{{ job.title }}</div>
+                        <div class="job-duration">{{ job.duration }}</div>
                     </div>
-                    {% endif %}
+                    <div class="job-company">{{ job.company }}</div>
+                    <div class="job-description">
+                        <ul>
+                            {% if job.description is string %}
+                                {% for bullet in job.description.split('. ') %}
+                                {% if bullet.strip() %}
+                                <li>{{ bullet.strip() }}{% if not bullet.endswith('.') %}.{% endif %}</li>
+                                {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                {% for bullet in job.description %}
+                                <li>{{ bullet }}</li>
+                                {% endfor %}
+                            {% endif %}
+                        </ul>
+                    </div>
                 </div>
                 {% endfor %}
             </div>
@@ -433,7 +504,7 @@ class ResumeGenerator:
             
             {% if skills %}
             <div class="section">
-                <div class="section-title">Technical Skills</div>
+                <div class="section-title">Skills</div>
                 <div class="skills">
                     {% for skill in skills %}
                     <span class="skill">{{ skill }}</span>
@@ -447,14 +518,41 @@ class ResumeGenerator:
                 <div class="section-title">Projects</div>
                 {% for project in projects %}
                 <div class="project">
-                    <div class="project-name">{{ project.name }}</div>
-                    <div class="project-description">{{ project.description }}</div>
-                    {% if project.technologies %}
-                    <div class="skills">
-                        {% for tech in project.technologies[:5] %}
-                        <span class="skill">{{ tech }}</span>
-                        {% endfor %}
+                    <div class="project-header">
+                        <div class="project-name">{{ project.name }}</div>
                     </div>
+                    <div class="project-description">
+                        <ul>
+                            {% if project.description is string %}
+                                {% for bullet in project.description.split('. ') %}
+                                {% if bullet.strip() %}
+                                <li>{{ bullet.strip() }}{% if not bullet.endswith('.') %}.{% endif %}</li>
+                                {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                {% for bullet in project.description %}
+                                <li>{{ bullet }}</li>
+                                {% endfor %}
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            {% if education %}
+            <div class="section">
+                <div class="section-title">Education</div>
+                {% for edu in education %}
+                <div class="education-item">
+                    <div class="education-header">
+                        <div class="education-degree">{{ edu.get('degree', 'Bachelor of Science') }}</div>
+                        <div class="education-date">{{ edu.get('year', '2020') }}</div>
+                    </div>
+                    <div class="education-school">{{ edu.get('institution', 'University') }}</div>
+                    {% if edu.get('gpa') %}
+                    <div class="education-details">GPA: {{ edu.get('gpa', '') }}</div>
                     {% endif %}
                 </div>
                 {% endfor %}
@@ -496,28 +594,66 @@ class ResumeGenerator:
             # JSON format
             experience_list = []
             for exp in experience_data.get('experience', []):
+                # Handle both string and list descriptions
+                description = exp.get('description', '')
+                if isinstance(description, list):
+                    # Keep as list for template processing
+                    description = description
+                else:
+                    # Convert string to list for consistency
+                    description = [description] if description else []
+                
                 experience_list.append(JobExperience(
                     title=exp.get('title', ''),
                     company=exp.get('company', ''),
                     duration=exp.get('duration', ''),
-                    description=exp.get('description', '')
+                    description=description
                 ))
             
             projects_list = []
             for proj in experience_data.get('projects', []):
+                # Handle both string and list descriptions
+                description = proj.get('description', '')
+                if isinstance(description, list):
+                    # Keep as list for template processing
+                    description = description
+                else:
+                    # Convert string to list for consistency
+                    description = [description] if description else []
+                
                 projects_list.append(Project(
                     name=proj.get('name', ''),
-                    description=proj.get('description', ''),
+                    description=description,
                     technologies=proj.get('technologies', [])
                 ))
+            
+            # Handle nested skills structure
+            skills_data = experience_data.get('skills', [])
+            if isinstance(skills_data, dict):
+                # Flatten nested skills structure
+                flattened_skills = []
+                for category, skill_list in skills_data.items():
+                    if isinstance(skill_list, list):
+                        flattened_skills.extend(skill_list)
+                skills_list = flattened_skills
+            else:
+                skills_list = skills_data if isinstance(skills_data, list) else []
+            
+            # Handle education format
+            education_data = experience_data.get('education', [])
+            if isinstance(education_data, dict):
+                # Convert single education object to list
+                education_list = [education_data]
+            else:
+                education_list = education_data if isinstance(education_data, list) else []
             
             return ResumeData(
                 summary=experience_data.get('summary', ''),
                 experience=experience_list,
-                skills=experience_data.get('skills', []),
+                skills=skills_list,
                 certifications=experience_data.get('certifications', []),
                 projects=projects_list,
-                education=experience_data.get('education', [])
+                education=education_list
             )
         
         else:
@@ -537,6 +673,22 @@ class ResumeGenerator:
         # Extract keywords from job description
         keywords = self.keyword_extractor.extract_keywords(job_text)
         print(f"Extracted keywords: {keywords[:10]}...")
+        
+        # Handle contact info from experience data if available
+        if isinstance(experience_data, dict) and 'contact' in experience_data:
+            contact = experience_data['contact']
+            contact_parts = []
+            if contact.get('email'):
+                contact_parts.append(contact['email'])
+            if contact.get('phone'):
+                contact_parts.append(contact['phone'])
+            if contact.get('location'):
+                contact_parts.append(contact['location'])
+            contact_info = ' | '.join(contact_parts) if contact_parts else contact_info
+        
+        # Get name from experience data if available
+        if isinstance(experience_data, dict) and 'name' in experience_data:
+            name = experience_data['name']
         
         # Parse experience data
         resume_data = self.parse_experience_data(experience_data)
