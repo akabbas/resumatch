@@ -185,22 +185,29 @@ def get_sample_data():
                 "title": "Senior Python Developer",
                 "company": "Tech Solutions Inc.",
                 "duration": "2020-2023",
-                "description": "Led development of REST APIs using Django and FastAPI. Implemented microservices architecture with Docker and Kubernetes. Managed PostgreSQL databases and integrated with React frontend."
+                "description": "Led development of REST APIs using Django and FastAPI serving 1M+ requests daily. Implemented microservices architecture with Docker and Kubernetes on AWS. Managed PostgreSQL databases and optimized queries for 40% performance improvement. Integrated React frontend with REST APIs and implemented real-time features. Deployed applications using CI/CD pipelines with Jenkins and Git."
             },
             {
                 "title": "Python Developer",
                 "company": "StartupXYZ",
                 "duration": "2018-2020",
-                "description": "Developed web applications using Flask and SQLAlchemy. Deployed applications on AWS using Docker containers. Worked with MongoDB and Redis for data storage."
+                "description": "Developed web applications using Flask and SQLAlchemy. Deployed applications on AWS using Docker containers. Worked with MongoDB and Redis for data storage. Implemented automated testing with 90% code coverage. Collaborated with cross-functional teams using Agile methodologies."
             }
         ],
         "skills": ["Python", "Django", "Flask", "FastAPI", "PostgreSQL", "MongoDB", "AWS", "Docker", "Kubernetes", "React", "JavaScript", "Git", "REST APIs"],
         "certifications": ["AWS Certified Developer", "Docker Certified Associate"],
+        "education": [
+            {
+                "degree": "Bachelor of Science in Computer Science",
+                "school": "University of Technology",
+                "date": "2018",
+                "details": "GPA: 3.8/4.0, Dean's List, Computer Science Honor Society"
+            }
+        ],
         "projects": [
             {
                 "name": "E-commerce Platform",
-                "description": "Built a full-stack e-commerce platform using Django, React, and PostgreSQL. Implemented payment processing with Stripe API.",
-                "technologies": ["Django", "React", "PostgreSQL", "Stripe", "Docker"]
+                "description": "Built a full-stack e-commerce platform using Django, React, and PostgreSQL. Implemented payment processing with Stripe API. Deployed using Docker containers on AWS. Achieved 99.9% uptime and handled 10,000+ concurrent users."
             }
         ]
     }

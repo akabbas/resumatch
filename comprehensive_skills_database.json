@@ -1,0 +1,339 @@
+{
+  "master_skills_database": {
+    "programming_languages": {
+      "python": {
+        "variations": ["Python", "Python 3", "Python (Flask, FastAPI)", "Python (Django)", "Python (Pandas, NumPy)", "Python (Scikit-learn)", "Python (Selenium)", "Python (BeautifulSoup)"],
+        "categories": ["backend", "data_science", "automation", "web_development"],
+        "skill_level": "expert"
+      },
+      "javascript": {
+        "variations": ["JavaScript", "JavaScript (React, Next.js)", "JavaScript (Node.js)", "JavaScript (Vue.js)", "JavaScript (jQuery)", "ES6+", "TypeScript"],
+        "categories": ["frontend", "backend", "web_development", "full_stack"],
+        "skill_level": "expert"
+      },
+      "sql": {
+        "variations": ["SQL", "PostgreSQL", "MySQL", "Oracle SQL", "SQL Server", "SQLite", "NoSQL", "MongoDB"],
+        "categories": ["database", "data_analysis", "backend"],
+        "skill_level": "expert"
+      },
+      "java": {
+        "variations": ["Java", "Java (Spring Boot)", "Java (Android)", "J2EE"],
+        "categories": ["backend", "mobile_development", "enterprise"],
+        "skill_level": "intermediate"
+      },
+      "c_cpp": {
+        "variations": ["C/C++", "C", "C++"],
+        "categories": ["systems_programming", "embedded"],
+        "skill_level": "intermediate"
+      }
+    },
+    "frameworks_libraries": {
+      "react": {
+        "variations": ["React", "React.js", "React (Hooks)", "React (Redux)", "Next.js"],
+        "categories": ["frontend", "web_development"],
+        "skill_level": "expert"
+      },
+      "node": {
+        "variations": ["Node.js", "Express.js", "Node.js (Express)"],
+        "categories": ["backend", "web_development"],
+        "skill_level": "expert"
+      },
+      "django": {
+        "variations": ["Django", "Django REST Framework"],
+        "categories": ["backend", "web_development"],
+        "skill_level": "expert"
+      },
+      "flask": {
+        "variations": ["Flask", "Flask (REST API)"],
+        "categories": ["backend", "web_development"],
+        "skill_level": "expert"
+      },
+      "fastapi": {
+        "variations": ["FastAPI", "FastAPI (REST API)"],
+        "categories": ["backend", "web_development", "api_development"],
+        "skill_level": "expert"
+      }
+    },
+    "cloud_platforms": {
+      "aws": {
+        "variations": ["AWS", "AWS (EC2, S3, CloudFront, Lambda)", "AWS (EC2)", "AWS (S3)", "AWS (Lambda)", "AWS (CloudFormation)", "AWS (RDS)"],
+        "categories": ["cloud", "devops", "infrastructure"],
+        "skill_level": "expert"
+      },
+      "azure": {
+        "variations": ["Azure", "Azure DevOps", "Azure (Functions)", "Azure (SQL Database)"],
+        "categories": ["cloud", "devops"],
+        "skill_level": "intermediate"
+      },
+      "gcp": {
+        "variations": ["Google Cloud Platform", "GCP", "Google Cloud"],
+        "categories": ["cloud", "devops"],
+        "skill_level": "intermediate"
+      }
+    },
+    "databases": {
+      "postgresql": {
+        "variations": ["PostgreSQL", "Postgres"],
+        "categories": ["database", "backend"],
+        "skill_level": "expert"
+      },
+      "mysql": {
+        "variations": ["MySQL", "MariaDB"],
+        "categories": ["database", "backend"],
+        "skill_level": "expert"
+      },
+      "oracle": {
+        "variations": ["Oracle SQL", "Oracle Database", "Oracle CPQ"],
+        "categories": ["database", "enterprise", "crm"],
+        "skill_level": "expert"
+      },
+      "mongodb": {
+        "variations": ["MongoDB", "NoSQL"],
+        "categories": ["database", "backend"],
+        "skill_level": "intermediate"
+      }
+    },
+    "devops_tools": {
+      "docker": {
+        "variations": ["Docker", "Docker (Containerization)"],
+        "categories": ["devops", "containerization"],
+        "skill_level": "expert"
+      },
+      "kubernetes": {
+        "variations": ["Kubernetes", "K8s"],
+        "categories": ["devops", "containerization", "orchestration"],
+        "skill_level": "intermediate"
+      },
+      "jenkins": {
+        "variations": ["Jenkins", "CI/CD (Jenkins)"],
+        "categories": ["devops", "ci_cd"],
+        "skill_level": "expert"
+      },
+      "terraform": {
+        "variations": ["Terraform", "Infrastructure as Code"],
+        "categories": ["devops", "infrastructure"],
+        "skill_level": "intermediate"
+      },
+      "git": {
+        "variations": ["Git", "GitHub", "GitLab", "Version Control"],
+        "categories": ["devops", "version_control"],
+        "skill_level": "expert"
+      }
+    },
+    "crm_erp_systems": {
+      "salesforce": {
+        "variations": ["Salesforce CRM", "Salesforce", "Salesforce CPQ", "Salesforce (Apex)", "Salesforce (Lightning)"],
+        "categories": ["crm", "enterprise", "business_systems"],
+        "skill_level": "expert"
+      },
+      "oracle_cpq": {
+        "variations": ["Oracle CPQ", "CPQ", "Configure, Price, Quote"],
+        "categories": ["crm", "enterprise", "business_systems"],
+        "skill_level": "expert"
+      },
+      "jd_edwards": {
+        "variations": ["JD Edwards", "JDE", "ERP"],
+        "categories": ["erp", "enterprise"],
+        "skill_level": "expert"
+      },
+      "great_plains": {
+        "variations": ["Great Plains", "Microsoft Dynamics GP"],
+        "categories": ["erp", "enterprise"],
+        "skill_level": "expert"
+      },
+      "sap": {
+        "variations": ["SAP", "SAP Products"],
+        "categories": ["erp", "enterprise"],
+        "skill_level": "intermediate"
+      }
+    },
+    "data_analysis": {
+      "excel": {
+        "variations": ["Excel", "Excel VBA", "Power Query", "Microsoft Excel"],
+        "categories": ["data_analysis", "business_intelligence"],
+        "skill_level": "expert"
+      },
+      "power_bi": {
+        "variations": ["Power BI", "Business Intelligence"],
+        "categories": ["data_analysis", "business_intelligence"],
+        "skill_level": "intermediate"
+      },
+      "snowflake": {
+        "variations": ["Snowflake", "Data Warehouse"],
+        "categories": ["data_analysis", "data_warehouse"],
+        "skill_level": "intermediate"
+      },
+      "hadoop": {
+        "variations": ["Hadoop", "Big Data"],
+        "categories": ["data_analysis", "big_data"],
+        "skill_level": "intermediate"
+      }
+    },
+    "testing_qa": {
+      "unit_testing": {
+        "variations": ["Unit Testing", "Unit Testing (Jest)", "Unit Testing (PyTest)", "Test-Driven Development"],
+        "categories": ["testing", "quality_assurance"],
+        "skill_level": "expert"
+      },
+      "uat": {
+        "variations": ["UAT", "User Acceptance Testing", "Testing"],
+        "categories": ["testing", "quality_assurance"],
+        "skill_level": "expert"
+      },
+      "selenium": {
+        "variations": ["Selenium", "Automated Testing"],
+        "categories": ["testing", "automation"],
+        "skill_level": "intermediate"
+      }
+    },
+    "api_integration": {
+      "rest_api": {
+        "variations": ["REST API", "RESTful APIs", "REST API Integration", "API Development"],
+        "categories": ["api", "integration", "backend"],
+        "skill_level": "expert"
+      },
+      "graphql": {
+        "variations": ["GraphQL", "GraphQL API"],
+        "categories": ["api", "integration"],
+        "skill_level": "intermediate"
+      },
+      "mulesoft": {
+        "variations": ["MuleSoft", "API Integration"],
+        "categories": ["api", "integration", "enterprise"],
+        "skill_level": "intermediate"
+      },
+      "jwt": {
+        "variations": ["JWT Authentication", "JWT", "Authentication"],
+        "categories": ["security", "authentication"],
+        "skill_level": "expert"
+      }
+    },
+    "business_skills": {
+      "agile": {
+        "variations": ["Agile Methodologies", "Agile", "Scrum", "Sprint Planning"],
+        "categories": ["project_management", "methodology"],
+        "skill_level": "expert"
+      },
+      "jira": {
+        "variations": ["Jira", "Project Management"],
+        "categories": ["project_management", "collaboration"],
+        "skill_level": "expert"
+      },
+      "stakeholder_management": {
+        "variations": ["Stakeholder Management", "Cross-functional Collaboration"],
+        "categories": ["business", "communication"],
+        "skill_level": "expert"
+      },
+      "business_analysis": {
+        "variations": ["Business Analysis", "Requirements Gathering", "Solution Scoping"],
+        "categories": ["business", "analysis"],
+        "skill_level": "expert"
+      },
+      "revops": {
+        "variations": ["RevOps", "Revenue Operations", "Sales Operations"],
+        "categories": ["business", "operations"],
+        "skill_level": "expert"
+      }
+    },
+    "automation": {
+      "data_automation": {
+        "variations": ["Data Automation", "ETL Workflows", "Process Automation"],
+        "categories": ["automation", "data_analysis"],
+        "skill_level": "expert"
+      },
+      "business_process_automation": {
+        "variations": ["Business Process Automation", "Workflow Automation"],
+        "categories": ["automation", "business"],
+        "skill_level": "expert"
+      },
+      "zapier": {
+        "variations": ["Zapier", "Workflow Automation"],
+        "categories": ["automation", "integration"],
+        "skill_level": "intermediate"
+      }
+    },
+    "frontend_ui": {
+      "html_css": {
+        "variations": ["HTML/CSS", "HTML", "CSS", "Responsive Design"],
+        "categories": ["frontend", "web_development"],
+        "skill_level": "expert"
+      },
+      "tailwind": {
+        "variations": ["Tailwind CSS", "CSS Framework"],
+        "categories": ["frontend", "styling"],
+        "skill_level": "intermediate"
+      },
+      "ui_ux": {
+        "variations": ["UI/UX Design", "User Experience", "User Interface"],
+        "categories": ["design", "frontend"],
+        "skill_level": "intermediate"
+      }
+    },
+    "data_visualization": {
+      "dashboards": {
+        "variations": ["KPI Dashboards", "Data Visualization", "Reporting"],
+        "categories": ["data_analysis", "business_intelligence"],
+        "skill_level": "expert"
+      },
+      "lucidchart": {
+        "variations": ["LucidChart", "Process Mapping"],
+        "categories": ["documentation", "visualization"],
+        "skill_level": "intermediate"
+      }
+    },
+    "documentation": {
+      "technical_documentation": {
+        "variations": ["Technical Documentation", "API Documentation", "Process Documentation"],
+        "categories": ["documentation", "communication"],
+        "skill_level": "expert"
+      },
+      "user_stories": {
+        "variations": ["User Stories", "Acceptance Criteria", "Requirements Documentation"],
+        "categories": ["documentation", "business_analysis"],
+        "skill_level": "expert"
+      }
+    },
+    "data_governance": {
+      "data_governance": {
+        "variations": ["Data Governance", "Data Quality", "Data Management"],
+        "categories": ["data_analysis", "compliance"],
+        "skill_level": "intermediate"
+      }
+    },
+    "product_management": {
+      "product_management": {
+        "variations": ["Product Management", "Product Strategy"],
+        "categories": ["business", "strategy"],
+        "skill_level": "intermediate"
+      }
+    },
+    "computer_vision": {
+      "computer_vision": {
+        "variations": ["Computer Vision", "Image Processing"],
+        "categories": ["ai_ml", "specialized"],
+        "skill_level": "intermediate"
+      }
+    },
+    "data_structures": {
+      "data_structures": {
+        "variations": ["Data Structures & Algorithms", "Algorithm Design"],
+        "categories": ["computer_science", "programming"],
+        "skill_level": "intermediate"
+      }
+    }
+  },
+  "skill_categories": {
+    "technical": ["programming_languages", "frameworks_libraries", "databases", "devops_tools", "api_integration", "testing_qa", "frontend_ui"],
+    "business": ["crm_erp_systems", "business_skills", "automation", "data_analysis", "data_visualization", "documentation"],
+    "cloud_infrastructure": ["cloud_platforms", "devops_tools"],
+    "enterprise": ["crm_erp_systems", "business_skills", "data_governance"],
+    "data_science": ["data_analysis", "data_visualization", "data_governance", "computer_vision"],
+    "web_development": ["programming_languages", "frameworks_libraries", "frontend_ui", "databases"],
+    "full_stack": ["programming_languages", "frameworks_libraries", "databases", "frontend_ui", "devops_tools"]
+  },
+  "skill_levels": {
+    "expert": 3,
+    "intermediate": 2,
+    "beginner": 1
+  }
+} 

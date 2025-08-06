@@ -20,6 +20,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import textstat
 from dotenv import load_dotenv
 import openai
+from intelligent_skill_matcher import IntelligentSkillMatcher
 
 # Load environment variables
 load_dotenv()
@@ -261,6 +262,7 @@ class ResumeGenerator:
     def __init__(self, use_openai: bool = False, max_pages: int = 2, include_projects: bool = True):
         self.keyword_extractor = KeywordExtractor(use_openai)
         self.experience_matcher = ExperienceMatcher()
+        self.skill_matcher = IntelligentSkillMatcher()
         self.max_pages = max_pages
         self.include_projects = include_projects
         
@@ -729,7 +731,7 @@ class ResumeGenerator:
             resume_data.experience = matched_experience
         
         # Intelligent skill selection based on job requirements and max pages
-        relevant_skills = self._select_relevant_skills(resume_data.skills, keywords)
+        relevant_skills = self._select_relevant_skills(resume_data.skills, keywords, job_text)
         print(f"Selected {len(relevant_skills)} relevant skills: {relevant_skills}")
         
         # Optimize job titles to better match target position
@@ -764,63 +766,51 @@ class ResumeGenerator:
         print(f"Resume generated successfully: {output_path}")
         return output_path
     
-    def _select_relevant_skills(self, all_skills: List[str], keywords: List[str]) -> List[str]:
-        """Intelligently select the most relevant skills based on job keywords"""
-        if not all_skills:
-            return []
+    def _select_relevant_skills(self, all_skills: List[str], keywords: List[str], job_description: str = "") -> List[str]:
+        """
+        Select the most relevant skills using the intelligent skill matcher.
+        This method now uses the comprehensive skills database for better matching.
+        """
+        # Use the intelligent skill matcher to get the most relevant skills
+        # Pass the full job description for better context
+        job_context = job_description if job_description else " ".join(keywords)
         
-        # Score each skill based on keyword relevance
-        skill_scores = []
-        for skill in all_skills:
-            score = 0
-            skill_lower = skill.lower()
-            
-            # Direct keyword matches (highest priority)
-            for keyword in keywords:
-                keyword_lower = keyword.lower()
-                if keyword_lower in skill_lower:
-                    score += 5  # Very high score for exact matches
-                elif any(word in skill_lower for word in keyword_lower.split()):
-                    score += 3  # High score for partial matches
-            
-            # Technical skill bonuses
-            tech_keywords = {
-                'python': 4, 'javascript': 4, 'java': 4, 'react': 4, 'node': 4, 
-                'aws': 4, 'docker': 4, 'kubernetes': 4, 'sql': 4, 'api': 4, 
-                'git': 3, 'ci/cd': 3, 'postgresql': 4, 'mysql': 4, 'mongodb': 4,
-                'express': 4, 'django': 4, 'flask': 4, 'fastapi': 4, 'typescript': 4,
-                'redux': 3, 'tailwind': 3, 'material-ui': 3, 'jwt': 3, 'graphql': 4,
-                'terraform': 3, 'jenkins': 3, 'jest': 3, 'tdd': 3, 'agile': 2
-            }
-            
-            for tech, bonus in tech_keywords.items():
-                if tech in skill_lower:
-                    score += bonus
-            
-            # Bonus for skills that appear in job description
-            job_desc_lower = ' '.join(keywords).lower()
-            if any(word in job_desc_lower for word in skill_lower.split()):
-                score += 2
-            
-            skill_scores.append((skill, score))
-        
-        # Sort by score and return top skills
-        skill_scores.sort(key=lambda x: x[1], reverse=True)
+        # Get relevant skills from the comprehensive database
+        relevant_skills = self.skill_matcher.select_relevant_skills(
+            job_context, 
+            max_skills=20  # Get more skills initially, we'll filter based on max_pages
+        )
         
         # Adjust number of skills based on max pages
         max_skills = 10 if self.max_pages == 1 else 18
         
-        # Return skills with scores > 0, prioritizing highest scores
-        relevant_skills = [skill for skill, score in skill_scores[:max_skills] if score > 0]
-        
-        # If we don't have enough relevant skills, include some high-value technical skills
-        if len(relevant_skills) < max_skills // 2:
-            high_value_skills = ['Python', 'JavaScript', 'React', 'Node.js', 'AWS', 'SQL', 'Git', 'Docker']
-            for skill in high_value_skills:
-                if skill not in relevant_skills and any(s.lower() == skill.lower() for s in all_skills):
-                    relevant_skills.append(skill)
-                    if len(relevant_skills) >= max_skills:
-                        break
+        # If we don't have enough skills from the database, fall back to the original skills
+        if len(relevant_skills) < max_skills and all_skills:
+            # Use original skill selection as fallback
+            keywords_lower = [kw.lower() for kw in keywords]
+            skill_scores = []
+            
+            for skill in all_skills:
+                score = 0
+                skill_lower = skill.lower()
+                
+                # Direct keyword match
+                if skill_lower in keywords_lower:
+                    score += 10
+                
+                # Partial keyword match
+                for keyword in keywords_lower:
+                    if keyword in skill_lower or skill_lower in keyword:
+                        score += 5
+                
+                skill_scores.append((skill, score))
+            
+            skill_scores.sort(key=lambda x: x[1], reverse=True)
+            fallback_skills = [skill for skill, score in skill_scores if score > 0]
+            
+            # Combine both lists, prioritizing database skills
+            combined_skills = relevant_skills + [s for s in fallback_skills if s not in relevant_skills]
+            relevant_skills = combined_skills[:max_skills]
         
         return relevant_skills[:max_skills]
     
