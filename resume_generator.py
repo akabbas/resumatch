@@ -287,6 +287,27 @@ class ResumeGenerator:
                     font-size: 11pt;
                     background: white;
                 }
+                
+                /* Compact styling for single page */
+                .single-page {
+                    font-size: 10pt;
+                    line-height: 1.1;
+                }
+                .single-page .section {
+                    margin-bottom: 0.1in;
+                }
+                .single-page .job {
+                    margin-bottom: 0.08in;
+                }
+                .single-page .job-description li {
+                    margin-bottom: 0.01in;
+                }
+                .single-page .skills {
+                    margin-bottom: 0.05in;
+                }
+                .single-page .skill {
+                    margin-bottom: 0.02in;
+                }
                 .header {
                     text-align: center;
                     border-bottom: 2pt solid #000;
@@ -457,7 +478,7 @@ class ResumeGenerator:
                 }
             </style>
         </head>
-        <body>
+        <body class="{% if single_page %}single-page{% endif %}">
             <div class="header">
                 <div class="name">{{ name }}</div>
                 <div class="contact">
@@ -698,10 +719,13 @@ class ResumeGenerator:
             matched_experience = self.experience_matcher.match_experience(keywords, resume_data.experience)
             resume_data.experience = matched_experience
         
-        # Filter skills based on job requirements
-        relevant_skills = [skill for skill in resume_data.skills 
-                          if any(keyword in skill.lower() for keyword in keywords)]
-        resume_data.skills = relevant_skills[:15]  # Limit to top 15 skills
+        # Intelligent skill selection based on job requirements and max pages
+        relevant_skills = self._select_relevant_skills(resume_data.skills, keywords)
+        print(f"Selected {len(relevant_skills)} relevant skills: {relevant_skills}")
+        
+        # Adjust content based on max pages
+        resume_data = self._adjust_content_for_pages(resume_data, relevant_skills)
+        print(f"Max pages: {self.max_pages}, Experience items: {len(resume_data.experience)}, Projects: {len(resume_data.projects) if resume_data.projects else 0}")
         
         # Generate HTML
         html_content = self.template.render(
@@ -712,7 +736,8 @@ class ResumeGenerator:
             skills=resume_data.skills,
             projects=resume_data.projects,
             certifications=resume_data.certifications,
-            include_projects=self.include_projects
+            include_projects=self.include_projects,
+            single_page=self.max_pages == 1
         )
         
         # Convert to PDF
@@ -720,6 +745,101 @@ class ResumeGenerator:
         
         print(f"Resume generated successfully: {output_path}")
         return output_path
+    
+    def _select_relevant_skills(self, all_skills: List[str], keywords: List[str]) -> List[str]:
+        """Intelligently select the most relevant skills based on job keywords"""
+        if not all_skills:
+            return []
+        
+        # Score each skill based on keyword relevance
+        skill_scores = []
+        for skill in all_skills:
+            score = 0
+            skill_lower = skill.lower()
+            
+            # Direct keyword matches (highest priority)
+            for keyword in keywords:
+                keyword_lower = keyword.lower()
+                if keyword_lower in skill_lower:
+                    score += 5  # Very high score for exact matches
+                elif any(word in skill_lower for word in keyword_lower.split()):
+                    score += 3  # High score for partial matches
+            
+            # Technical skill bonuses
+            tech_keywords = {
+                'python': 4, 'javascript': 4, 'java': 4, 'react': 4, 'node': 4, 
+                'aws': 4, 'docker': 4, 'kubernetes': 4, 'sql': 4, 'api': 4, 
+                'git': 3, 'ci/cd': 3, 'postgresql': 4, 'mysql': 4, 'mongodb': 4,
+                'express': 4, 'django': 4, 'flask': 4, 'fastapi': 4, 'typescript': 4,
+                'redux': 3, 'tailwind': 3, 'material-ui': 3, 'jwt': 3, 'graphql': 4,
+                'terraform': 3, 'jenkins': 3, 'jest': 3, 'tdd': 3, 'agile': 2
+            }
+            
+            for tech, bonus in tech_keywords.items():
+                if tech in skill_lower:
+                    score += bonus
+            
+            # Bonus for skills that appear in job description
+            job_desc_lower = ' '.join(keywords).lower()
+            if any(word in job_desc_lower for word in skill_lower.split()):
+                score += 2
+            
+            skill_scores.append((skill, score))
+        
+        # Sort by score and return top skills
+        skill_scores.sort(key=lambda x: x[1], reverse=True)
+        
+        # Adjust number of skills based on max pages
+        max_skills = 8 if self.max_pages == 1 else 15
+        
+        # Return skills with scores > 0, prioritizing highest scores
+        relevant_skills = [skill for skill, score in skill_scores[:max_skills] if score > 0]
+        
+        # If we don't have enough relevant skills, include some high-value technical skills
+        if len(relevant_skills) < max_skills // 2:
+            high_value_skills = ['Python', 'JavaScript', 'React', 'Node.js', 'AWS', 'SQL', 'Git', 'Docker']
+            for skill in high_value_skills:
+                if skill not in relevant_skills and any(s.lower() == skill.lower() for s in all_skills):
+                    relevant_skills.append(skill)
+                    if len(relevant_skills) >= max_skills:
+                        break
+        
+        return relevant_skills[:max_skills]
+    
+    def _adjust_content_for_pages(self, resume_data: ResumeData, relevant_skills: List[str]) -> ResumeData:
+        """Adjust content to fit within max pages"""
+        if self.max_pages == 1:
+            # For single page, be more aggressive with content reduction
+            resume_data.skills = relevant_skills[:8]  # Limit skills
+            
+            # Limit experience to top 3 most relevant
+            if len(resume_data.experience) > 3:
+                resume_data.experience = resume_data.experience[:3]
+            
+            # Limit projects to top 2
+            if resume_data.projects and len(resume_data.projects) > 2:
+                resume_data.projects = resume_data.projects[:2]
+            
+            # Limit certifications to top 3
+            if resume_data.certifications and len(resume_data.certifications) > 3:
+                resume_data.certifications = resume_data.certifications[:3]
+            
+            # Truncate summary if too long
+            if len(resume_data.summary) > 200:
+                resume_data.summary = resume_data.summary[:200] + "..."
+        else:
+            # For multiple pages, be more generous
+            resume_data.skills = relevant_skills[:15]
+            
+            # Limit experience to top 5
+            if len(resume_data.experience) > 5:
+                resume_data.experience = resume_data.experience[:5]
+            
+            # Limit projects to top 4
+            if resume_data.projects and len(resume_data.projects) > 4:
+                resume_data.projects = resume_data.projects[:4]
+        
+        return resume_data
 
 def main():
     """Example usage"""
