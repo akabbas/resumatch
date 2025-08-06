@@ -729,6 +729,9 @@ class ResumeGenerator:
         # Optimize summary to better match target job
         resume_data = self._optimize_summary(resume_data, job_text, keywords)
         
+        # Optimize experience bullet points with action verbs
+        resume_data = self._optimize_experience_bullets(resume_data, keywords)
+        
         # Adjust content based on max pages
         resume_data = self._adjust_content_for_pages(resume_data, relevant_skills)
         print(f"Max pages: {self.max_pages}, Experience items: {len(resume_data.experience)}, Projects: {len(resume_data.projects) if resume_data.projects else 0}")
@@ -1028,27 +1031,22 @@ class ResumeGenerator:
         return False
     
     def _optimize_summary(self, resume_data: ResumeData, job_description: str, keywords: List[str]) -> ResumeData:
-        """Optimize the summary to better match the target job while staying truthful"""
+        """Completely rewrite the summary to match job requirements while following professional resume principles"""
         if not resume_data.summary:
             return resume_data
         
-        # Extract key themes from job description
-        job_themes = self._extract_job_themes(job_description)
+        # Extract comprehensive job requirements
+        job_requirements = self._extract_job_requirements(job_description)
         
-        # Check if summary already covers key themes
-        summary_lower = resume_data.summary.lower()
-        missing_themes = []
+        # Analyze experience for quantifiable achievements
+        achievements = self._extract_achievements(resume_data.experience)
         
-        for theme in job_themes:
-            if theme.lower() not in summary_lower:
-                missing_themes.append(theme)
+        # Generate new summary based on job requirements and achievements
+        new_summary = self._generate_tailored_summary(job_requirements, achievements, keywords)
         
-        # If we have missing themes and they're supported by experience, enhance summary
-        if missing_themes and len(resume_data.summary) < 200:  # Only enhance if summary is short enough
-            enhanced_summary = self._enhance_summary_with_themes(resume_data.summary, missing_themes, keywords)
-            if enhanced_summary != resume_data.summary:
-                print(f"Enhanced summary with themes: {missing_themes[:3]}")
-                resume_data.summary = enhanced_summary
+        if new_summary and new_summary != resume_data.summary:
+            print(f"Rewrote summary to better match job requirements")
+            resume_data.summary = new_summary
         
         return resume_data
     
@@ -1119,6 +1117,384 @@ class ResumeGenerator:
             return enhanced
         
         return current_summary
+    
+    def _extract_job_requirements(self, job_description: str) -> Dict[str, List[str]]:
+        """Extract comprehensive job requirements from job description"""
+        requirements = {
+            'technologies': [],
+            'skills': [],
+            'experience_level': '',
+            'responsibilities': [],
+            'qualifications': []
+        }
+        
+        # Technology extraction
+        tech_keywords = [
+            'python', 'javascript', 'react', 'node', 'aws', 'docker', 'kubernetes', 'sql', 'postgresql', 'mysql', 'mongodb',
+            'django', 'flask', 'fastapi', 'express', 'vue', 'angular', 'typescript', 'java', 'c#', 'php', 'ruby',
+            'git', 'jenkins', 'terraform', 'ansible', 'kubernetes', 'docker', 'microservices', 'api', 'rest', 'graphql'
+        ]
+        
+        desc_lower = job_description.lower()
+        for tech in tech_keywords:
+            if tech in desc_lower:
+                requirements['technologies'].append(tech.title())
+        
+        # Experience level extraction
+        level_patterns = [
+            (r'senior|lead|principal|staff', 'Senior'),
+            (r'junior|entry|associate', 'Junior'),
+            (r'mid|intermediate', 'Mid-level')
+        ]
+        
+        for pattern, level in level_patterns:
+            if re.search(pattern, desc_lower):
+                requirements['experience_level'] = level
+                break
+        
+        # Skills extraction
+        skill_patterns = [
+            'full stack', 'frontend', 'backend', 'devops', 'data', 'analytics', 'machine learning', 'ai',
+            'cloud', 'microservices', 'api development', 'database design', 'testing', 'agile', 'scrum'
+        ]
+        
+        for skill in skill_patterns:
+            if skill in desc_lower:
+                requirements['skills'].append(skill.title())
+        
+        # Responsibilities extraction (looking for action verbs)
+        action_verbs = [
+            'develop', 'design', 'build', 'implement', 'manage', 'lead', 'architect', 'optimize',
+            'deploy', 'maintain', 'test', 'debug', 'integrate', 'configure', 'monitor', 'scale'
+        ]
+        
+        sentences = re.split(r'[.!?]', job_description)
+        for sentence in sentences:
+            for verb in action_verbs:
+                if verb in sentence.lower():
+                    requirements['responsibilities'].append(sentence.strip())
+                    break
+        
+        return requirements
+    
+    def _extract_achievements(self, experience: List[JobExperience]) -> List[Dict[str, str]]:
+        """Extract quantifiable achievements from experience"""
+        achievements = []
+        
+        for exp in experience:
+            if isinstance(exp.description, list):
+                desc_text = " ".join(exp.description)
+            else:
+                desc_text = exp.description
+            
+            # Look for quantifiable metrics
+            metrics_patterns = [
+                r'(\d+)%',  # Percentage improvements
+                r'(\d+)x',  # Multipliers
+                r'(\d+)\+',  # Plus indicators
+                r'reduced by (\d+)',  # Reductions
+                r'increased by (\d+)',  # Increases
+                r'(\d+) million',  # Large numbers
+                r'(\d+)k',  # Thousands
+                r'(\d+)M\+',  # Millions
+            ]
+            
+            for pattern in metrics_patterns:
+                matches = re.findall(pattern, desc_text, re.IGNORECASE)
+                for match in matches:
+                    achievements.append({
+                        'metric': match,
+                        'context': exp.title,
+                        'description': desc_text
+                    })
+        
+        return achievements
+    
+    def _generate_tailored_summary(self, job_requirements: Dict[str, List[str]], achievements: List[Dict[str, str]], keywords: List[str]) -> str:
+        """Generate a tailored summary following professional resume principles"""
+        
+        # Action verbs for different categories
+        action_verbs = {
+            'leadership': ['Led', 'Directed', 'Managed', 'Oversaw', 'Spearheaded', 'Orchestrated'],
+            'technical': ['Developed', 'Built', 'Designed', 'Implemented', 'Optimized', 'Engineered'],
+            'communication': ['Collaborated', 'Coordinated', 'Presented', 'Documented', 'Liaised'],
+            'quantitative': ['Increased', 'Reduced', 'Improved', 'Achieved', 'Delivered', 'Generated'],
+            'creative': ['Created', 'Designed', 'Innovated', 'Established', 'Pioneered']
+        }
+        
+        # Build summary components
+        components = []
+        
+        # 1. Professional identity (experience level + role)
+        if job_requirements['experience_level']:
+            level = job_requirements['experience_level']
+            role_type = self._determine_role_type(job_requirements)
+            components.append(f"{level} {role_type}")
+        else:
+            components.append("Experienced professional")
+        
+        # 2. Core competencies (top 3 technologies/skills)
+        core_skills = job_requirements['technologies'][:3] + job_requirements['skills'][:2]
+        if core_skills:
+            skill_phrase = ", ".join(core_skills[:3])
+            components.append(f"specializing in {skill_phrase}")
+        
+        # 3. Key achievement (if available)
+        if achievements:
+            best_achievement = self._select_best_achievement(achievements, keywords)
+            if best_achievement:
+                components.append(f"with proven track record of {best_achievement}")
+        
+        # 4. Value proposition
+        value_props = self._generate_value_propositions(job_requirements, keywords)
+        if value_props:
+            components.append(f"demonstrating expertise in {', '.join(value_props[:2])}")
+        
+        # Combine components into coherent summary
+        summary = self._combine_summary_components(components)
+        
+        # Ensure it follows professional guidelines
+        summary = self._polish_summary(summary)
+        
+        return summary
+    
+    def _determine_role_type(self, job_requirements: Dict[str, List[str]]) -> str:
+        """Determine the appropriate role type based on job requirements"""
+        if 'Full Stack' in job_requirements['skills']:
+            return "Full Stack Developer"
+        elif 'Frontend' in job_requirements['skills']:
+            return "Frontend Developer"
+        elif 'Backend' in job_requirements['skills']:
+            return "Backend Developer"
+        elif 'DevOps' in job_requirements['skills']:
+            return "DevOps Engineer"
+        elif 'Data' in job_requirements['skills'] or 'Analytics' in job_requirements['skills']:
+            return "Data Engineer"
+        else:
+            return "Software Developer"
+    
+    def _select_best_achievement(self, achievements: List[Dict[str, str]], keywords: List[str]) -> str:
+        """Select the most relevant achievement based on job keywords"""
+        if not achievements:
+            return ""
+        
+        # Score achievements based on keyword relevance
+        scored_achievements = []
+        for achievement in achievements:
+            score = 0
+            desc_lower = achievement['description'].lower()
+            
+            for keyword in keywords:
+                if keyword.lower() in desc_lower:
+                    score += 1
+            
+            scored_achievements.append((achievement, score))
+        
+        # Sort by score and return the best
+        scored_achievements.sort(key=lambda x: x[1], reverse=True)
+        
+        if scored_achievements:
+            best_achievement = scored_achievements[0][0]
+            # Extract a concise achievement phrase
+            metric = best_achievement['metric']
+            return f"delivering {metric} improvements"
+        
+        return ""
+    
+    def _generate_value_propositions(self, job_requirements: Dict[str, List[str]], keywords: List[str]) -> List[str]:
+        """Generate value propositions based on job requirements"""
+        value_props = []
+        
+        # Map requirements to value propositions
+        value_mapping = {
+            'Python': 'scalable backend development',
+            'React': 'modern frontend applications',
+            'AWS': 'cloud infrastructure',
+            'Docker': 'containerized deployments',
+            'Microservices': 'distributed systems',
+            'API': 'RESTful API development',
+            'Database': 'database optimization',
+            'Testing': 'quality assurance',
+            'Agile': 'agile development practices'
+        }
+        
+        for tech in job_requirements['technologies']:
+            if tech in value_mapping:
+                value_props.append(value_mapping[tech])
+        
+        for skill in job_requirements['skills']:
+            if skill in value_mapping:
+                value_props.append(value_mapping[skill])
+        
+        return value_props[:3]  # Limit to top 3
+    
+    def _combine_summary_components(self, components: List[str]) -> str:
+        """Combine summary components into a coherent paragraph"""
+        if not components:
+            return ""
+        
+        # Start with the first component
+        summary = components[0]
+        
+        # Add remaining components with appropriate connectors
+        for i, component in enumerate(components[1:], 1):
+            if i == 1:
+                summary += f" {component}"
+            elif i == 2:
+                summary += f" and {component}"
+            else:
+                summary += f", {component}"
+        
+        # Ensure it ends with a period
+        if not summary.endswith('.'):
+            summary += '.'
+        
+        return summary
+    
+    def _polish_summary(self, summary: str) -> str:
+        """Polish the summary to follow professional guidelines"""
+        # Remove personal pronouns
+        summary = re.sub(r'\b(I|We|My|Our)\b', '', summary, flags=re.IGNORECASE)
+        
+        # Ensure active voice
+        summary = re.sub(r'\bis\b', 'demonstrates', summary, flags=re.IGNORECASE)
+        summary = re.sub(r'\bare\b', 'demonstrate', summary, flags=re.IGNORECASE)
+        
+        # Remove unnecessary words
+        summary = re.sub(r'\b(very|really|quite|extremely)\b', '', summary, flags=re.IGNORECASE)
+        
+        # Ensure proper capitalization
+        summary = summary.capitalize()
+        
+        # Limit length (2-5 sentences, approximately 150-250 characters)
+        if len(summary) > 250:
+            # Truncate at sentence boundary
+            sentences = re.split(r'[.!?]', summary)
+            if len(sentences) > 2:
+                summary = '. '.join(sentences[:2]) + '.'
+        
+        return summary
+    
+    def _optimize_experience_bullets(self, resume_data: ResumeData, keywords: List[str]) -> ResumeData:
+        """Optimize experience bullet points with action verbs and professional language"""
+        if not resume_data.experience:
+            return resume_data
+        
+        # Action verbs categorized by type
+        action_verbs = {
+            'leadership': ['Led', 'Directed', 'Managed', 'Oversaw', 'Spearheaded', 'Orchestrated', 'Coordinated', 'Supervised'],
+            'technical': ['Developed', 'Built', 'Designed', 'Implemented', 'Optimized', 'Engineered', 'Architected', 'Programmed'],
+            'communication': ['Collaborated', 'Presented', 'Documented', 'Liaised', 'Negotiated', 'Facilitated', 'Mentored'],
+            'quantitative': ['Increased', 'Reduced', 'Improved', 'Achieved', 'Delivered', 'Generated', 'Enhanced', 'Streamlined'],
+            'creative': ['Created', 'Designed', 'Innovated', 'Established', 'Pioneered', 'Conceptualized', 'Redesigned'],
+            'organizational': ['Organized', 'Structured', 'Systematized', 'Standardized', 'Centralized', 'Streamlined'],
+            'research': ['Analyzed', 'Researched', 'Evaluated', 'Investigated', 'Diagnosed', 'Assessed', 'Reviewed']
+        }
+        
+        for experience in resume_data.experience:
+            if isinstance(experience.description, list):
+                optimized_bullets = []
+                for bullet in experience.description:
+                    optimized_bullet = self._optimize_single_bullet(bullet, keywords, action_verbs)
+                    optimized_bullets.append(optimized_bullet)
+                experience.description = optimized_bullets
+            else:
+                # Convert string to list and optimize
+                bullets = [experience.description]
+                optimized_bullets = []
+                for bullet in bullets:
+                    optimized_bullet = self._optimize_single_bullet(bullet, keywords, action_verbs)
+                    optimized_bullets.append(optimized_bullet)
+                experience.description = optimized_bullets
+        
+        return resume_data
+    
+    def _optimize_single_bullet(self, bullet: str, keywords: List[str], action_verbs: Dict[str, List[str]]) -> str:
+        """Optimize a single bullet point with action verbs and professional language"""
+        
+        # Remove personal pronouns
+        bullet = re.sub(r'\b(I|We|My|Our)\b', '', bullet, flags=re.IGNORECASE)
+        
+        # Ensure it starts with an action verb
+        bullet_lower = bullet.lower().strip()
+        
+        # Check if it already starts with a strong action verb
+        starts_with_action = False
+        for category, verbs in action_verbs.items():
+            for verb in verbs:
+                if bullet_lower.startswith(verb.lower()):
+                    starts_with_action = True
+                    break
+            if starts_with_action:
+                break
+        
+        if not starts_with_action:
+            # Find the most appropriate action verb based on content and keywords
+            best_verb = self._select_best_action_verb(bullet, keywords, action_verbs)
+            if best_verb:
+                # Replace weak verbs with strong action verbs
+                weak_verbs = ['did', 'worked on', 'was responsible for', 'handled', 'dealt with']
+                for weak_verb in weak_verbs:
+                    if weak_verb in bullet_lower:
+                        bullet = re.sub(rf'\b{weak_verb}\b', best_verb, bullet, flags=re.IGNORECASE)
+                        break
+                else:
+                    # If no weak verb found, prepend the action verb
+                    bullet = f"{best_verb} {bullet}"
+        
+        # Ensure active voice
+        bullet = re.sub(r'\bis\b', 'demonstrates', bullet, flags=re.IGNORECASE)
+        bullet = re.sub(r'\bare\b', 'demonstrate', bullet, flags=re.IGNORECASE)
+        
+        # Remove unnecessary words
+        bullet = re.sub(r'\b(very|really|quite|extremely)\b', '', bullet, flags=re.IGNORECASE)
+        
+        # Ensure proper capitalization
+        bullet = bullet.capitalize()
+        
+        # Ensure it ends with a period
+        if not bullet.endswith('.'):
+            bullet += '.'
+        
+        return bullet
+    
+    def _select_best_action_verb(self, bullet: str, keywords: List[str], action_verbs: Dict[str, List[str]]) -> str:
+        """Select the best action verb based on bullet content and job keywords"""
+        bullet_lower = bullet.lower()
+        
+        # Score action verbs based on relevance
+        verb_scores = {}
+        
+        for category, verbs in action_verbs.items():
+            for verb in verbs:
+                score = 0
+                verb_lower = verb.lower()
+                
+                # Check if verb matches job keywords
+                for keyword in keywords:
+                    if keyword.lower() in verb_lower or verb_lower in keyword.lower():
+                        score += 2
+                
+                # Check if verb matches bullet content
+                if verb_lower in bullet_lower:
+                    score += 1
+                
+                # Bonus for technical verbs if bullet contains technical content
+                if category == 'technical' and any(tech in bullet_lower for tech in ['python', 'javascript', 'api', 'database', 'system']):
+                    score += 1
+                
+                # Bonus for quantitative verbs if bullet contains metrics
+                if category == 'quantitative' and re.search(r'\d+%|\d+x|\d+\+', bullet_lower):
+                    score += 1
+                
+                verb_scores[verb] = score
+        
+        # Return the highest scoring verb
+        if verb_scores:
+            best_verb = max(verb_scores.items(), key=lambda x: x[1])
+            return best_verb[0] if best_verb[1] > 0 else "Developed"
+        
+        return "Developed"  # Default fallback
 
 def main():
     """Example usage"""
