@@ -4,14 +4,7 @@
 
 ResuMatch takes your comprehensive experience data and any job description, then generates a professional, ATS-optimized PDF resume tailored specifically for that opportunity.
 
-## ⚠️ **Important Note: Naming Disclaimer**
 
-**This is an open-source project** and is **NOT affiliated** with the commercial platform [ResuMatch.io](https://www.resumatch.io). 
-
-- **This project**: Free, open-source, Python-based resume generator
-- **ResuMatch.io**: Commercial SaaS platform with additional features (interviews, cover letters, etc.)
-
-Both tools serve similar purposes but with different approaches and target audiences.
 
 ## 🚀 **One Click → Perfect Resume**
 
