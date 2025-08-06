@@ -824,9 +824,26 @@ class ResumeGenerator:
             if resume_data.certifications and len(resume_data.certifications) > 3:
                 resume_data.certifications = resume_data.certifications[:3]
             
-            # Truncate summary if too long
-            if len(resume_data.summary) > 200:
-                resume_data.summary = resume_data.summary[:200] + "..."
+            # Truncate summary if too long - cut at sentence boundary
+            if len(resume_data.summary) > 250:
+                truncated = resume_data.summary[:250]
+                # Try to find the last complete sentence
+                last_period = truncated.rfind('.')
+                last_exclamation = truncated.rfind('!')
+                last_question = truncated.rfind('?')
+                
+                # Find the last sentence ending
+                last_sentence_end = max(last_period, last_exclamation, last_question)
+                
+                if last_sentence_end > 200:  # If we have a sentence ending in the last 50 chars
+                    resume_data.summary = truncated[:last_sentence_end + 1]
+                else:
+                    # If no sentence ending found, try to cut at word boundary
+                    last_space = truncated.rfind(' ')
+                    if last_space > 200:
+                        resume_data.summary = truncated[:last_space] + "..."
+                    else:
+                        resume_data.summary = truncated + "..."
         else:
             # For multiple pages, be more generous
             resume_data.skills = relevant_skills[:15]
