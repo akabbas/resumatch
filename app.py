@@ -166,10 +166,18 @@ def tailor_resume():
             top_n=int(request.form.get('top_n', 8))
         )
         
-        return jsonify({
+        # Format the result to match what the frontend expects
+        formatted_result = {
             'success': True,
-            'result': tailored_result
-        })
+            'result': {
+                'top_bullets': tailored_result.get('selected_bullets', []),
+                'job_analysis': tailored_result.get('job_analysis', {}),
+                'keywords': tailored_result.get('keywords', []),
+                'message': 'Resume tailored successfully'
+            }
+        }
+        
+        return jsonify(formatted_result)
     
     except Exception as e:
         flash(f'Error tailoring resume: {str(e)}', 'error')
@@ -179,76 +187,148 @@ def tailor_resume():
 def get_sample_data():
     """Get sample data for the interface"""
     sample_experience = {
-        "summary": "Experienced software developer with 5+ years in Python development, specializing in web applications and API development.",
+        "name": "Ammr Abbasher",
+        "contact": {
+            "email": "AmmrAbbasher@gmail.com",
+            "phone": "817-575-7791",
+            "location": "Dallas, TX, USA",
+            "linkedin": "LinkedIn",
+            "github": "GitHub"
+        },
+        "summary": "Detail-oriented Data Automation & Integration Analyst with 2.5+ years driving revenue operations optimization through data-driven automation, ETL workflows, and cross-platform system integration. Proficient in Python scripting, SQL querying, and REST API development to streamline quote-to-cash processes across CPQ, CRM, and ERP platforms. Experienced collaborating with sales, IT, and finance stakeholders to gather requirements, design scalable technical solutions, and lead user acceptance testing (UAT). Currently pursuing Salesforce Certified Administrator to deepen CRM and workflow expertise and expand into automation and cloud roles.",
         "experience": [
             {
-                "title": "Senior Python Developer",
-                "company": "Tech Solutions Inc.",
-                "duration": "2020-2023",
-                "description": "Led development of REST APIs using Django and FastAPI serving 1M+ requests daily. Implemented microservices architecture with Docker and Kubernetes on AWS. Managed PostgreSQL databases and optimized queries for 40% performance improvement. Integrated React frontend with REST APIs and implemented real-time features. Deployed applications using CI/CD pipelines with Jenkins and Git."
+                "title": "Business Systems Analyst & Data Automation Specialist",
+                "company": "Flowserve",
+                "duration": "January 2023 - Present",
+                "description": [
+                    "Automated CPQ pricing validation, quote accuracy checks, and approval workflows using Python, SQL, and Excel VBA, reducing manual processing time by 50%",
+                    "Designed and maintained REST API integrations linking Oracle CPQ, Salesforce CRM, and ERP systems (JD Edwards, Great Plains) to synchronize real-time sales data and pricing information",
+                    "Developed custom guided selling flows and complex pricing rules within Oracle CPQ to accelerate quote-to-cash cycles for diverse product configurations",
+                    "Built SQL-based sales dashboards and reports visualizing quote statuses, margin analysis, and key sales KPIs for executive leadership, enabling data-driven decisions",
+                    "Led stakeholder engagement, requirements gathering, and user acceptance testing (UAT) for over 100 global users, increasing user adoption and reducing quote errors",
+                    "Collaborated in Agile teams using Jira and Azure DevOps for sprint planning, backlog grooming, and iterative delivery of system enhancements",
+                    "Authored detailed technical documentation covering API workflows, business process logic, and automation scripts to support knowledge transfer and ongoing maintenance"
+                ]
             },
             {
-                "title": "Python Developer",
-                "company": "StartupXYZ",
-                "duration": "2018-2020",
-                "description": "Developed web applications using Flask and SQLAlchemy. Deployed applications on AWS using Docker containers. Worked with MongoDB and Redis for data storage. Implemented automated testing with 90% code coverage. Collaborated with cross-functional teams using Agile methodologies."
+                "title": "Software Developer / Business Analyst Intern",
+                "company": "Salesforce",
+                "duration": "April 2021 - August 2021",
+                "description": [
+                    "Collaborated with Solution Architects and MuleSoft Business Analysts to collect and validate client requirements for enterprise integration projects",
+                    "Supported requirements analysis, use case development, and success criteria definition, improving alignment between technical teams and business stakeholders",
+                    "Participated in Agile ceremonies and contributed to project scoping, effort estimation, and stakeholder communication",
+                    "Gained hands-on exposure to Salesforce ecosystem tools, data mapping for CRM-ERP synchronization, and CPQ configuration basics",
+                    "Documented business process flows, user stories, and lessons learned for internal knowledge bases, facilitating team learning and continuous improvement"
+                ]
             }
         ],
-        "skills": ["Python", "Django", "Flask", "FastAPI", "PostgreSQL", "MongoDB", "AWS", "Docker", "Kubernetes", "React", "JavaScript", "Git", "REST APIs"],
-        "certifications": ["AWS Certified Developer", "Docker Certified Associate"],
+        "skills": [
+            "Python (scripting, automation)",
+            "SQL (PostgreSQL, MySQL)",
+            "Excel VBA",
+            "JavaScript (ES6 basics)",
+            "Oracle CPQ (BML, BMQL, Commerce Flows)",
+            "Salesforce CRM",
+            "ERP systems (JD Edwards, Great Plains)",
+            "REST APIs",
+            "Postman",
+            "AWS (EC2, S3)",
+            "Docker",
+            "Azure DevOps",
+            "Git",
+            "Jira",
+            "Workflow Automation",
+            "Revenue Operations",
+            "Quote-to-Cash",
+            "Requirements Gathering",
+            "UAT",
+            "Data Analysis",
+            "ETL Workflows",
+            "Power BI (basic)",
+            "Agile/Scrum",
+            "Cross-Functional Collaboration",
+            "Technical Writing",
+            "Stakeholder Management"
+        ],
+        "certifications": [
+            "Salesforce Certified Administrator (In Progress, Est. August 2025)",
+            "Oracle CPQ Developer 2024 Certified Implementation Professional",
+            "JavaScript Algorithms and Data Structures – FreeCodeCamp"
+        ],
         "education": [
             {
-                "degree": "Bachelor of Science in Computer Science",
-                "school": "University of Technology",
-                "date": "2018",
-                "details": "GPA: 3.8/4.0, Dean's List, Computer Science Honor Society"
+                "degree": "Bachelor of Business Administration: Business Computer Information Systems & Marketing Business Analytics",
+                "institution": "University of North Texas (UNT)",
+                "year": "2020",
+                "gpa": "GPA: 3.5"
             }
         ],
         "projects": [
             {
-                "name": "E-commerce Platform",
-                "description": "Built a full-stack e-commerce platform using Django, React, and PostgreSQL. Implemented payment processing with Stripe API. Deployed using Docker containers on AWS. Achieved 99.9% uptime and handled 10,000+ concurrent users."
+                "name": "Full Stack Task Manager",
+                "description": [
+                    "Developed a task management application using React, Node.js, PostgreSQL, and JWT authentication",
+                    "Deployed on AWS EC2 with Docker for containerized scalability",
+                    "Implemented user authentication, CRUD operations, and real-time task updates"
+                ]
+            },
+            {
+                "name": "Weather App",
+                "description": [
+                    "Created a React frontend integrated with OpenWeatherMap API showcasing data fetching, dynamic UI updates, and error handling"
+                ]
             }
         ]
     }
     
-    sample_job = """Senior Python Developer
+    sample_job = """Business Systems Analyst - Revenue Operations
 
-We are seeking a talented Senior Python Developer to join our dynamic team. You will be responsible for developing and maintaining high-quality software solutions.
+We are seeking a talented Business Systems Analyst to join our Revenue Operations team. You will be responsible for optimizing our quote-to-cash processes and integrating CRM/ERP systems.
 
 Requirements:
-- 5+ years of experience with Python development
-- Strong experience with Django, Flask, or FastAPI frameworks
-- Proficiency with PostgreSQL, MySQL, or MongoDB databases
-- Experience with AWS cloud services and Docker containerization
-- Knowledge of Kubernetes for orchestration
-- Familiarity with React, JavaScript, and modern frontend technologies
-- Experience with Git version control and CI/CD pipelines
-- Understanding of REST APIs and microservices architecture
+- 2+ years of experience with business systems analysis
+- Strong experience with Salesforce CRM and Oracle CPQ
+- Experience with Python scripting and SQL databases
+- Knowledge of REST API integrations
+- Experience with workflow automation and process optimization
+- Understanding of revenue operations and quote-to-cash processes
+- Experience with requirements gathering and UAT
+- Knowledge of Agile methodologies and stakeholder management
+
+Preferred Qualifications:
+- Salesforce Administrator certification
+- Experience with ERP systems (JD Edwards, Great Plains)
+- Experience with Azure DevOps and Jira
+- Knowledge of data analysis and reporting tools
 
 Responsibilities:
-- Design and implement scalable backend services
-- Collaborate with frontend developers to integrate APIs
-- Optimize database queries and application performance
-- Deploy applications using Docker and Kubernetes
-- Write clean, maintainable code with proper documentation
-- Participate in code reviews and technical discussions
-- Mentor junior developers and share best practices"""
+- Design and implement workflow automation solutions
+- Integrate Salesforce CRM with Oracle CPQ and ERP systems
+- Develop custom pricing rules and guided selling flows
+- Build SQL-based dashboards and reports for sales KPIs
+- Collaborate with stakeholders to gather requirements
+- Lead user acceptance testing and system training
+- Document business processes and technical workflows"""
     
-    sample_bullets = """TEXT: Developed REST APIs using Django and FastAPI serving 1M+ requests daily
-TAGS: Python, Django, FastAPI, REST APIs, Backend
+    sample_bullets = """TEXT: Automated CPQ pricing validation, quote accuracy checks, and approval workflows using Python, SQL, and Excel VBA, reducing manual processing time by 50%
+TAGS: Python, SQL, Excel VBA, Automation, CPQ, Workflow
 
-TEXT: Implemented microservices architecture with Docker and Kubernetes on AWS
-TAGS: Microservices, Docker, Kubernetes, AWS, DevOps
+TEXT: Designed and maintained REST API integrations linking Oracle CPQ, Salesforce CRM, and ERP systems (JD Edwards, Great Plains) to synchronize real-time sales data
+TAGS: REST API, Oracle CPQ, Salesforce, ERP, Integration, Data Synchronization
 
-TEXT: Managed PostgreSQL databases and optimized queries for 40% performance improvement
-TAGS: PostgreSQL, Database, Performance, SQL
+TEXT: Developed custom guided selling flows and complex pricing rules within Oracle CPQ to accelerate quote-to-cash cycles for diverse product configurations
+TAGS: Oracle CPQ, Guided Selling, Pricing Rules, Quote-to-Cash, Business Logic
 
-TEXT: Integrated React frontend with REST APIs and implemented real-time features
-TAGS: React, JavaScript, Frontend, REST APIs, Real-time
+TEXT: Built SQL-based sales dashboards and reports visualizing quote statuses, margin analysis, and key sales KPIs for executive leadership
+TAGS: SQL, Dashboards, Reporting, KPIs, Data Visualization, Executive Reporting
 
-TEXT: Deployed applications using CI/CD pipelines with Jenkins and Git
-TAGS: CI/CD, Jenkins, Git, DevOps, Automation"""
+TEXT: Led stakeholder engagement, requirements gathering, and user acceptance testing (UAT) for over 100 global users, increasing user adoption
+TAGS: Stakeholder Management, Requirements Gathering, UAT, User Training, Change Management
+
+TEXT: Collaborated in Agile teams using Jira and Azure DevOps for sprint planning, backlog grooming, and iterative delivery of system enhancements
+TAGS: Agile, Jira, Azure DevOps, Sprint Planning, Project Management"""
     
     return jsonify({
         'experience': sample_experience,
