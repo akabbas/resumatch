@@ -278,98 +278,120 @@ class ResumeGenerator:
             <style>
                 body {
                     font-family: Arial, sans-serif;
-                    line-height: 1.6;
+                    line-height: 1.4;
                     margin: 0;
-                    padding: 20px;
+                    padding: 15px;
                     color: #333;
                     max-width: 800px;
                     margin: 0 auto;
+                    font-size: 12px;
                 }
                 .header {
                     text-align: center;
                     border-bottom: 2px solid #2c3e50;
-                    padding-bottom: 20px;
-                    margin-bottom: 20px;
+                    padding-bottom: 15px;
+                    margin-bottom: 15px;
                 }
                 .name {
-                    font-size: 28px;
+                    font-size: 24px;
                     font-weight: bold;
                     color: #2c3e50;
-                    margin-bottom: 5px;
+                    margin-bottom: 3px;
                 }
                 .contact {
-                    font-size: 14px;
+                    font-size: 12px;
                     color: #7f8c8d;
-                    margin-bottom: 10px;
+                    margin-bottom: 8px;
                 }
                 .section {
-                    margin-bottom: 20px;
+                    margin-bottom: 15px;
                 }
                 .section-title {
-                    font-size: 18px;
+                    font-size: 16px;
                     font-weight: bold;
                     color: #2c3e50;
                     border-bottom: 1px solid #bdc3c7;
-                    padding-bottom: 5px;
-                    margin-bottom: 15px;
+                    padding-bottom: 3px;
+                    margin-bottom: 10px;
                 }
                 .job {
-                    margin-bottom: 15px;
+                    margin-bottom: 10px;
                 }
                 .job-title {
                     font-weight: bold;
-                    font-size: 16px;
+                    font-size: 14px;
                     color: #34495e;
                 }
                 .job-company {
                     font-weight: bold;
                     color: #7f8c8d;
+                    font-size: 12px;
                 }
                 .job-duration {
                     color: #7f8c8d;
                     font-style: italic;
+                    font-size: 12px;
                 }
                 .job-description {
-                    margin-top: 5px;
+                    margin-top: 3px;
                     text-align: justify;
+                    font-size: 11px;
+                    line-height: 1.3;
                 }
                 .skills {
                     display: flex;
                     flex-wrap: wrap;
-                    gap: 10px;
+                    gap: 6px;
                 }
                 .skill {
                     background-color: #ecf0f1;
-                    padding: 5px 10px;
-                    border-radius: 15px;
-                    font-size: 12px;
+                    padding: 3px 8px;
+                    border-radius: 12px;
+                    font-size: 10px;
                     color: #2c3e50;
                 }
                 .project {
-                    margin-bottom: 15px;
+                    margin-bottom: 10px;
                 }
                 .project-name {
                     font-weight: bold;
                     color: #34495e;
+                    font-size: 13px;
                 }
                 .project-description {
-                    margin-top: 5px;
+                    margin-top: 3px;
+                    font-size: 11px;
+                    line-height: 1.3;
                 }
                 .certification {
-                    margin-bottom: 5px;
+                    margin-bottom: 3px;
+                    font-size: 11px;
                 }
                 .summary {
                     text-align: justify;
-                    font-size: 14px;
-                    line-height: 1.8;
+                    font-size: 12px;
+                    line-height: 1.5;
                 }
                 @media print {
                     body {
                         padding: 0;
                         margin: 0;
+                        font-size: 10px;
                     }
                     .section {
                         page-break-inside: avoid;
+                    }
+                    .name {
+                        font-size: 20px;
+                    }
+                    .section-title {
+                        font-size: 14px;
+                    }
+                    .job-title {
+                        font-size: 12px;
+                    }
+                    .job-description {
+                        font-size: 10px;
                     }
                 }
             </style>
@@ -455,14 +477,20 @@ class ResumeGenerator:
     def parse_experience_data(self, experience_data: Union[str, Dict]) -> ResumeData:
         """Parse experience data from various formats"""
         if isinstance(experience_data, str):
-            # Simple text format - create basic structure
-            return ResumeData(
-                summary=experience_data[:200] + "..." if len(experience_data) > 200 else experience_data,
-                experience=[],
-                skills=[],
-                certifications=[],
-                projects=[]
-            )
+            # Try to parse as JSON first
+            try:
+                import json
+                parsed_data = json.loads(experience_data)
+                return self.parse_experience_data(parsed_data)
+            except (json.JSONDecodeError, TypeError):
+                # Simple text format - create basic structure
+                return ResumeData(
+                    summary=experience_data[:200] + "..." if len(experience_data) > 200 else experience_data,
+                    experience=[],
+                    skills=[],
+                    certifications=[],
+                    projects=[]
+                )
         
         elif isinstance(experience_data, dict):
             # JSON format
