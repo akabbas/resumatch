@@ -1,17 +1,45 @@
 # ResuMatch 🎯
 
-> **Smart resume generation that matches your experience to job descriptions**
+> **AI-powered resume generator that creates perfect, job-specific resumes in seconds**
 
-ResuMatch automatically analyzes job postings and your experience to create ATS-friendly resumes that highlight your most relevant skills and achievements.
+ResuMatch takes your comprehensive experience data and any job description, then generates a professional, ATS-optimized PDF resume tailored specifically for that opportunity.
 
-## ✨ What ResuMatch Does
+## 🚀 **One Click → Perfect Resume**
 
-Instead of manually tailoring your resume for each job, ResuMatch:
+**Input**: Your experience data + Job description  
+**Output**: Professional PDF resume optimized for that specific job
 
-1. **Extracts key requirements** from job descriptions using NLP
-2. **Matches your experience** with the job requirements
-3. **Generates optimized resumes** that pass ATS systems
-4. **Highlights relevant skills** that actually match your background
+No more manual resume tailoring. No more generic templates. Just your experience + any job posting = the perfect resume.
+
+## ✨ **How It Works**
+
+ResuMatch uses AI to intelligently optimize your resume for each job:
+
+1. **🧠 Analyzes** your complete professional background (experience, skills, projects, education)
+2. **📋 Reads** any job description and identifies key requirements
+3. **🎯 Generates** a perfectly tailored resume PDF optimized for that specific job
+4. **⚡ Delivers** ATS-compliant formatting that passes automated screening
+
+### **AI-Powered Features:**
+- **Job Title Optimization**: Adapts your titles to match target roles (truthfully)
+- **Summary Rewriting**: Creates compelling summaries using job keywords
+- **Bullet Point Enhancement**: Optimizes descriptions with strong action verbs
+- **Intelligent Skill Selection**: Picks most relevant skills from your database
+- **Page Optimization**: Automatically adjusts content to fit 1-2 pages
+
+## 🎯 **Why ResuMatch?**
+
+### **vs. Generic Resume Builders:**
+- ✅ **Intelligent**: Uses AI to adapt content for each job
+- ✅ **Comprehensive**: Stores ALL your skills and selects best ones
+- ✅ **Truthful**: Only uses information from your actual experience
+- ✅ **ATS-Optimized**: Designed for modern hiring systems
+
+### **vs. Manual Resume Writing:**
+- ✅ **Faster**: Seconds instead of hours per application
+- ✅ **Consistent**: Professional quality every time
+- ✅ **Optimized**: Uses data science for skill matching
+- ✅ **Scalable**: Easy to apply to hundreds of jobs
 
 ## 🚀 Quick Start
 
@@ -84,12 +112,37 @@ Projects:
 ```
 
 ### 3. Generate Your Resume
+
+#### **Command Line:**
 ```bash
-# Using JSON experience file
+# Using JSON experience file (recommended)
 python cli.py --job-file examples/sample_job_description.txt --experience-file my_experience.json --output my_resume.pdf
 
 # Using text experience file
 python cli.py --job-desc "Senior Python Developer..." --experience-file my_experience.txt --output resume.pdf
+
+# With custom contact info
+python cli.py --job-desc "..." --experience-file my_experience.json --name "Your Name" --contact "email@example.com | phone | location" --output resume.pdf
+```
+
+#### **Web Interface (Recommended):**
+```bash
+python app.py
+# Then visit http://localhost:8001
+```
+
+#### **Python API:**
+```python
+from resumatch import ResumeGenerator
+
+generator = ResumeGenerator()
+generator.generate_resume(
+    job_description="Senior Python Developer...",
+    experience_data=your_experience_json,
+    output_path="resume.pdf",
+    name="Your Name",
+    contact_info="email@example.com | phone | location"
+)
 ```
 
 ### 📋 Experience File Format Guide
@@ -170,23 +223,7 @@ python cli.py --job-file job.txt --experience-file exp.json --name "John Doe" --
 python cli.py --job-desc "..." --experience-file exp.json --use-openai --output resume.pdf
 ```
 
-### 🎯 Job Tailor Feature (New!)
 
-The Job Tailor feature analyzes job descriptions and matches them with your experience bullets:
-
-```bash
-# Use sample bullets with job description
-python job_tailor_cli.py --job-desc "Senior Python Developer..." --use-sample-bullets --output tailored_resume.json
-
-# Use custom bullets from JSON file
-python job_tailor_cli.py --job-file job.txt --bullets examples/sample_bullets.json --output resume.json
-
-# Use custom bullets from text file
-python job_tailor_cli.py --job-file job.txt --bullets bullets.txt --output resume.txt --format text
-
-# Generate text output with top 6 bullets
-python job_tailor_cli.py --job-desc "..." --bullets bullets.json --output resume.txt --format text --top-n 6
-```
 
 ### Python API
 
@@ -203,34 +240,7 @@ generator.generate_resume(
 )
 ```
 
-### Job Tailor API
 
-```python
-from job_matcher import ResumeTailor, BulletPoint
-
-# Create bullet points
-bullets = [
-    BulletPoint(
-        text="Developed REST APIs using Django and FastAPI",
-        tags=["Python", "Django", "FastAPI", "REST APIs"],
-        category="experience"
-    ),
-    # ... more bullets
-]
-
-# Initialize tailor
-tailor = ResumeTailor()
-
-# Tailor resume to job description
-tailored_resume = tailor.tailor_resume(
-    job_description="Senior Python Developer...",
-    bullets=bullets,
-    top_n=8
-)
-
-print(f"Job Title: {tailored_resume['job_title']}")
-print(f"Top Skills: {', '.join(tailored_resume['skills'][:5])}")
-```
 
 ## 📊 Input Formats
 
@@ -263,9 +273,7 @@ print(f"Top Skills: {', '.join(tailored_resume['skills'][:5])}")
 }
 ```
 
-### Bullet Point Formats (Job Tailor)
-
-For the Job Tailor feature, you can use bullet points in two formats:
+### Experience Data Format
 
 #### JSON Format
 ```json

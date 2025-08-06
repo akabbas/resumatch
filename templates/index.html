@@ -86,24 +86,27 @@
                     <h1 class="display-4 fw-bold mb-3">
                         <i class="fas fa-magic me-3"></i>ResuMatch
                     </h1>
-                    <p class="lead mb-4">AI-powered resume generation that matches your experience to job descriptions</p>
+                    <p class="lead mb-4">AI-powered resume generator that creates perfect, ATS-optimized resumes from your experience and any job description</p>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="text-center">
                                 <i class="fas fa-brain fa-2x mb-2"></i>
-                                <h6>Smart Analysis</h6>
+                                <h6>AI-Powered</h6>
+                                <small>Intelligent content optimization</small>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="text-center">
                                 <i class="fas fa-bullseye fa-2x mb-2"></i>
-                                <h6>Perfect Match</h6>
+                                <h6>Job-Specific</h6>
+                                <small>Tailored for each application</small>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="text-center">
                                 <i class="fas fa-file-pdf fa-2x mb-2"></i>
-                                <h6>ATS Ready</h6>
+                                <h6>Instant PDF</h6>
+                                <small>Professional & ATS-ready</small>
                             </div>
                         </div>
                     </div>
@@ -126,26 +129,11 @@
             {% endif %}
         {% endwith %}
 
-        <!-- Tabs -->
-        <ul class="nav nav-tabs" id="resumeTabs" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="generate-tab" data-bs-toggle="tab" data-bs-target="#generate" type="button" role="tab">
-                    <i class="fas fa-file-pdf me-2"></i>Generate Resume
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="tailor-tab" data-bs-toggle="tab" data-bs-target="#tailor" type="button" role="tab">
-                    <i class="fas fa-cut me-2"></i>Job Tailor
-                </button>
-            </li>
-        </ul>
-
-        <!-- Tab Content -->
-        <div class="tab-content" id="resumeTabsContent">
-            <!-- Generate Resume Tab -->
-            <div class="tab-pane fade show active" id="generate" role="tabpanel">
+        <!-- Main Content -->
+        <div class="container">
                 <div class="form-section">
-                    <h3 class="mb-4"><i class="fas fa-file-pdf me-2"></i>Generate ATS-Optimized Resume</h3>
+                    <h3 class="mb-4"><i class="fas fa-file-pdf me-2"></i>Create Your Perfect Resume</h3>
+                    <p class="text-muted mb-4">Upload your experience data and paste a job description to generate a tailored, ATS-optimized resume in seconds.</p>
                     
                     <form id="resumeForm" method="POST" action="/generate">
                         <!-- Personal Information -->
@@ -257,60 +245,6 @@
                         </a>
                     </div>
                 </div>
-            </div>
-
-            <!-- Job Tailor Tab -->
-            <div class="tab-pane fade" id="tailor" role="tabpanel">
-                <div class="form-section">
-                    <h3 class="mb-4"><i class="fas fa-cut me-2"></i>Job Tailor - Match Bullets to Jobs</h3>
-                    
-                    <form id="tailorForm" method="POST" action="/tailor">
-                        <!-- Job Description -->
-                        <div class="mb-4">
-                            <label for="tailor_job_description" class="form-label">Job Description</label>
-                            <textarea class="form-control" id="tailor_job_description" name="job_description" rows="8" 
-                                      placeholder="Paste the job description here..." required></textarea>
-                        </div>
-
-                        <!-- Bullets -->
-                        <div class="mb-4">
-                            <label for="bullets_text" class="form-label">Experience Bullets</label>
-                            <textarea class="form-control" id="bullets_text" name="bullets_text" rows="15" 
-                                      placeholder="Enter your experience bullets in the format:
-TEXT: Your bullet point description
-TAGS: skill1, skill2, skill3
-
-TEXT: Another bullet point
-TAGS: skill4, skill5" required></textarea>
-                            <button type="button" class="btn sample-data-btn mt-2" onclick="loadSampleBullets()">
-                                <i class="fas fa-download me-2"></i>Load Sample Bullets
-                            </button>
-                        </div>
-
-                        <!-- Top N Selection -->
-                        <div class="mb-4">
-                            <label for="top_n" class="form-label">Number of Top Bullets to Return</label>
-                            <select class="form-select" id="top_n" name="top_n">
-                                <option value="5">5 Bullets</option>
-                                <option value="8" selected>8 Bullets</option>
-                                <option value="10">10 Bullets</option>
-                                <option value="12">12 Bullets</option>
-                            </select>
-                        </div>
-
-                        <!-- Submit Button -->
-                        <div class="text-center">
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="fas fa-cut me-2"></i>Tailor Resume
-                            </button>
-                        </div>
-                    </form>
-
-                    <!-- Tailor Results -->
-                    <div id="tailorResults" class="mt-4" style="display: none;">
-                        <h4><i class="fas fa-chart-bar me-2"></i>Tailored Results</h4>
-                        <div id="tailorResultsContent"></div>
-                    </div>
                 </div>
             </div>
         </div>

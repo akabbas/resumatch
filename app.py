@@ -120,68 +120,7 @@ def download_resume(filename):
         flash(f'Error downloading resume: {str(e)}', 'error')
         return redirect(url_for('index'))
 
-@app.route('/tailor', methods=['POST'])
-def tailor_resume():
-    """Tailor resume using Job Tailor feature"""
-    try:
-        job_description = request.form.get('job_description', '').strip()
-        bullets_text = request.form.get('bullets_text', '').strip()
-        
-        if not job_description or not bullets_text:
-            flash('Both job description and bullets are required', 'error')
-            return redirect(url_for('index'))
-        
-        # Parse bullets from text format
-        bullets = []
-        current_bullet = None
-        
-        for line in bullets_text.split('\n'):
-            line = line.strip()
-            if line.startswith('TEXT:'):
-                if current_bullet:
-                    bullets.append(current_bullet)
-                current_bullet = BulletPoint(
-                    text=line[5:].strip(),
-                    tags=[],
-                    category="experience"
-                )
-            elif line.startswith('TAGS:') and current_bullet:
-                tags = [tag.strip() for tag in line[5:].strip().split(',')]
-                current_bullet.tags = tags
-        
-        if current_bullet:
-            bullets.append(current_bullet)
-        
-        if not bullets:
-            flash('No valid bullets found in the provided text', 'error')
-            return redirect(url_for('index'))
-        
-        # Initialize tailor
-        tailor = ResumeTailor()
-        
-        # Tailor resume
-        tailored_result = tailor.tailor_resume(
-            job_description=job_description,
-            bullets=bullets,
-            top_n=int(request.form.get('top_n', 8))
-        )
-        
-        # Format the result to match what the frontend expects
-        formatted_result = {
-            'success': True,
-            'result': {
-                'top_bullets': tailored_result.get('selected_bullets', []),
-                'job_analysis': tailored_result.get('job_analysis', {}),
-                'keywords': tailored_result.get('keywords', []),
-                'message': 'Resume tailored successfully'
-            }
-        }
-        
-        return jsonify(formatted_result)
-    
-    except Exception as e:
-        flash(f'Error tailoring resume: {str(e)}', 'error')
-        return jsonify({'success': False, 'message': str(e)})
+
 
 @app.route('/api/sample-data')
 def get_sample_data():
