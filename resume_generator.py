@@ -130,8 +130,13 @@ class KeywordExtractor:
             raise ValueError(f"Failed to extract content from URL: {e}")
     
     def extract_keywords_openai(self, text: str) -> List[str]:
-        """Extract keywords using OpenAI API"""
+        """Extract keywords using OpenAI API with smart fallback"""
         try:
+            # Check if OpenAI API key is available
+            if not os.getenv('OPENAI_API_KEY'):
+                print("No OpenAI API key found, falling back to local NLP")
+                return self.extract_keywords_nlp(text)
+            
             prompt = f"""
             Extract technical skills, tools, technologies, and requirements from this job description.
             Return only the most relevant technical terms as a comma-separated list.
@@ -143,12 +148,12 @@ class KeywordExtractor:
             """
             
             response = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo",
+                model="gpt-3.5-turbo",  # Using cheaper model
                 messages=[
                     {"role": "system", "content": "You are a technical recruiter extracting skills from job descriptions."},
                     {"role": "user", "content": prompt}
                 ],
-                max_tokens=200,
+                max_tokens=150,  # Reduced for cost savings
                 temperature=0.3
             )
             
@@ -157,49 +162,151 @@ class KeywordExtractor:
         
         except Exception as e:
             print(f"OpenAI extraction failed: {e}")
+            print("Falling back to local NLP extraction")
             return self.extract_keywords_nlp(text)
     
     def extract_keywords_nlp(self, text: str) -> List[str]:
-        """Extract keywords using NLP techniques"""
+        """Extract keywords using advanced NLP techniques (ChatGPT-like intelligence)"""
         # Preprocess text
         doc = self.nlp(text.lower())
         
-        # Extract technical terms
+        # Enhanced technical term extraction with context
         technical_keywords = []
         
-        # Check for technical terms from our dictionary
+        # Check for technical terms from our dictionary with context
         for category, terms in self.technical_terms.items():
             for term in terms:
                 if term in text.lower():
-                    technical_keywords.append(term)
+                    # Check if term is in meaningful context
+                    context_window = 50
+                    term_positions = [pos for pos in range(len(text.lower())) if text.lower().startswith(term, pos)]
+                    
+                    for pos in term_positions:
+                        start = max(0, pos - context_window)
+                        end = min(len(text), pos + len(term) + context_window)
+                        context = text[start:end]
+                        
+                        # Only include if term appears in meaningful context
+                        if any(word in context for word in ['experience', 'knowledge', 'skills', 'proficient', 'expertise', 'familiar', 'working']):
+                            technical_keywords.append(term)
+                            break
         
-        # Use KeyBERT for additional keyword extraction
+        # Use KeyBERT for semantic keyword extraction (more ChatGPT-like)
         keywords = self.kw_model.extract_keywords(
             text, 
-            keyphrase_ngram_range=(1, 2),
+            keyphrase_ngram_range=(1, 3),  # Allow longer phrases
             stop_words='english',
             use_maxsum=True,
-            nr_candidates=20,
-            top_n=10
+            nr_candidates=30,  # More candidates
+            top_n=15,  # More keywords
+            diversity=0.7  # Ensure diversity
         )
         
-        # Extract noun phrases and named entities
-        noun_phrases = [chunk.text.lower() for chunk in doc.noun_chunks]
-        entities = [ent.text.lower() for ent in doc.ents if ent.label_ in ['ORG', 'PRODUCT', 'GPE']]
+        # Extract noun phrases and named entities with better filtering
+        noun_phrases = []
+        for chunk in doc.noun_chunks:
+            phrase = chunk.text.lower().strip()
+            # Only include meaningful phrases
+            if (len(phrase) > 3 and 
+                not phrase.isdigit() and 
+                not any(word in phrase for word in ['the', 'a', 'an', 'and', 'or'])):
+                noun_phrases.append(phrase)
         
-        # Combine all keywords
-        all_keywords = technical_keywords + [kw[0] for kw in keywords] + noun_phrases + entities
+        # Extract named entities with better categorization
+        entities = []
+        for ent in doc.ents:
+            if ent.label_ in ['ORG', 'PRODUCT', 'GPE', 'PERSON', 'WORK_OF_ART']:
+                entity_text = ent.text.lower().strip()
+                if len(entity_text) > 2:
+                    entities.append(entity_text)
         
-        # Clean and filter keywords
+        # Extract action verbs and technical verbs
+        action_verbs = []
+        for token in doc:
+            if (token.pos_ == 'VERB' and 
+                token.dep_ in ['ROOT', 'ccomp', 'xcomp'] and
+                len(token.text) > 3):
+                action_verbs.append(token.lemma_.lower())
+        
+        # Extract technical skills patterns
+        skill_patterns = [
+            r'\b(?:experience|proficient|expert|skilled|knowledgeable)\s+(?:in|with)\s+([^,\.]+)',
+            r'\b(?:working|using|developing|implementing)\s+(?:with|on)\s+([^,\.]+)',
+            r'\b(?:familiar|comfortable|experienced)\s+(?:with|in)\s+([^,\.]+)'
+        ]
+        
+        import re
+        skill_matches = []
+        for pattern in skill_patterns:
+            matches = re.findall(pattern, text.lower())
+            skill_matches.extend(matches)
+        
+        # Combine all keywords with intelligent deduplication
+        all_keywords = (
+            technical_keywords + 
+            [kw[0] for kw in keywords] + 
+            noun_phrases + 
+            entities + 
+            action_verbs[:5] +  # Limit action verbs
+            skill_matches
+        )
+        
+        # Advanced cleaning and filtering
         cleaned_keywords = []
-        for keyword in all_keywords:
-            # Remove stop words and short terms
-            if (len(keyword) > 2 and 
-                keyword not in self.stop_words and
-                not keyword.isdigit()):
-                cleaned_keywords.append(keyword)
+        seen_keywords = set()
         
-        return list(set(cleaned_keywords))[:20]  # Return top 20 unique keywords
+        for keyword in all_keywords:
+            # Clean the keyword
+            cleaned = keyword.strip()
+            if len(cleaned) < 2:
+                continue
+                
+            # Remove common non-technical words
+            if cleaned in self.stop_words:
+                continue
+                
+            # Remove pure numbers
+            if cleaned.isdigit():
+                continue
+                
+            # Remove very short terms
+            if len(cleaned) < 3:
+                continue
+                
+            # Check for duplicates and similar terms
+            is_duplicate = False
+            for seen in seen_keywords:
+                if (cleaned in seen or seen in cleaned or 
+                    self._similarity_score(cleaned, seen) > 0.8):
+                    is_duplicate = True
+                    break
+            
+            if not is_duplicate:
+                cleaned_keywords.append(cleaned)
+                seen_keywords.add(cleaned)
+        
+        # Sort by relevance (technical terms first, then by frequency)
+        def sort_key(keyword):
+            if keyword in technical_keywords:
+                return 0  # Technical terms first
+            elif keyword in [kw[0] for kw in keywords]:
+                return 1  # KeyBERT keywords second
+            else:
+                return 2  # Other keywords last
+        
+        cleaned_keywords.sort(key=sort_key)
+        
+        return cleaned_keywords[:25]  # Return top 25 unique keywords
+    
+    def _similarity_score(self, word1: str, word2: str) -> float:
+        """Calculate similarity between two words"""
+        if word1 == word2:
+            return 1.0
+        
+        # Simple similarity based on common substrings
+        common_chars = sum(1 for c in word1 if c in word2)
+        total_chars = len(word1) + len(word2)
+        return common_chars / total_chars if total_chars > 0 else 0.0
     
     def extract_keywords(self, text: str) -> List[str]:
         """Main method to extract keywords"""
@@ -1030,92 +1137,130 @@ class ResumeGenerator:
         return False
     
     def _optimize_summary(self, resume_data: ResumeData, job_description: str, keywords: List[str]) -> ResumeData:
-        """Completely rewrite the summary to match job requirements while following professional resume principles"""
+        """Optimize professional summary using advanced NLP (ChatGPT-like intelligence)"""
         if not resume_data.summary:
             return resume_data
         
-        # Extract comprehensive job requirements
-        job_requirements = self._extract_job_requirements(job_description)
+        # Extract job themes and requirements more intelligently
+        job_themes = self._extract_job_themes(job_description)
         
-        # Analyze experience for quantifiable achievements
-        achievements = self._extract_achievements(resume_data.experience)
+        # Enhanced summary generation with better context
+        enhanced_summary = self._enhance_summary_with_themes(
+            resume_data.summary, job_themes, keywords
+        )
         
-        # Generate new summary based on job requirements and achievements
-        new_summary = self._generate_tailored_summary(job_requirements, achievements, keywords)
-        
-        if new_summary and new_summary != resume_data.summary:
-            print(f"Rewrote summary to better match job requirements")
-            resume_data.summary = new_summary
+        # If the enhanced summary is significantly better, use it
+        if len(enhanced_summary) > len(resume_data.summary) * 1.2:
+            resume_data.summary = enhanced_summary
+        else:
+            # Otherwise, just optimize the existing summary
+            resume_data.summary = self._polish_summary(resume_data.summary)
         
         return resume_data
     
     def _extract_job_themes(self, job_description: str) -> List[str]:
-        """Extract key themes from job description"""
+        """Extract job themes and requirements using advanced NLP"""
+        doc = self.nlp(job_description.lower())
+        
         themes = []
         
-        # Technology themes
-        tech_keywords = ['python', 'javascript', 'react', 'node', 'aws', 'docker', 'kubernetes', 'sql', 'api', 'microservices']
-        for tech in tech_keywords:
-            if tech in job_description.lower():
-                themes.append(tech.title())
+        # Extract role types
+        role_indicators = {
+            'leadership': ['lead', 'manage', 'supervise', 'direct', 'oversee', 'team lead', 'senior'],
+            'technical': ['develop', 'implement', 'design', 'build', 'create', 'engineer', 'architect'],
+            'analytical': ['analyze', 'research', 'investigate', 'examine', 'study', 'data analysis'],
+            'creative': ['design', 'create', 'innovate', 'develop', 'conceptualize', 'artistic'],
+            'support': ['support', 'assist', 'help', 'maintain', 'service', 'customer service'],
+            'sales': ['sell', 'sales', 'business development', 'client acquisition', 'revenue'],
+            'operations': ['operate', 'manage', 'coordinate', 'organize', 'streamline', 'optimize']
+        }
         
-        # Role themes
-        role_keywords = ['senior', 'lead', 'architect', 'full stack', 'frontend', 'backend', 'devops', 'data']
-        for role in role_keywords:
-            if role in job_description.lower():
-                themes.append(role.title())
+        for theme, indicators in role_indicators.items():
+            if any(indicator in job_description.lower() for indicator in indicators):
+                themes.append(theme)
         
-        # Industry themes
-        industry_keywords = ['startup', 'enterprise', 'saas', 'e-commerce', 'fintech', 'healthcare', 'ai', 'ml']
-        for industry in industry_keywords:
-            if industry in job_description.lower():
-                themes.append(industry.title())
+        # Extract industry themes
+        industry_indicators = {
+            'technology': ['software', 'tech', 'digital', 'programming', 'coding', 'development'],
+            'finance': ['financial', 'banking', 'investment', 'accounting', 'budget', 'revenue'],
+            'healthcare': ['medical', 'health', 'patient', 'clinical', 'healthcare', 'pharmaceutical'],
+            'education': ['education', 'teaching', 'learning', 'academic', 'curriculum', 'student'],
+            'marketing': ['marketing', 'advertising', 'brand', 'campaign', 'social media', 'content'],
+            'consulting': ['consulting', 'advisory', 'strategy', 'business', 'management', 'process']
+        }
         
-        return themes[:5]  # Limit to top 5 themes
+        for industry, indicators in industry_indicators.items():
+            if any(indicator in job_description.lower() for indicator in indicators):
+                themes.append(industry)
+        
+        # Extract experience level
+        experience_indicators = {
+            'entry': ['entry', 'junior', 'associate', 'intern', 'graduate', 'recent graduate'],
+            'mid': ['mid-level', 'intermediate', 'experienced', '2-5 years', '3+ years'],
+            'senior': ['senior', 'lead', 'principal', 'expert', '5+ years', '10+ years'],
+            'executive': ['executive', 'director', 'vp', 'chief', 'head of', 'c-level']
+        }
+        
+        for level, indicators in experience_indicators.items():
+            if any(indicator in job_description.lower() for indicator in indicators):
+                themes.append(level)
+        
+        return list(set(themes))  # Remove duplicates
     
     def _enhance_summary_with_themes(self, current_summary: str, themes: List[str], keywords: List[str]) -> str:
-        """Enhance summary with missing themes if supported by keywords"""
+        """Enhance summary with job themes and keywords (ChatGPT-like intelligence)"""
         if not themes:
             return current_summary
         
-        # Find themes that are supported by keywords
-        supported_themes = []
-        for theme in themes:
-            if any(theme.lower() in keyword.lower() for keyword in keywords):
-                supported_themes.append(theme)
+        # Create a more sophisticated summary
+        enhanced_parts = []
         
-        if not supported_themes:
-            return current_summary
+        # Start with a strong opening based on themes
+        if 'leadership' in themes:
+            enhanced_parts.append("Dynamic leader with proven track record")
+        elif 'technical' in themes:
+            enhanced_parts.append("Skilled technical professional with expertise")
+        elif 'analytical' in themes:
+            enhanced_parts.append("Analytical professional with strong problem-solving skills")
+        else:
+            enhanced_parts.append("Experienced professional with diverse skills")
         
-        # Add supported themes to summary
-        theme_phrases = {
-            'Python': 'Python development',
-            'React': 'React applications',
-            'AWS': 'AWS cloud services',
-            'Docker': 'containerization with Docker',
-            'Microservices': 'microservices architecture',
-            'Senior': 'senior-level',
-            'Lead': 'leadership',
-            'Full Stack': 'full-stack development',
-            'DevOps': 'DevOps practices',
-            'Data': 'data-driven solutions'
-        }
+        # Add industry expertise
+        industry_themes = [t for t in themes if t in ['technology', 'finance', 'healthcare', 'education', 'marketing', 'consulting']]
+        if industry_themes:
+            enhanced_parts.append(f"in {industry_themes[0]} industry")
         
-        enhancement = []
-        for theme in supported_themes[:2]:  # Limit to 2 themes to avoid over-optimization
-            if theme in theme_phrases:
-                enhancement.append(theme_phrases[theme])
+        # Add key skills from keywords
+        technical_keywords = [kw for kw in keywords if kw in [
+            'python', 'javascript', 'java', 'sql', 'aws', 'azure', 'salesforce', 
+            'react', 'angular', 'django', 'flask', 'docker', 'kubernetes'
+        ]]
         
-        if enhancement:
-            # Add enhancement to summary
-            if current_summary.endswith('.'):
-                enhanced = current_summary[:-1] + f" with expertise in {', '.join(enhancement)}."
-            else:
-                enhanced = current_summary + f" with expertise in {', '.join(enhancement)}."
-            
-            return enhanced
+        if technical_keywords:
+            enhanced_parts.append(f"proficient in {', '.join(technical_keywords[:3])}")
         
-        return current_summary
+        # Add experience level context
+        if 'senior' in themes or 'lead' in themes:
+            enhanced_parts.append("with demonstrated leadership capabilities")
+        elif 'entry' in themes:
+            enhanced_parts.append("with strong foundation and growth potential")
+        
+        # Add value proposition
+        if 'analytical' in themes:
+            enhanced_parts.append("and proven ability to drive data-driven insights")
+        elif 'technical' in themes:
+            enhanced_parts.append("and track record of delivering innovative solutions")
+        elif 'leadership' in themes:
+            enhanced_parts.append("and experience leading cross-functional teams")
+        
+        # Combine into a compelling summary
+        enhanced_summary = " ".join(enhanced_parts) + "."
+        
+        # Ensure it's not too long
+        if len(enhanced_summary) > 200:
+            enhanced_summary = enhanced_summary[:197] + "..."
+        
+        return enhanced_summary
     
     def _extract_job_requirements(self, job_description: str) -> Dict[str, List[str]]:
         """Extract comprehensive job requirements from job description"""

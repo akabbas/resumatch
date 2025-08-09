@@ -194,23 +194,33 @@
 
                         <!-- Advanced Options -->
                         <div class="row mb-4">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="free_mode" name="free_mode" checked>
+                                    <label class="form-check-label" for="free_mode">
+                                        <i class="fas fa-dollar-sign text-success"></i> Free Mode (Advanced Local AI)
+                                    </label>
+                                    <div class="form-text">ChatGPT-like intelligence, no API costs</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="use_openai" name="use_openai">
                                     <label class="form-check-label" for="use_openai">
-                                        Use OpenAI for enhanced keyword extraction
+                                        <i class="fas fa-robot text-primary"></i> Enhanced AI (OpenAI)
                                     </label>
+                                    <div class="form-text">Better results, small cost</div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="include_projects" name="include_projects" checked>
                                     <label class="form-check-label" for="include_projects">
-                                        Include projects section
+                                        <i class="fas fa-project-diagram"></i> Include projects
                                     </label>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label for="max_pages" class="form-label">Max Pages</label>
                                 <select class="form-select" id="max_pages" name="max_pages">
                                     <option value="1">1 Page</option>
@@ -273,6 +283,34 @@
                     textSection.style.display = 'block';
                 }
             });
+        });
+
+        // Handle free mode and OpenAI mode toggles
+        document.getElementById('free_mode').addEventListener('change', function() {
+            const useOpenAI = document.getElementById('use_openai');
+            if (this.checked) {
+                useOpenAI.checked = false;
+                useOpenAI.disabled = true;
+            } else {
+                useOpenAI.disabled = false;
+            }
+        });
+
+        document.getElementById('use_openai').addEventListener('change', function() {
+            const freeMode = document.getElementById('free_mode');
+            if (this.checked) {
+                freeMode.checked = false;
+            }
+        });
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const freeMode = document.getElementById('free_mode');
+            const useOpenAI = document.getElementById('use_openai');
+            
+            if (freeMode.checked) {
+                useOpenAI.disabled = true;
+            }
         });
 
         // Handle resume form submission

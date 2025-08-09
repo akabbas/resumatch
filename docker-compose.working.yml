@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  resumatch-working:
+    build:
+      context: .
+      dockerfile: Dockerfile.working
+    ports:
+      - "8001:8001"
+    environment:
+      - FLASK_ENV=development
+      - FLASK_DEBUG=True
+      - FLASK_PORT=8001
+      - LOG_LEVEL=INFO
+    volumes:
+      - ./uploads:/app/uploads
+      - ./logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+          cpus: '2.0'
+        reservations:
+          memory: 2G
+          cpus: '1.0'
+
+  # Optional: Redis for caching (future enhancement)
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.5'
+
+volumes:
+  redis_data:

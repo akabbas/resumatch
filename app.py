@@ -75,8 +75,11 @@ def generate_resume():
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
         
         # Initialize resume generator
+        free_mode = request.form.get('free_mode') == 'on'
+        use_openai = request.form.get('use_openai') == 'on' and not free_mode
+        
         generator = ResumeGenerator(
-            use_openai=request.form.get('use_openai') == 'on',
+            use_openai=use_openai,
             max_pages=int(request.form.get('max_pages', 2)),
             include_projects=request.form.get('include_projects') == 'on'
         )
@@ -276,4 +279,11 @@ TAGS: Agile, Jira, Azure DevOps, Sprint Planning, Project Management"""
     })
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=8001) 
+    port = int(os.environ.get('FLASK_PORT', 8001))
+    debug = os.environ.get('FLASK_DEBUG', 'True').lower() == 'true'
+    
+    print(f"🚀 Starting ResuMatch on port {port}")
+    print(f"🔧 Debug mode: {debug}")
+    print(f"🌐 Access at: http://localhost:{port}")
+    
+    app.run(debug=debug, host='0.0.0.0', port=port) 
