@@ -345,67 +345,7 @@
             });
         });
 
-        // Handle tailor form submission
-        document.getElementById('tailorForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            fetch('/tailor', {
-                method: 'POST',
-                body: new FormData(this)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    displayTailorResults(data.result);
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            })
-            .catch(error => {
-                alert('Error tailoring resume: ' + error);
-            });
-        });
 
-        // Display tailor results
-        function displayTailorResults(result) {
-            const resultsDiv = document.getElementById('tailorResults');
-            const contentDiv = document.getElementById('tailorResultsContent');
-            
-            let html = `
-                <div class="alert alert-info">
-                    <h5>Job Analysis</h5>
-                    <p><strong>Job Title:</strong> ${result.job_title}</p>
-                    <p><strong>Experience Level:</strong> ${result.experience_level}</p>
-                    <p><strong>Industry:</strong> ${result.industry}</p>
-                </div>
-                
-                <div class="alert alert-success">
-                    <h5>Top Skills</h5>
-                    <p>${result.skills.join(', ')}</p>
-                </div>
-                
-                <div class="alert alert-warning">
-                    <h5>Top Matched Bullets</h5>
-                    <ol>
-            `;
-            
-            result.top_bullets.forEach((bullet, index) => {
-                html += `
-                    <li class="mb-2">
-                        <strong>${bullet.text}</strong><br>
-                        <small class="text-muted">Score: ${bullet.score.toFixed(2)} | Tags: ${bullet.tags.join(', ')}</small>
-                    </li>
-                `;
-            });
-            
-            html += `
-                    </ol>
-                </div>
-            `;
-            
-            contentDiv.innerHTML = html;
-            resultsDiv.style.display = 'block';
-        }
 
         // Load sample data
         function loadSampleData() {
@@ -420,18 +360,7 @@
                 });
         }
 
-        // Load sample bullets
-        function loadSampleBullets() {
-            fetch('/api/sample-data')
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('tailor_job_description').value = data.job_description;
-                    document.getElementById('bullets_text').value = data.bullets;
-                })
-                .catch(error => {
-                    alert('Error loading sample data: ' + error);
-                });
-        }
+
     </script>
 </body>
 </html> 
