@@ -1,0 +1,245 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Professional Resume</title>
+            <style>
+                body {
+                    font-family: 'Times New Roman', Times, serif;
+                    line-height: 1.2;
+                    margin: 0;
+                    padding: 0.15in;
+                    color: #000;
+                    max-width: 11.5in;
+                    margin: 0 auto;
+                    font-size: 11pt;
+                    background: white;
+                }
+                
+                /* Compact styling for single page */
+                .single-page {
+                    font-size: 10pt;
+                    line-height: 1.1;
+                }
+                .single-page .section {
+                    margin-bottom: 0.06in;
+                }
+                .single-page .job {
+                    margin-bottom: 0.05in;
+                }
+                .single-page .job-description li {
+                    margin-bottom: 0.006in;
+                }
+                .single-page .skills {
+                    margin-bottom: 0.03in;
+                }
+                .single-page .skill {
+                    margin-bottom: 0.01in;
+                }
+                .single-page .project {
+                    margin-bottom: 0.05in;
+                }
+                .single-page .certification {
+                    margin-bottom: 0.01in;
+                }
+                .single-page .education-item {
+                    margin-bottom: 0.04in;
+                }
+                .header {
+                    text-align: center;
+                    border-bottom: 2pt solid #000;
+                    padding-bottom: 0.05in;
+                    margin-bottom: 0.12in;
+                }
+                .name {
+                    font-size: 18pt;
+                    font-weight: bold;
+                    color: #000;
+                    margin-bottom: 0.03in;
+                    text-transform: uppercase;
+                    letter-spacing: 1pt;
+                }
+                .contact {
+                    font-size: 10pt;
+                    color: #000;
+                    margin-bottom: 0.03in;
+                    line-height: 1.3;
+                }
+                .section {
+                    margin-bottom: 0.08in;
+                }
+                .section-title {
+                    font-size: 12pt;
+                    font-weight: bold;
+                    color: #000;
+                    text-transform: uppercase;
+                    border-bottom: 1pt solid #000;
+                    padding-bottom: 0.015in;
+                    margin-bottom: 0.06in;
+                    letter-spacing: 0.5pt;
+                }
+                .job {
+                    margin-bottom: 0.06in;
+                }
+                .job-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: baseline;
+                    margin-bottom: 0.02in;
+                }
+                .job-title {
+                    font-weight: bold;
+                    font-size: 11pt;
+                    color: #000;
+                    text-transform: uppercase;
+                }
+                .job-company {
+                    font-weight: bold;
+                    color: #000;
+                    font-size: 11pt;
+                }
+                .job-duration {
+                    color: #000;
+                    font-size: 10pt;
+                    font-style: italic;
+                }
+                .job-description {
+                    margin-top: 0.015in;
+                    font-size: 10pt;
+                    line-height: 1.15;
+                    text-align: left;
+                    padding-left: 0.1in;
+                }
+                .job-description ul {
+                    margin: 0;
+                    padding-left: 0.1in;
+                }
+                .job-description li {
+                    margin-bottom: 0.008in;
+                }
+                .skills {
+                    display: block;
+                    margin-top: 0.02in;
+                }
+                .skill {
+                    display: inline-block;
+                    margin-right: 0.06in;
+                    margin-bottom: 0.012in;
+                    font-size: 10pt;
+                    color: #000;
+                }
+                .project {
+                    margin-bottom: 0.06in;
+                }
+                .project-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: baseline;
+                    margin-bottom: 0.02in;
+                }
+                .project-name {
+                    font-weight: bold;
+                    color: #000;
+                    font-size: 11pt;
+                    text-transform: uppercase;
+                }
+                .project-description {
+                    margin-top: 0.015in;
+                    font-size: 10pt;
+                    line-height: 1.15;
+                    padding-left: 0.1in;
+                }
+                .certification {
+                    margin-bottom: 0.012in;
+                    font-size: 10pt;
+                    padding-left: 0.1in;
+                }
+                .summary {
+                    font-size: 10pt;
+                    line-height: 1.25;
+                    text-align: left;
+                    padding-left: 0.1in;
+                }
+                .education-item {
+                    margin-bottom: 0.05in;
+                }
+                .education-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: baseline;
+                    margin-bottom: 0.03in;
+                }
+                .education-degree {
+                    font-weight: bold;
+                    font-size: 11pt;
+                    color: #000;
+                    text-transform: uppercase;
+                }
+                .education-school {
+                    font-weight: bold;
+                    color: #000;
+                    font-size: 11pt;
+                }
+                .education-date {
+                    color: #000;
+                    font-size: 10pt;
+                    font-style: italic;
+                }
+                .education-details {
+                    font-size: 10pt;
+                    line-height: 1.15;
+                    padding-left: 0.15in;
+                }
+                @media print {
+                    body {
+                        padding: 0.5in;
+                        margin: 0;
+                        font-size: 11pt;
+                        background: white;
+                    }
+                    .section {
+                        page-break-inside: avoid;
+                    }
+                    .name {
+                        font-size: 18pt;
+                    }
+                    .section-title {
+                        font-size: 12pt;
+                    }
+                    .job-title, .project-name, .education-degree {
+                        font-size: 11pt;
+                    }
+                    .job-description, .project-description, .education-details {
+                        font-size: 10pt;
+                    }
+                }
+            </style>
+        </head>
+        <body class="single-page">
+            <div class="header">
+                <div class="name">Test User</div>
+                <div class="contact">
+                    test@example.com
+                </div>
+            </div>
+            
+            
+            <div class="section">
+                <div class="section-title">Summary</div>
+                <div class="summary">Skilled technical professional with expertise in technology industry and track record of delivering innovative solutions.</div>
+            </div>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+        </body>
+        </html>
+        

@@ -1,0 +1,123 @@
+name: 🚀 ResuMatch CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  release:
+    types: [ published ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.11, 3.12, 3.13]
+    
+    steps:
+    - name: 🚀 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🐍 Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+        
+    - name: 📦 Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-cov
+        
+    - name: 🧪 Run tests
+      run: |
+        python -m pytest test_*.py -v --cov=. --cov-report=xml
+        
+    - name: 📊 Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: false
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
+    - name: 🚀 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🔒 Run security scan
+      uses: github/codeql-action/init@v2
+      with:
+        languages: python
+        
+    - name: 🔍 Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v2
+
+  build-and-deploy:
+    needs: [test, security]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: 🚀 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🐍 Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.13'
+        
+    - name: 📦 Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: 🐳 Build Docker image
+      run: |
+        docker build -f Dockerfile.production -t resumatch:latest .
+        
+    - name: 🏷️ Tag Docker image
+      run: |
+        docker tag resumatch:latest resumatch:${{ github.sha }}
+        
+    - name: 📝 Create release notes
+      id: release_notes
+      run: |
+        echo "## 🚀 ResuMatch v2.0 Update" >> release_notes.md
+        echo "" >> release_notes.md
+        echo "### ✨ What's New:" >> release_notes.md
+        echo "- Fixed PyTorch meta tensor error with lazy loading" >> release_notes.md
+        echo "- Resolved JavaScript loadSampleData function scope issues" >> release_notes.md
+        echo "- Enhanced GPT-5 features with robust error handling" >> release_notes.md
+        echo "- Improved application stability and port management" >> release_notes.md
+        echo "- Enhanced sample data loading functionality" >> release_notes.md
+        echo "" >> release_notes.md
+        echo "### 🔧 Technical Improvements:" >> release_notes.md
+        echo "- Implemented lazy loading for AI models to prevent memory issues" >> release_notes.md
+        echo "- Fixed JavaScript function scoping for better user experience" >> release_notes.md
+        echo "- Updated dependencies and improved import handling" >> release_notes.md
+        echo "- Enhanced error handling and logging" >> release_notes.md
+        echo "" >> release_notes.md
+        echo "### 📊 Commit Details:" >> release_notes.md
+        echo "- Commit: ${{ github.sha }}" >> release_notes.md
+        echo "- Date: $(date)" >> release_notes.md
+        
+    - name: 📋 Create GitHub Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v2.0.${{ github.run_number }}
+        release_name: ResuMatch v2.0.${{ github.run_number }}
+        body_path: release_notes.md
+        draft: false
+        prerelease: false
+        
+    - name: 🎉 Deployment Complete
+      run: |
+        echo "🚀 ResuMatch v2.0.${{ github.run_number }} successfully deployed!"
+        echo "📝 Release: https://github.com/${{ github.repository }}/releases/tag/v2.0.${{ github.run_number }}"
+        echo "🔗 Repository: https://github.com/${{ github.repository }}"
