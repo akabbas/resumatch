@@ -27,7 +27,7 @@ ResuMatch uses AI to intelligently optimize your resume for each job:
 - **Summary Rewriting**: Creates compelling summaries using job keywords
 - **Bullet Point Enhancement**: Optimizes descriptions with strong action verbs
 - **Intelligent Skill Selection**: Picks most relevant skills from your database
-- **Page Optimization**: Automatically adjusts content to fit 1-2 pages
+- **Page Optimization**: Automatically adjusts content to fit 1-3 pages
 
 ## 🎯 **Why ResuMatch?**
 
