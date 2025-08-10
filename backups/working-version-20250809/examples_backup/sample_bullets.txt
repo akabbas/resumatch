@@ -1,0 +1,47 @@
+# Sample Bullet Points for ResuMatch Job Tailor
+# Format: TEXT: followed by the bullet text, then TAGS: followed by comma-separated tags
+
+TEXT: Developed REST APIs using Django and FastAPI serving 1M+ requests daily
+TAGS: Python, Django, FastAPI, REST APIs, Backend
+
+TEXT: Implemented microservices architecture with Docker and Kubernetes on AWS
+TAGS: Microservices, Docker, Kubernetes, AWS, DevOps
+
+TEXT: Managed PostgreSQL databases and Redis caching layer for high performance
+TAGS: PostgreSQL, Redis, Database, Performance
+
+TEXT: Built full-stack e-commerce platform using React and Node.js
+TAGS: React, Node.js, JavaScript, Full-stack, E-commerce
+
+TEXT: Integrated payment processing with Stripe API and implemented security best practices
+TAGS: Stripe, API, Security, Payment Processing
+
+TEXT: Led development team of 5 engineers and conducted code reviews
+TAGS: Leadership, Team Management, Code Review, Mentoring
+
+TEXT: Implemented CI/CD pipelines using GitHub Actions and automated testing
+TAGS: CI/CD, GitHub Actions, Testing, Automation
+
+TEXT: Created data analytics dashboard using Python and Chart.js
+TAGS: Python, Data Analytics, Chart.js, Dashboard
+
+TEXT: Optimized database queries and improved application performance
+TAGS: Database, Performance, SQL, Optimization
+
+TEXT: Collaborated with product managers to define technical requirements
+TAGS: Product Management, Requirements, Collaboration
+
+TEXT: Mentored junior developers and conducted technical interviews
+TAGS: Mentoring, Interviewing, Leadership, Teaching
+
+TEXT: Implemented automated testing with 90% code coverage
+TAGS: Testing, Automation, Quality Assurance
+
+TEXT: Designed and implemented scalable cloud infrastructure
+TAGS: Cloud, Infrastructure, Scalability, AWS
+
+TEXT: Built machine learning models for customer behavior prediction
+TAGS: Machine Learning, Python, Data Science, Predictive Analytics
+
+TEXT: Managed cross-functional teams across multiple time zones
+TAGS: Project Management, Remote Work, Leadership, Communication 

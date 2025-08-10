@@ -1,0 +1,34 @@
+Salesforce Administrator / Analyst
+
+We are seeking a Salesforce Administrator to join our team and help optimize our Salesforce implementation. You will be responsible for configuring, maintaining, and improving our Salesforce CRM system to support our sales and business operations.
+
+Key Responsibilities:
+- Configure and customize Salesforce CRM to meet business requirements
+- Create and maintain custom fields, validation rules, and workflows
+- Develop and optimize reports and dashboards for business users
+- Manage user access, profiles, and permission sets
+- Integrate Salesforce with other business systems and applications
+- Provide end-user training and support
+- Document system configurations and processes
+- Collaborate with business stakeholders to gather requirements
+- Lead user acceptance testing for new features and enhancements
+
+Required Skills:
+- Experience with Salesforce CRM administration and configuration
+- Strong understanding of Salesforce data model and security
+- Experience with creating reports, dashboards, and workflows
+- Knowledge of Salesforce automation tools (Process Builder, Flow)
+- Experience with user management and security configuration
+- Strong analytical and problem-solving skills
+- Excellent communication and training abilities
+- Understanding of sales processes and business operations
+
+Preferred Qualifications:
+- Salesforce Administrator certification
+- Experience with Salesforce CPQ or similar CPQ systems
+- Knowledge of Salesforce integrations and APIs
+- Experience with data migration and data quality management
+- Familiarity with Agile methodologies and project management
+- Experience with business process mapping and optimization
+- Knowledge of revenue operations and quote-to-cash processes
+- Experience with Salesforce Lightning and modern Salesforce features 

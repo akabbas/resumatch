@@ -1,0 +1,39 @@
+{
+  "summary": "Your professional summary here - 2-3 sentences about your background and expertise",
+  "experience": [
+    {
+      "title": "Your Job Title",
+      "company": "Company Name",
+      "duration": "Start Year - End Year",
+      "description": "Detailed description of your role, responsibilities, and achievements. Include specific technologies, tools, and quantifiable results."
+    },
+    {
+      "title": "Previous Job Title",
+      "company": "Previous Company",
+      "duration": "Start Year - End Year", 
+      "description": "Description of your previous role, focusing on relevant skills and accomplishments."
+    }
+  ],
+  "skills": [
+    "Primary Skill 1",
+    "Primary Skill 2", 
+    "Primary Skill 3",
+    "Secondary Skill 1",
+    "Secondary Skill 2"
+  ],
+  "certifications": [
+    "Certification Name 1",
+    "Certification Name 2"
+  ],
+  "projects": [
+    {
+      "name": "Project Name",
+      "description": "Brief description of the project, what you built, and the impact it had.",
+      "technologies": [
+        "Technology 1",
+        "Technology 2",
+        "Technology 3"
+      ]
+    }
+  ]
+} 

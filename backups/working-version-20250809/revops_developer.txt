@@ -1,0 +1,31 @@
+RevOps Developer
+
+We are seeking a RevOps Developer to join our growing team. You will be responsible for developing and maintaining revenue operations systems, automating workflows, and ensuring seamless integration between CRM, CPQ, and ERP systems.
+
+Key Responsibilities:
+- Develop and maintain integrations between Salesforce CRM, CPQ systems, and ERP platforms
+- Build automation workflows to streamline quote-to-cash processes
+- Create custom reports and dashboards for revenue operations
+- Implement and optimize pricing rules and approval workflows
+- Develop Python scripts for data processing and automation
+- Collaborate with sales, finance, and IT teams to gather requirements
+- Provide technical support and training for end users
+- Document system configurations and processes
+
+Required Skills:
+- Experience with Salesforce CRM and CPQ systems
+- Proficiency in Python programming and SQL
+- Knowledge of REST API development and integration
+- Experience with workflow automation and business process optimization
+- Familiarity with ERP systems (JD Edwards, Great Plains, etc.)
+- Strong analytical and problem-solving skills
+- Experience with Agile methodologies and project management tools
+- Excellent communication and collaboration skills
+
+Preferred Qualifications:
+- Experience with Oracle CPQ or similar CPQ platforms
+- Knowledge of revenue operations and quote-to-cash processes
+- Experience with data visualization and reporting tools
+- Understanding of business process mapping and optimization
+- Experience with cloud platforms (AWS, Azure)
+- Familiarity with Git version control and DevOps practices 
