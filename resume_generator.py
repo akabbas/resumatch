@@ -6,7 +6,7 @@ from typing import Dict, List, Optional, Union
 from dataclasses import dataclass
 from urllib.parse import urlparse
 import spacy
-from keybert import KeyBERT
+# from keybert import KeyBERT  # Temporarily disabled to avoid PyTorch issues
 from jinja2 import Template
 from weasyprint import HTML
 import nltk
@@ -20,7 +20,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import textstat
 from dotenv import load_dotenv
 import openai
-from intelligent_skill_matcher import IntelligentSkillMatcher
+# from intelligent_skill_matcher import IntelligentSkillMatcher
 
 # Load environment variables
 load_dotenv()
@@ -53,8 +53,14 @@ class KeywordExtractor:
     
     def __init__(self, use_openai: bool = False):
         self.use_openai = use_openai
-        self.nlp = spacy.load("en_core_web_sm")
-        self.kw_model = KeyBERT()
+        try:
+            self.nlp = spacy.load("en_core_web_sm")
+        except Exception as e:
+            print(f"Warning: Could not load spaCy model: {e}")
+            self.nlp = None
+            
+        # Temporarily disable KeyBERT to avoid PyTorch issues
+        self.kw_model = None
         self.lemmatizer = WordNetLemmatizer()
         
         # Download required NLTK data
@@ -166,9 +172,9 @@ class KeywordExtractor:
             return self.extract_keywords_nlp(text)
     
     def extract_keywords_nlp(self, text: str) -> List[str]:
-        """Extract keywords using advanced NLP techniques (ChatGPT-like intelligence)"""
+        """Extract keywords using basic NLP techniques (simplified version)"""
         # Preprocess text
-        doc = self.nlp(text.lower())
+        text = text.lower()
         
         # Enhanced technical term extraction with context
         technical_keywords = []
@@ -191,42 +197,42 @@ class KeywordExtractor:
                             technical_keywords.append(term)
                             break
         
-        # Use KeyBERT for semantic keyword extraction (more ChatGPT-like)
-        keywords = self.kw_model.extract_keywords(
-            text, 
-            keyphrase_ngram_range=(1, 3),  # Allow longer phrases
-            stop_words='english',
-            use_maxsum=True,
-            nr_candidates=30,  # More candidates
-            top_n=15,  # More keywords
-            diversity=0.7  # Ensure diversity
-        )
+        # Use TF-IDF fallback since KeyBERT is disabled
+        keywords = self._extract_keywords_tfidf(text)
         
-        # Extract noun phrases and named entities with better filtering
+        # Extract basic patterns if spaCy is available
         noun_phrases = []
-        for chunk in doc.noun_chunks:
-            phrase = chunk.text.lower().strip()
-            # Only include meaningful phrases
-            if (len(phrase) > 3 and 
-                not phrase.isdigit() and 
-                not any(word in phrase for word in ['the', 'a', 'an', 'and', 'or'])):
-                noun_phrases.append(phrase)
-        
-        # Extract named entities with better categorization
         entities = []
-        for ent in doc.ents:
-            if ent.label_ in ['ORG', 'PRODUCT', 'GPE', 'PERSON', 'WORK_OF_ART']:
-                entity_text = ent.text.lower().strip()
-                if len(entity_text) > 2:
-                    entities.append(entity_text)
-        
-        # Extract action verbs and technical verbs
         action_verbs = []
-        for token in doc:
-            if (token.pos_ == 'VERB' and 
-                token.dep_ in ['ROOT', 'ccomp', 'xcomp'] and
-                len(token.text) > 3):
-                action_verbs.append(token.lemma_.lower())
+        
+        if self.nlp is not None:
+            try:
+                doc = self.nlp(text)
+                
+                # Extract noun phrases and named entities with better filtering
+                for chunk in doc.noun_chunks:
+                    phrase = chunk.text.lower().strip()
+                    # Only include meaningful phrases
+                    if (len(phrase) > 3 and 
+                        not phrase.isdigit() and 
+                        not any(word in phrase for word in ['the', 'a', 'an', 'and', 'or'])):
+                        noun_phrases.append(phrase)
+                
+                # Extract named entities with better categorization
+                for ent in doc.ents:
+                    if ent.label_ in ['ORG', 'PRODUCT', 'GPE', 'PERSON', 'WORK_OF_ART']:
+                        entity_text = ent.text.lower().strip()
+                        if len(entity_text) > 2:
+                            entities.append(entity_text)
+                
+                # Extract action verbs and technical verbs
+                for token in doc:
+                    if (token.pos_ == 'VERB' and 
+                        token.dep_ in ['ROOT', 'ccomp', 'xcomp'] and
+                        len(token.text) > 3):
+                        action_verbs.append(token.lemma_.lower())
+            except Exception as e:
+                print(f"spaCy processing failed: {e}")
         
         # Extract technical skills patterns
         skill_patterns = [
@@ -244,7 +250,7 @@ class KeywordExtractor:
         # Combine all keywords with intelligent deduplication
         all_keywords = (
             technical_keywords + 
-            [kw[0] for kw in keywords] + 
+            [kw for kw in keywords] + 
             noun_phrases + 
             entities + 
             action_verbs[:5] +  # Limit action verbs
@@ -289,14 +295,56 @@ class KeywordExtractor:
         def sort_key(keyword):
             if keyword in technical_keywords:
                 return 0  # Technical terms first
-            elif keyword in [kw[0] for kw in keywords]:
-                return 1  # KeyBERT keywords second
+            elif keyword in keywords:
+                return 1  # TF-IDF keywords second
             else:
                 return 2  # Other keywords last
         
         cleaned_keywords.sort(key=sort_key)
         
         return cleaned_keywords[:25]  # Return top 25 unique keywords
+    
+    def _extract_keywords_tfidf(self, text: str) -> List[str]:
+        """Fallback keyword extraction using TF-IDF"""
+        try:
+            # Simple TF-IDF based extraction
+            from sklearn.feature_extraction.text import TfidfVectorizer
+            
+            # Clean text
+            text = re.sub(r'[^\w\s]', ' ', text.lower())
+            
+            # Create TF-IDF vectorizer
+            vectorizer = TfidfVectorizer(
+                max_features=50,
+                stop_words='english',
+                ngram_range=(1, 2),
+                min_df=1
+            )
+            
+            # Fit and transform
+            tfidf_matrix = vectorizer.fit_transform([text])
+            feature_names = vectorizer.get_feature_names_out()
+            
+            # Get top features by TF-IDF score
+            scores = tfidf_matrix.toarray()[0]
+            keyword_scores = list(zip(feature_names, scores))
+            keyword_scores.sort(key=lambda x: x[1], reverse=True)
+            
+            # Return top keywords
+            return [kw for kw, score in keyword_scores[:15] if score > 0]
+            
+        except Exception as e:
+            print(f"TF-IDF extraction failed: {e}")
+            # Final fallback: simple word frequency
+            words = re.findall(r'\b\w+\b', text.lower())
+            word_freq = {}
+            for word in words:
+                if len(word) > 3 and word not in self.stop_words:
+                    word_freq[word] = word_freq.get(word, 0) + 1
+            
+            # Return top words by frequency
+            sorted_words = sorted(word_freq.items(), key=lambda x: x[1], reverse=True)
+            return [word for word, freq in sorted_words[:15]]
     
     def _similarity_score(self, word1: str, word2: str) -> float:
         """Calculate similarity between two words"""
@@ -369,7 +417,7 @@ class ResumeGenerator:
     def __init__(self, use_openai: bool = False, max_pages: int = 2, include_projects: bool = True):
         self.keyword_extractor = KeywordExtractor(use_openai)
         self.experience_matcher = ExperienceMatcher()
-        self.skill_matcher = IntelligentSkillMatcher()
+        # self.skill_matcher = IntelligentSkillMatcher()
         self.max_pages = max_pages
         self.include_projects = include_projects
         
@@ -868,7 +916,35 @@ class ResumeGenerator:
         )
         
         # Convert to PDF
-        HTML(string=html_content).write_pdf(output_path)
+        try:
+            from weasyprint import HTML
+            html_doc = HTML(string=html_content)
+            html_doc.write_pdf(output_path)
+        except Exception as e:
+            # Alternative method for compatibility
+            import subprocess
+            import tempfile
+            
+            # Write HTML to temporary file
+            with tempfile.NamedTemporaryFile(mode='w', suffix='.html', delete=False) as f:
+                f.write(html_content)
+                temp_html = f.name
+            
+            try:
+                # Use weasyprint command line if available
+                subprocess.run(['weasyprint', temp_html, output_path], check=True)
+            except (subprocess.CalledProcessError, FileNotFoundError):
+                # Fallback: return HTML file path
+                output_path = temp_html.replace('.html', '_resume.html')
+                with open(output_path, 'w') as f:
+                    f.write(html_content)
+                print(f"PDF generation failed, saved as HTML: {output_path}")
+                return output_path
+            finally:
+                # Clean up temp file
+                import os
+                if os.path.exists(temp_html):
+                    os.unlink(temp_html)
         
         print(f"Resume generated successfully: {output_path}")
         return output_path
@@ -883,10 +959,11 @@ class ResumeGenerator:
         job_context = job_description if job_description else " ".join(keywords)
         
         # Get relevant skills from the comprehensive database
-        relevant_skills = self.skill_matcher.select_relevant_skills(
-            job_context, 
-            max_skills=20  # Get more skills initially, we'll filter based on max_pages
-        )
+        # relevant_skills = self.skill_matcher.select_relevant_skills(
+        #     job_context, 
+        #     max_skills=20  # Get more skills initially, we'll filter based on max_pages
+        # )
+        relevant_skills = []
         
         # Adjust number of skills based on max pages
         max_skills = 10 if self.max_pages == 1 else 18
@@ -1159,10 +1236,18 @@ class ResumeGenerator:
         return resume_data
     
     def _extract_job_themes(self, job_description: str) -> List[str]:
-        """Extract job themes and requirements using advanced NLP"""
-        doc = self.nlp(job_description.lower())
-        
+        """Extract job themes and requirements using basic NLP"""
         themes = []
+        
+        # Only use spaCy if available
+        if self.keyword_extractor.nlp is not None:
+            try:
+                doc = self.keyword_extractor.nlp(job_description.lower())
+            except Exception as e:
+                print(f"spaCy processing failed in _extract_job_themes: {e}")
+                doc = None
+        else:
+            doc = None
         
         # Extract role types
         role_indicators = {

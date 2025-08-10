@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from difflib import SequenceMatcher
 from collections import Counter
 import spacy
-from keybert import KeyBERT
+# from keybert import KeyBERT  # Temporarily disabled due to PyTorch compatibility issues
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import nltk
@@ -67,7 +67,8 @@ class JobDescriptionAnalyzer:
     
     def __init__(self):
         self.nlp = spacy.load("en_core_web_sm")
-        self.kw_model = KeyBERT()
+        # self.kw_model = KeyBERT()  # Temporarily disabled due to PyTorch compatibility issues
+        self.kw_model = None
         self.lemmatizer = WordNetLemmatizer()
         self.stop_words = set(stopwords.words('english'))
         

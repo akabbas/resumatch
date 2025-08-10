@@ -12,10 +12,16 @@ from dataclasses import dataclass
 import openai
 import anthropic
 import cohere
-from langchain.llms import OpenAI
+from langchain_community.llms import OpenAI
 from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
-from transformers import pipeline
+try:
+    from transformers import pipeline
+    TRANSFORMERS_AVAILABLE = True
+except ImportError as e:
+    print(f"Warning: transformers not available: {e}")
+    TRANSFORMERS_AVAILABLE = False
+    pipeline = None
 import torch
 from resume_generator import ResumeGenerator, JobExperience, Project, ResumeData
 
@@ -68,15 +74,39 @@ class GPT5EnhancedGenerator(ResumeGenerator):
                 if self.gpt5_config.cohere_api_key:
                     self.cohere_client = cohere.Client(self.gpt5_config.cohere_api_key)
             
-            # Local models for specific tasks
-            self.sentiment_analyzer = pipeline("sentiment-analysis")
-            self.text_classifier = pipeline("text-classification")
+            # Local models for specific tasks - lazy loading to avoid PyTorch meta tensor issues
+            self.sentiment_analyzer = None
+            self.text_classifier = None
             
             logger.info("GPT-5 enhanced features initialized successfully")
             
         except Exception as e:
             logger.error(f"Failed to initialize GPT-5 features: {e}")
             raise
+    
+    def _get_sentiment_analyzer(self):
+        """Lazily load sentiment analyzer to avoid PyTorch meta tensor issues"""
+        if not TRANSFORMERS_AVAILABLE or pipeline is None:
+            return None
+        if self.sentiment_analyzer is None:
+            try:
+                self.sentiment_analyzer = pipeline("sentiment-analysis", device=-1)  # Force CPU
+            except Exception as e:
+                logger.warning(f"Failed to load sentiment analyzer: {e}")
+                self.sentiment_analyzer = None
+        return self.sentiment_analyzer
+    
+    def _get_text_classifier(self):
+        """Lazily load text classifier to avoid PyTorch meta tensor issues"""
+        if not TRANSFORMERS_AVAILABLE or pipeline is None:
+            return None
+        if self.text_classifier is None:
+            try:
+                self.text_classifier = pipeline("text-classification", device=-1)  # Force CPU
+            except Exception as e:
+                logger.warning(f"Failed to load text classifier: {e}")
+                self.text_classifier = None
+        return self.text_classifier
     
     def generate_advanced_summary(self, job_description: str, experience: List[JobExperience]) -> str:
         """Generate advanced summary using GPT-5"""

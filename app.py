@@ -94,13 +94,32 @@ def generate_resume():
         )
         
         if result:
-            flash(f'Resume generated successfully! ID: {resume_id}', 'success')
-            return jsonify({
-                'success': True,
-                'message': 'Resume generated successfully',
-                'download_url': url_for('download_resume', filename=output_filename),
-                'resume_id': resume_id
-            })
+            # Check if result is an HTML file (fallback case)
+            if result.endswith('.html'):
+                # Update filename to reflect HTML format
+                html_filename = f"resume_{resume_id}.html"
+                html_path = os.path.join(UPLOAD_FOLDER, html_filename)
+                
+                # Copy the HTML file to uploads directory
+                import shutil
+                shutil.copy2(result, html_path)
+                
+                flash(f'Resume generated successfully! ID: {resume_id} (HTML format)', 'success')
+                return jsonify({
+                    'success': True,
+                    'message': 'Resume generated successfully (HTML format)',
+                    'download_url': url_for('download_resume', filename=html_filename),
+                    'resume_id': resume_id
+                })
+            else:
+                # PDF was generated successfully
+                flash(f'Resume generated successfully! ID: {resume_id}', 'success')
+                return jsonify({
+                    'success': True,
+                    'message': 'Resume generated successfully',
+                    'download_url': url_for('download_resume', filename=output_filename),
+                    'resume_id': resume_id
+                })
         else:
             flash('Failed to generate resume', 'error')
             return jsonify({'success': False, 'message': 'Failed to generate resume'})
@@ -279,7 +298,7 @@ TAGS: Agile, Jira, Azure DevOps, Sprint Planning, Project Management"""
     })
 
 if __name__ == '__main__':
-    port = int(os.environ.get('FLASK_PORT', 8001))
+    port = int(os.environ.get('FLASK_PORT', 8000))
     debug = os.environ.get('FLASK_DEBUG', 'True').lower() == 'true'
     
     print(f"🚀 Starting ResuMatch on port {port}")

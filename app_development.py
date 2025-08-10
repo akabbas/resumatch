@@ -405,7 +405,7 @@ def internal_error(error):
     return render_template('500.html'), 500
 
 if __name__ == '__main__':
-    port = int(os.getenv('FLASK_PORT', 8001))
+    port = int(os.getenv('FLASK_PORT', 8000))
     debug = os.getenv('FLASK_DEBUG', 'True').lower() == 'true'
     
     logger.info(f"Starting ResuMatch development server on port {port}")
