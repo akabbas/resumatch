@@ -10,8 +10,7 @@ import tempfile
 from pathlib import Path
 from flask import Flask, render_template, request, jsonify, send_file, flash, redirect, url_for
 from werkzeug.utils import secure_filename
-from resume_generator import ResumeGenerator
-from job_matcher import ResumeTailor, BulletPoint
+from resume_generator_simple import SimpleResumeGenerator
 import uuid
 
 app = Flask(__name__)
@@ -75,8 +74,7 @@ def form_submit():
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
         
         # Initialize resume generator with default settings
-        generator = ResumeGenerator(
-            use_openai=False,  # Default to free mode
+        generator = SimpleResumeGenerator(
             max_pages=2,
             include_projects=False
         )
@@ -156,11 +154,7 @@ def generate_resume():
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
         
         # Initialize resume generator
-        free_mode = request.form.get('free_mode') == 'on'
-        use_openai = request.form.get('use_openai') == 'on' and not free_mode
-        
-        generator = ResumeGenerator(
-            use_openai=use_openai,
+        generator = SimpleResumeGenerator(
             max_pages=int(request.form.get('max_pages', 2)),
             include_projects=request.form.get('include_projects') == 'on'
         )
