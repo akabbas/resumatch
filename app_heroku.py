@@ -38,9 +38,13 @@ def form():
     """Resume form page"""
     return render_template('form.html')
 
-@app.route('/form', methods=['POST'])
+@app.route('/form', methods=['GET', 'POST'])
 def form_submit():
     """Handle form submission and generate resume"""
+    if request.method == 'GET':
+        return render_template('form.html')
+    
+    # POST method handling
     try:
         # Get form data directly from request
         summary = request.form.get('summary', '').strip()
@@ -51,8 +55,10 @@ def form_submit():
         
         # Basic validation
         if not all([summary, job_title, company, job_description, skills]):
-            flash('All fields are required', 'error')
-            return redirect('/form')
+            return jsonify({
+                'success': False,
+                'message': 'All fields are required'
+            })
         
         # Convert form data to JSON format expected by resume generator
         experience_data = {
@@ -68,10 +74,10 @@ def form_submit():
             "projects": []
         }
         
-        # Generate unique filename
+        # Generate unique filename for HTML (since SimpleResumeGenerator creates HTML)
         resume_id = str(uuid.uuid4())[:8]
-        output_filename = f"resume_{resume_id}.pdf"
-        output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+        html_filename = f"resume_{resume_id}.html"
+        output_path = os.path.join(UPLOAD_FOLDER, html_filename)
         
         # Initialize resume generator with default settings
         generator = SimpleResumeGenerator(
@@ -88,30 +94,27 @@ def form_submit():
             contact_info="email@example.com | phone | location"  # Default contact
         )
         
-        if result:
-            # Check if result is an HTML file (fallback case)
-            if result.endswith('.html'):
-                # Update filename to reflect HTML format
-                html_filename = f"resume_{resume_id}.html"
-                html_path = os.path.join(UPLOAD_FOLDER, html_filename)
-                
-                # Copy the HTML file to uploads directory
-                import shutil
-                shutil.copy2(result, html_path)
-                
-                flash(f'Resume generated successfully! ID: {resume_id} (HTML format)', 'success')
-                return redirect(url_for('download_resume', filename=html_filename))
-            else:
-                # PDF was generated successfully
-                flash(f'Resume generated successfully! ID: {resume_id}', 'success')
-                return redirect(url_for('download_resume', filename=output_filename))
+        if result and os.path.exists(result):
+            # HTML was generated successfully
+            return jsonify({
+                'success': True,
+                'message': 'Resume generated successfully (HTML format)',
+                'view_url': url_for('view_resume', filename=html_filename),
+                'download_url': url_for('download_resume', filename=html_filename),
+                'resume_id': resume_id,
+                'format': 'html'
+            })
         else:
-            flash('Failed to generate resume', 'error')
-            return redirect('/form')
+            return jsonify({
+                'success': False,
+                'message': 'Failed to generate resume'
+            })
             
     except Exception as e:
-        flash(f'Error generating resume: {str(e)}', 'error')
-        return redirect('/form')
+        return jsonify({
+            'success': False,
+            'message': f'Error generating resume: {str(e)}'
+        })
 
 @app.route('/generate', methods=['POST'])
 def generate_resume():
