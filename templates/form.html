@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResuMatch - Resume Form</title>
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📄</text></svg>">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        .form-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 800px;
+        }
+        .form-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e9ecef;
+        }
+        .form-header h1 {
+            color: #667eea;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .form-header p {
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 0.5rem;
+        }
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            padding: 0.75rem;
+            transition: all 0.3s ease;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            transform: translateY(-2px);
+        }
+        .form-text {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 15px;
+            padding: 1rem 2rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+        .alert {
+            border-radius: 10px;
+            border: none;
+            margin-bottom: 1rem;
+        }
+        .nav-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .nav-link:hover {
+            color: #764ba2;
+        }
+        .field-help {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 0.75rem;
+            margin-top: 0.5rem;
+            border-radius: 0 5px 5px 0;
+        }
+        .field-help h6 {
+            color: #495057;
+            margin-bottom: 0.25rem;
+            font-weight: 600;
+        }
+        .field-help p {
+            color: #6c757d;
+            margin-bottom: 0;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <!-- Header -->
+            <div class="form-header">
+                <h1><i class="fas fa-magic me-2"></i>ResuMatch</h1>
+                <p>Fill in your details below to generate a perfectly optimized resume</p>
+                <a href="/" class="nav-link">
+                    <i class="fas fa-arrow-left me-1"></i>Back to Main Page
+                </a>
+            </div>
+
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <!-- Form -->
+            <form method="POST" action="/form">
+                <!-- Summary -->
+                <div class="form-group">
+                    <label for="summary" class="form-label">Professional Summary</label>
+                    <textarea class="form-control" id="summary" name="summary" rows="4" 
+                              placeholder="Detail-oriented professional with X years of experience in..." required></textarea>
+                    <div class="field-help">
+                        <h6><i class="fas fa-info-circle me-1"></i>Professional Summary</h6>
+                        <p>A brief overview of your professional background and key strengths</p>
+                    </div>
+                </div>
+
+                <!-- Job Title -->
+                <div class="form-group">
+                    <label for="job_title" class="form-label">Job Title</label>
+                    <input type="text" class="form-control" id="job_title" name="job_title" 
+                           placeholder="e.g., Business Systems Analyst, Data Analyst, Software Developer" required>
+                    <div class="field-help">
+                        <h6><i class="fas fa-briefcase me-1"></i>Current Position</h6>
+                        <p>Your current or most recent job title</p>
+                    </div>
+                </div>
+
+                <!-- Company -->
+                <div class="form-group">
+                    <label for="company" class="form-label">Company</label>
+                    <input type="text" class="form-control" id="company" name="company" 
+                           placeholder="e.g., Flowserve, Salesforce, Microsoft" required>
+                    <div class="field-help">
+                        <h6><i class="fas fa-building me-1"></i>Employer</h6>
+                        <p>Your current or most recent employer</p>
+                    </div>
+                </div>
+
+                <!-- Job Description -->
+                <div class="form-group">
+                    <label for="job_description" class="form-label">Job Description</label>
+                    <textarea class="form-control" id="job_description" name="job_description" rows="6" 
+                              placeholder="Paste the job description here to optimize your resume..." required></textarea>
+                    <div class="field-help">
+                        <h6><i class="fas fa-search me-1"></i>Target Job</h6>
+                        <p>Paste the job description you want to target</p>
+                    </div>
+                </div>
+
+                <!-- Skills -->
+                <div class="form-group">
+                    <label for="skills" class="form-label">Skills</label>
+                    <input type="text" class="form-control" id="skills" name="skills" 
+                           placeholder="Python, SQL, Salesforce, REST APIs, Data Analysis, etc." required>
+                    <div class="field-help">
+                        <h6><i class="fas fa-tools me-1"></i>Your Skills</h6>
+                        <p>Comma-separated list of your key skills and technologies</p>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; padding: 1rem;">
+                        Generate Resume
+                    </button>
+                </div>
+            </form>
+
+            <!-- Info Section -->
+            <div class="mt-4 p-3 bg-light rounded">
+                <h6><i class="fas fa-lightbulb me-2 text-warning"></i>How it works:</h6>
+                <ol class="mb-0">
+                    <li>Fill in your professional details above</li>
+                    <li>Paste the job description you want to target</li>
+                    <li>Our AI will optimize your resume for ATS systems</li>
+                    <li>Download your perfectly formatted PDF resume</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
