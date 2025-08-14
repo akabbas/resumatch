@@ -11,6 +11,7 @@ from pathlib import Path
 from flask import Flask, render_template, request, jsonify, send_file, flash, redirect, url_for
 from werkzeug.utils import secure_filename
 from resume_generator_simple import SimpleResumeGenerator
+from pdf_generator import PDFResumeGenerator
 import uuid
 
 app = Flask(__name__)
@@ -74,35 +75,57 @@ def form_submit():
             "projects": []
         }
         
-        # Generate unique filename for HTML (since SimpleResumeGenerator creates HTML)
+        # Generate unique filename for both HTML and PDF
         resume_id = str(uuid.uuid4())[:8]
         html_filename = f"resume_{resume_id}.html"
-        output_path = os.path.join(UPLOAD_FOLDER, html_filename)
+        pdf_filename = f"resume_{resume_id}.pdf"
         
-        # Initialize resume generator with default settings
-        generator = SimpleResumeGenerator(
+        html_path = os.path.join(UPLOAD_FOLDER, html_filename)
+        pdf_path = os.path.join(UPLOAD_FOLDER, pdf_filename)
+        
+        # Generate HTML version
+        html_generator = SimpleResumeGenerator(
             max_pages=2,
             include_projects=False
         )
         
-        # Generate resume using existing logic
-        result = generator.generate_resume(
+        html_result = html_generator.generate_resume(
             job_description=job_description,
             experience_data=experience_data,
-            output_path=output_path,
+            output_path=html_path,
             name="Your Name",  # Default name
             contact_info="email@example.com | phone | location"  # Default contact
         )
         
-        if result and os.path.exists(result):
-            # HTML was generated successfully
+        # Generate PDF version
+        pdf_generator = PDFResumeGenerator()
+        pdf_result = pdf_generator.generate_pdf(
+            experience_data=experience_data,
+            output_path=pdf_path,
+            name="Your Name",  # Default name
+            contact_info="email@example.com | phone | location"  # Default contact
+        )
+        
+        if html_result and os.path.exists(html_path) and pdf_result and os.path.exists(pdf_path):
+            # Both formats generated successfully
             return jsonify({
                 'success': True,
-                'message': 'Resume generated successfully (HTML format)',
+                'message': 'Resume generated successfully in both HTML and PDF formats',
                 'view_url': url_for('view_resume', filename=html_filename),
-                'download_url': url_for('download_resume', filename=html_filename),
+                'html_download_url': url_for('download_resume', filename=html_filename),
+                'pdf_download_url': url_for('download_resume', filename=pdf_filename),
                 'resume_id': resume_id,
-                'format': 'html'
+                'formats': ['html', 'pdf']
+            })
+        elif html_result and os.path.exists(html_path):
+            # Only HTML generated
+            return jsonify({
+                'success': True,
+                'message': 'Resume generated successfully (HTML format only)',
+                'view_url': url_for('view_resume', filename=html_filename),
+                'html_download_url': url_for('download_resume', filename=html_filename),
+                'resume_id': resume_id,
+                'formats': ['html']
             })
         else:
             return jsonify({

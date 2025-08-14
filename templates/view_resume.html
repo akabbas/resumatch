@@ -101,9 +101,22 @@
                 <a href="/form" class="btn btn-outline-success btn-action">
                     <i class="fas fa-edit me-2"></i>Create Another Resume
                 </a>
-                <a href="/download/{{ filename }}" class="btn btn-primary btn-action">
-                    <i class="fas fa-download me-2"></i>Download HTML
-                </a>
+                
+                <!-- Download Options -->
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-download me-2"></i>Download Resume
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/download/{{ filename }}" id="htmlDownload">
+                            <i class="fas fa-file-code me-2"></i>HTML Version
+                        </a></li>
+                        <li><a class="dropdown-item" href="#" id="pdfDownload" style="display: none;">
+                            <i class="fas fa-file-pdf me-2"></i>PDF Version
+                        </a></li>
+                    </ul>
+                </div>
+                
                 <button class="btn btn-outline-info btn-action" onclick="printResume()">
                     <i class="fas fa-print me-2"></i>Print Resume
                 </button>
@@ -139,6 +152,37 @@
                 document.querySelector('.resume-frame').style.height = e.data.height + 'px';
             }
         });
+        
+        // Check if PDF version is available and show download option
+        function checkPDFAvailability() {
+            // Extract resume ID from filename
+            const filename = '{{ filename }}';
+            const resumeId = filename.replace('.html', '').replace('resume_', '');
+            const pdfFilename = `resume_${resumeId}.pdf`;
+            
+            // Check if PDF exists by trying to fetch it
+            fetch(`/download/${pdfFilename}`)
+                .then(response => {
+                    if (response.ok) {
+                        // PDF exists, show the download option
+                        const pdfDownload = document.getElementById('pdfDownload');
+                        pdfDownload.href = `/download/${pdfFilename}`;
+                        pdfDownload.style.display = 'block';
+                        
+                        // Update the dropdown to show both options
+                        const dropdownMenu = document.querySelector('.dropdown-menu');
+                        if (dropdownMenu) {
+                            dropdownMenu.style.minWidth = '200px';
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.log('PDF version not available');
+                });
+        }
+        
+        // Check PDF availability when page loads
+        document.addEventListener('DOMContentLoaded', checkPDFAvailability);
     </script>
 </body>
 </html>
