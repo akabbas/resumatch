@@ -220,66 +220,35 @@ def download_resume(filename):
 @app.route('/api/sample-data')
 def get_sample_data():
     """Get sample data for the interface"""
-    sample_experience = {
-        "name": "Ammr Abbasher",
-        "contact": {
-            "email": "AmmrAbbasher@gmail.com",
-            "phone": "817-575-7791",
-            "location": "Dallas, TX, USA",
-            "linkedin": "LinkedIn",
-            "github": "GitHub"
+    
+    # Multiple sample job scenarios
+    sample_scenarios = {
+        "business_analyst": {
+            "summary": "Detail-oriented Business Systems Analyst with 2.5+ years driving revenue operations optimization through data-driven automation, ETL workflows, and cross-platform system integration. Proficient in Python scripting, SQL querying, and REST API development to streamline quote-to-cash processes across CPQ, CRM, and ERP platforms.",
+            "job_title": "Business Systems Analyst",
+            "company": "Flowserve",
+            "job_description": "We are seeking a talented Business Systems Analyst to join our Revenue Operations team. You will be responsible for optimizing our quote-to-cash processes and integrating CRM/ERP systems.\n\nRequirements:\n- 2+ years of experience with business systems analysis\n- Strong experience with Salesforce CRM and Oracle CPQ\n- Experience with Python scripting and SQL databases\n- Knowledge of REST API integrations\n- Experience with workflow automation and process optimization",
+            "skills": "Python, SQL, Salesforce CRM, Oracle CPQ, REST APIs, Data Analysis, ETL Workflows, Workflow Automation, Requirements Gathering, UAT, Agile/Scrum, Stakeholder Management"
         },
-        "summary": "Detail-oriented Data Automation & Integration Analyst with 2.5+ years driving revenue operations optimization through data-driven automation, ETL workflows, and cross-platform system integration. Proficient in Python scripting, SQL querying, and REST API development to streamline quote-to-cash processes across CPQ, CRM, and ERP platforms. Experienced collaborating with sales, IT, and finance stakeholders to gather requirements, design scalable technical solutions, and lead user acceptance testing (UAT). Currently pursuing Salesforce Certified Administrator to deepen CRM and workflow expertise and expand into automation and cloud roles.",
-        "experience": [
-            {
-                "title": "Business Systems Analyst & Data Automation Specialist",
-                "company": "Flowserve",
-                "duration": "January 2023 - Present",
-                "description": [
-                    "Automated CPQ pricing validation, quote accuracy checks, and approval workflows using Python, SQL, and Excel VBA, reducing manual processing time by 50%",
-                    "Designed and maintained REST API integrations linking Oracle CPQ, Salesforce CRM, and ERP systems (JD Edwards, Great Plains) to synchronize real-time sales data and pricing information",
-                    "Developed custom guided selling flows and complex pricing rules within Oracle CPQ to accelerate quote-to-cash cycles for diverse product configurations",
-                    "Built SQL-based sales dashboards and reports visualizing quote statuses, margin analysis, and key sales KPIs for executive leadership, enabling data-driven decisions",
-                    "Led stakeholder engagement, requirements gathering, and user acceptance testing (UAT) for over 100 global users, increasing user adoption and reducing quote errors",
-                    "Collaborated in Agile teams using Jira and Azure DevOps for sprint planning, backlog grooming, and iterative delivery of system enhancements",
-                    "Authored detailed technical documentation covering API workflows, business process logic, and automation scripts to support knowledge transfer and ongoing maintenance"
-                ]
-            }
-        ],
-        "skills": [
-            "Python (scripting, automation)",
-            "SQL (PostgreSQL, MySQL)",
-            "Excel VBA",
-            "JavaScript (ES6 basics)",
-            "Oracle CPQ (BML, BMQL, Commerce Flows)",
-            "Salesforce CRM",
-            "ERP systems (JD Edwards, Great Plains)",
-            "REST APIs",
-            "Postman",
-            "AWS (EC2, S3)",
-            "Docker",
-            "Azure DevOps",
-            "Git",
-            "Jira",
-            "Workflow Automation",
-            "Revenue Operations",
-            "Quote-to-Cash",
-            "Requirements Gathering",
-            "UAT",
-            "Data Analysis",
-            "ETL Workflows",
-            "Power BI (basic)",
-            "Agile/Scrum",
-            "Cross-Functional Collaboration",
-            "Technical Writing",
-            "Stakeholder Management"
-        ]
+        "data_analyst": {
+            "summary": "Experienced Data Analyst with expertise in transforming complex business data into actionable insights. Skilled in SQL, Python, and data visualization tools to drive strategic decision-making and process improvements across multiple business units.",
+            "job_title": "Senior Data Analyst",
+            "company": "TechCorp",
+            "job_description": "We are looking for a Senior Data Analyst to join our Analytics team. You will be responsible for analyzing business data, creating reports, and providing insights to support strategic decision-making.\n\nRequirements:\n- 3+ years of experience in data analysis\n- Strong SQL and Python programming skills\n- Experience with data visualization tools (Tableau, Power BI)\n- Knowledge of statistical analysis and modeling\n- Experience with ETL processes and data warehousing",
+            "skills": "SQL, Python, R, Tableau, Power BI, Excel, Statistical Analysis, Data Visualization, ETL, Data Warehousing, Business Intelligence, A/B Testing"
+        },
+        "software_developer": {
+            "summary": "Full-stack Software Developer with 3+ years of experience building scalable web applications and APIs. Proficient in modern JavaScript frameworks, Python backend development, and cloud deployment using AWS and Docker.",
+            "job_title": "Full-Stack Developer",
+            "company": "InnovateTech",
+            "job_description": "We are seeking a Full-Stack Developer to join our engineering team. You will be responsible for developing and maintaining web applications, APIs, and database systems.\n\nRequirements:\n- 3+ years of full-stack development experience\n- Strong JavaScript/TypeScript and Python skills\n- Experience with React, Node.js, and Django/Flask\n- Knowledge of database design and SQL\n- Experience with cloud platforms (AWS, Azure, GCP)",
+            "skills": "JavaScript, TypeScript, React, Node.js, Python, Django, Flask, SQL, PostgreSQL, MongoDB, AWS, Docker, Git, REST APIs, GraphQL"
+        }
     }
     
     return jsonify({
-        'experience': sample_experience,
-        'job_description': "Business Systems Analyst - Revenue Operations\n\nWe are seeking a talented Business Systems Analyst to join our Revenue Operations team. You will be responsible for optimizing our quote-to-cash processes and integrating CRM/ERP systems.",
-        'bullets': "Sample bullet points for testing..."
+        'scenarios': sample_scenarios,
+        'current_scenario': 'business_analyst'
     })
 
 if __name__ == '__main__':

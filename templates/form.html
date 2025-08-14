@@ -130,6 +130,35 @@
 
             <!-- Form -->
             <form method="POST" action="/form">
+                <!-- Sample Data Section -->
+                <div class="text-center mb-4 p-3 bg-light rounded">
+                    <h6 class="mb-3"><i class="fas fa-flask me-2 text-primary"></i>Try Sample Data</h6>
+                    
+                    <!-- Scenario Selector -->
+                    <div class="row justify-content-center mb-3">
+                        <div class="col-md-6">
+                            <select class="form-select" id="scenarioSelector" onchange="loadSampleData()">
+                                <option value="">Choose a job scenario...</option>
+                                <option value="business_analyst">Business Systems Analyst</option>
+                                <option value="data_analyst">Data Analyst</option>
+                                <option value="software_developer">Software Developer</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <small class="text-muted">Select a scenario to automatically populate the form with realistic example data</small>
+                    
+                    <!-- Action Buttons -->
+                    <div class="mt-3">
+                        <button type="button" class="btn btn-outline-secondary btn-sm me-2" onclick="clearForm()">
+                            <i class="fas fa-eraser me-1"></i>Clear Form
+                        </button>
+                        <button type="button" class="btn btn-outline-info btn-sm" onclick="showFormHelp()">
+                            <i class="fas fa-question-circle me-1"></i>Form Help
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Summary -->
                 <div class="form-group">
                     <label for="summary" class="form-label">Professional Summary</label>
@@ -207,5 +236,147 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        async function loadSampleData() {
+            const scenarioSelector = document.getElementById('scenarioSelector');
+            const selectedScenario = scenarioSelector.value;
+            
+            if (!selectedScenario) {
+                return; // No scenario selected
+            }
+            
+            try {
+                // Show loading state
+                scenarioSelector.disabled = true;
+                scenarioSelector.innerHTML = '<option>Loading...</option>';
+                
+                // Fetch sample data from API
+                const response = await fetch('/api/sample-data');
+                const data = await response.json();
+                
+                if (data.scenarios && data.scenarios[selectedScenario]) {
+                    const sampleData = data.scenarios[selectedScenario];
+                    
+                    // Populate form fields
+                    document.getElementById('summary').value = sampleData.summary;
+                    document.getElementById('job_title').value = sampleData.job_title;
+                    document.getElementById('company').value = sampleData.company;
+                    document.getElementById('job_description').value = sampleData.job_description;
+                    document.getElementById('skills').value = sampleData.skills;
+                    
+                    // Show success message
+                    showSuccessMessage('Sample data loaded successfully!');
+                }
+                
+            } catch (error) {
+                console.error('Error loading sample data:', error);
+                showErrorMessage('Failed to load sample data. Please try again.');
+            } finally {
+                // Restore scenario selector
+                restoreScenarioSelector();
+            }
+        }
+        
+        function showSuccessMessage(message) {
+            // Create success alert
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-success alert-dismissible fade show';
+            alertDiv.innerHTML = `
+                <i class="fas fa-check me-2"></i>${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            // Insert after the sample data section
+            const sampleSection = document.querySelector('.bg-light.rounded');
+            sampleSection.parentNode.insertBefore(alertDiv, sampleSection.nextSibling);
+            
+            // Auto-remove after 3 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.remove();
+                }
+            }, 3000);
+        }
+        
+        function showErrorMessage(message) {
+            // Create error alert
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-danger alert-dismissible fade show';
+            alertDiv.innerHTML = `
+                <i class="fas fa-exclamation-triangle me-2"></i>${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            // Insert after the sample data section
+            const sampleSection = document.querySelector('.bg-light.rounded');
+            sampleSection.parentNode.insertBefore(alertDiv, sampleSection.nextSibling);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.remove();
+                }
+            }, 5000);
+        }
+        
+        function restoreScenarioSelector() {
+            const scenarioSelector = document.getElementById('scenarioSelector');
+            scenarioSelector.disabled = false;
+            scenarioSelector.innerHTML = `
+                <option value="">Choose a job scenario...</option>
+                <option value="business_analyst">Business Systems Analyst</option>
+                <option value="data_analyst">Data Analyst</option>
+                <option value="software_developer">Software Developer</option>
+            `;
+        }
+        
+        function clearForm() {
+            // Clear all form fields
+            document.getElementById('summary').value = '';
+            document.getElementById('job_title').value = '';
+            document.getElementById('company').value = '';
+            document.getElementById('job_description').value = '';
+            document.getElementById('skills').value = '';
+            
+            // Reset scenario selector
+            document.getElementById('scenarioSelector').value = '';
+            
+            // Show success message
+            showSuccessMessage('Form cleared successfully!');
+        }
+        
+        function showFormHelp() {
+            const helpText = `
+                <div class="alert alert-info">
+                    <h6><i class="fas fa-info-circle me-2"></i>Form Help</h6>
+                    <ul class="mb-0">
+                        <li><strong>Summary:</strong> Write a compelling 2-3 sentence overview of your professional background and key strengths</li>
+                        <li><strong>Job Title:</strong> Your current or most recent position title</li>
+                        <li><strong>Company:</strong> Your current or most recent employer</li>
+                        <li><strong>Job Description:</strong> Paste the job posting you want to target - our AI will optimize your resume for it</li>
+                        <li><strong>Skills:</strong> List your key technical and soft skills, separated by commas</li>
+                    </ul>
+                    <hr>
+                    <small><strong>Pro Tip:</strong> Use the sample data scenarios above to see how the form works!</small>
+                </div>
+            `;
+            
+            // Create help alert
+            const helpDiv = document.createElement('div');
+            helpDiv.innerHTML = helpText;
+            
+            // Insert after the sample data section
+            const sampleSection = document.querySelector('.bg-light.rounded');
+            sampleSection.parentNode.insertBefore(helpDiv, sampleSection.nextSibling);
+            
+            // Auto-remove after 10 seconds
+            setTimeout(() => {
+                if (helpDiv.parentNode) {
+                    helpDiv.remove();
+                }
+            }, 10000);
+        }
+    </script>
 </body>
 </html>
