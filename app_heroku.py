@@ -148,10 +148,10 @@ def generate_resume():
             flash('Experience data is required', 'error')
             return redirect(url_for('index'))
         
-        # Generate unique filename
+        # Generate unique filename for HTML (since SimpleResumeGenerator creates HTML)
         resume_id = str(uuid.uuid4())[:8]
-        output_filename = f"resume_{resume_id}.pdf"
-        output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+        html_filename = f"resume_{resume_id}.html"
+        output_path = os.path.join(UPLOAD_FOLDER, html_filename)
         
         # Initialize resume generator
         generator = SimpleResumeGenerator(
@@ -168,33 +168,17 @@ def generate_resume():
             contact_info=contact_info
         )
         
-        if result:
-            # Check if result is an HTML file (fallback case)
-            if result.endswith('.html'):
-                # Update filename to reflect HTML format
-                html_filename = f"resume_{resume_id}.html"
-                html_path = os.path.join(UPLOAD_FOLDER, html_filename)
-                
-                # Copy the HTML file to uploads directory
-                import shutil
-                shutil.copy2(result, html_path)
-                
-                flash(f'Resume generated successfully! ID: {resume_id} (HTML format)', 'success')
-                return jsonify({
-                    'success': True,
-                    'message': 'Resume generated successfully (HTML format)',
-                    'download_url': url_for('download_resume', filename=html_filename),
-                    'resume_id': resume_id
-                })
-            else:
-                # PDF was generated successfully
-                flash(f'Resume generated successfully! ID: {resume_id}', 'success')
-                return jsonify({
-                    'success': True,
-                    'message': 'Resume generated successfully',
-                    'download_url': url_for('download_resume', filename=output_filename),
-                    'resume_id': resume_id
-                })
+        if result and os.path.exists(result):
+            # HTML was generated successfully
+            flash(f'Resume generated successfully! ID: {resume_id}', 'success')
+            return jsonify({
+                'success': True,
+                'message': 'Resume generated successfully (HTML format)',
+                'view_url': url_for('view_resume', filename=html_filename),
+                'download_url': url_for('download_resume', filename=html_filename),
+                'resume_id': resume_id,
+                'format': 'html'
+            })
         else:
             flash('Failed to generate resume', 'error')
             return jsonify({'success': False, 'message': 'Failed to generate resume'})
@@ -203,13 +187,32 @@ def generate_resume():
         flash(f'Error generating resume: {str(e)}', 'error')
         return jsonify({'success': False, 'message': str(e)})
 
+@app.route('/view/<filename>')
+def view_resume(filename):
+    """View generated resume in browser"""
+    try:
+        file_path = os.path.join(UPLOAD_FOLDER, filename)
+        if os.path.exists(file_path) and filename.endswith('.html'):
+            return render_template('view_resume.html', filename=filename, resume_id=filename.replace('.html', '').replace('resume_', ''))
+        else:
+            flash('Resume not found or invalid format', 'error')
+            return redirect(url_for('index'))
+    except Exception as e:
+        flash(f'Error viewing resume: {str(e)}', 'error')
+        return redirect(url_for('index'))
+
 @app.route('/download/<filename>')
 def download_resume(filename):
     """Download generated resume"""
     try:
         file_path = os.path.join(UPLOAD_FOLDER, filename)
         if os.path.exists(file_path):
-            return send_file(file_path, as_attachment=True, download_name=filename)
+            # For HTML files, serve them in the browser for better viewing
+            if filename.endswith('.html'):
+                return send_file(file_path, mimetype='text/html')
+            else:
+                # For other file types, download as attachment
+                return send_file(file_path, as_attachment=True, download_name=filename)
         else:
             flash('Resume file not found', 'error')
             return redirect(url_for('index'))

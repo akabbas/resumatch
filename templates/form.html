@@ -129,7 +129,7 @@
             {% endwith %}
 
             <!-- Form -->
-            <form method="POST" action="/form">
+            <form method="POST" action="/form" id="resumeForm">
                 <!-- Sample Data Section -->
                 <div class="text-center mb-4 p-3 bg-light rounded">
                     <h6 class="mb-3"><i class="fas fa-flask me-2 text-primary"></i>Try Sample Data</h6>
@@ -377,6 +377,48 @@
                 }
             }, 10000);
         }
+        
+        // Handle form submission
+        document.getElementById('resumeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Show loading state
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Generating Resume...';
+            submitBtn.disabled = true;
+            
+            // Submit form data
+            const formData = new FormData(this);
+            
+            fetch('/form', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Redirect to view page
+                    if (data.view_url) {
+                        window.location.href = data.view_url;
+                    } else {
+                        // Fallback to download
+                        window.location.href = data.download_url;
+                    }
+                } else {
+                    // Show error
+                    showErrorMessage(data.message || 'Failed to generate resume');
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showErrorMessage('An error occurred while generating your resume. Please try again.');
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            });
+        });
     </script>
 </body>
 </html>
