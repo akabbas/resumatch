@@ -27,7 +27,7 @@ ResuMatch uses AI to intelligently optimize your resume for each job:
 - **Summary Rewriting**: Creates compelling summaries using job keywords
 - **Bullet Point Enhancement**: Optimizes descriptions with strong action verbs
 - **Intelligent Skill Selection**: Picks most relevant skills from your database
-- **Page Optimization**: Automatically adjusts content to fit 1-2 pages
+- **Page Optimization**: Automatically adjusts content to fit 1-3 pages
 
 ## 🎯 **Why ResuMatch?**
 
@@ -60,7 +60,7 @@ ResuMatch uses AI to intelligently optimize your resume for each job:
 - **Web Interface**: Modern Flask-based UI for easy resume generation
 - **Command Line Interface**: CLI for batch processing and automation
 - **ATS Optimization**: Harvard-style formatting that passes automated screening
-- **Page Management**: Automatic content adjustment for 1-2 page resumes
+- **Page Management**: Automatic content adjustment for 1-3 page resumes
 
 ### **🔧 Technical Stack:**
 - **Backend**: Python 3.13, Flask, spaCy, NLTK, KeyBERT
