@@ -1,0 +1,36 @@
+# Free AI Alternatives - No API Costs!
+# Core Flask dependencies
+flask>=2.3.0
+werkzeug>=2.3.0
+jinja2>=3.1.0
+python-dotenv>=1.0.0
+
+# HTTP and parsing
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+
+# PDF generation
+reportlab>=4.0.0
+
+# Image processing
+Pillow>=10.0.0
+
+# FREE AI Alternatives
+# 1. Local NLP with spaCy (free)
+spacy>=3.7.0
+
+# 2. Local text generation with transformers (free)
+transformers>=4.35.0
+torch>=2.0.0
+accelerate>=0.24.0
+
+# 3. Local keyword extraction (free)
+keybert>=0.7.0
+sentence-transformers>=2.2.0
+
+# 4. Local text analysis (free)
+nltk>=3.8.0
+textstat>=0.7.0
+
+# 5. Local resume optimization (free)
+python-docx>=1.1.0
