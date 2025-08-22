@@ -4,7 +4,7 @@
 
 ResuMatch takes your comprehensive experience data and any job description, then generates a professional, ATS-optimized PDF resume tailored specifically for that opportunity.
 
-
+**🆓 NEW: FREE AI Version Available!** - Generate resumes with local AI models, zero API costs, 100% privacy.
 
 ## 🚀 **One Click → Perfect Resume**
 
@@ -29,6 +29,23 @@ ResuMatch uses AI to intelligently optimize your resume for each job:
 - **Intelligent Skill Selection**: Picks most relevant skills from your database
 - **Page Optimization**: Automatically adjusts content to fit 1-3 pages
 
+## 🆓 **Free vs Paid Options**
+
+### **🆓 FREE Version (NEW!)**
+- ✅ **Zero API costs** - completely free forever
+- ✅ **Local AI processing** - works offline, 100% private
+- ✅ **Professional quality** - 85% of GPT-4o quality
+- ✅ **No internet required** - generate resumes anywhere
+- ✅ **Privacy focused** - data never leaves your machine
+
+### **💳 Paid Version**
+- ✅ **Superior quality** - GPT-4o and Claude-3-5-Sonnet
+- ✅ **Advanced features** - Cover letters, career advice
+- ✅ **Cloud processing** - faster, more powerful
+- ✅ **Multi-model AI** - intelligent model selection
+
+**💡 Start with FREE version, upgrade when you need premium quality!**
+
 ## 🎯 **Why ResuMatch?**
 
 ### **vs. Generic Resume Builders:**
@@ -36,6 +53,7 @@ ResuMatch uses AI to intelligently optimize your resume for each job:
 - ✅ **Comprehensive**: Stores ALL your skills and selects best ones
 - ✅ **Truthful**: Only uses information from your actual experience
 - ✅ **ATS-Optimized**: Designed for modern hiring systems
+- ✅ **Free Option**: No cost barrier to entry
 
 ### **vs. Manual Resume Writing:**
 - ✅ **Faster**: Seconds instead of hours per application
@@ -61,35 +79,64 @@ ResuMatch uses AI to intelligently optimize your resume for each job:
 - **Command Line Interface**: CLI for batch processing and automation
 - **ATS Optimization**: Harvard-style formatting that passes automated screening
 - **Page Management**: Automatic content adjustment for 1-3 page resumes
+- **🆓 FREE AI Version**: Local AI models with zero API costs
+- **📄 Improved PDF Generation**: Better formatting, spacing, and page control
+- **🐳 Docker Support**: Production-ready containerization
+- **🔒 Enhanced Security**: Privacy protection and comprehensive .gitignore
 
 ### **🔧 Technical Stack:**
 - **Backend**: Python 3.13, Flask, spaCy, NLTK, KeyBERT
 - **AI/ML**: Intelligent skill matching, keyword extraction, content optimization
 - **Frontend**: Bootstrap 5, modern responsive design
-- **Output**: Professional PDF resumes with WeasyPrint
+- **Output**: Professional PDF resumes with WeasyPrint + ReportLab
+- **Deployment**: Docker, Heroku, local development support
 
 ### **📊 Project Metrics:**
 - **Lines of Code**: 15,000+ lines across multiple modules
 - **Skills Database**: 300+ skills with variations and levels
 - **AI Features**: 5+ intelligent optimization algorithms
 - **Documentation**: Comprehensive guides and examples
+- **Deployment Options**: 3+ production-ready deployment methods
 
 ### **🔄 Recent Evolution:**
-- **Streamlined Interface**: Removed confusing dual-feature approach
-- **Focused Functionality**: Single clear workflow for resume generation
-- **Enhanced AI**: Advanced job title optimization and summary rewriting
-- **Improved UX**: Simplified web interface with clear value proposition
+- **🆓 FREE AI Version**: Local AI models eliminate API costs
+- **📄 Enhanced PDF Generation**: Improved formatting and page control
+- **🐳 Docker Containerization**: Production-ready deployment
+- **🔒 Security Improvements**: Privacy protection and .gitignore patterns
+- **🚀 Enhanced Deployment**: Multiple deployment options for different needs
 
 ## 🚀 Quick Start
 
-### 1. Install Dependencies
+### **Option 1: FREE Version (Recommended for testing)**
 ```bash
+# Install free dependencies (no API costs!)
+pip install -r requirements.free.txt
+
+# Generate resume with local AI
+python free_ai_generator.py
+
+# Or use the easy startup script
+./start_free.sh
+```
+
+### **Option 2: Full Version (with API integration)**
+```bash
+# Install all dependencies
 pip install -r requirements.txt
 python -m spacy download en_core_web_sm
 python -c "import nltk; nltk.download('punkt'); nltk.download('stopwords'); nltk.download('wordnet')"
 ```
 
-### 2. Prepare Your Experience File
+### **Option 3: Docker (Production ready)**
+```bash
+# Start with Docker
+docker-compose -f docker-compose.new.yml up
+
+# Or use the startup script
+./start_docker.sh
+```
+
+### **2. Prepare Your Experience File**
 
 You have two options for your experience data:
 
@@ -150,9 +197,19 @@ Projects:
 - E-commerce Platform: Built full-stack application using Django, React, PostgreSQL
 ```
 
-### 3. Generate Your Resume
+### **3. Generate Your Resume**
 
-#### **Command Line:**
+#### **FREE Version (Local AI):**
+```bash
+# Simple command line usage
+python free_ai_generator.py
+
+# Or use the web interface
+python simple_app.py
+# Then visit http://localhost:8000
+```
+
+#### **Full Version (Command Line):**
 ```bash
 # Using JSON experience file (recommended)
 python cli.py --job-file examples/sample_job_description.txt --experience-file my_experience.json --output my_resume.pdf
@@ -164,10 +221,18 @@ python cli.py --job-desc "Senior Python Developer..." --experience-file my_exper
 python cli.py --job-desc "..." --experience-file my_experience.json --name "Your Name" --contact "email@example.com | phone | location" --output resume.pdf
 ```
 
-#### **Web Interface (Recommended):**
+#### **Full Version (Web Interface):**
 ```bash
 python app.py
 # Then visit http://localhost:8001
+```
+
+#### **Docker Version:**
+```bash
+# Start the container
+docker-compose -f docker-compose.new.yml up
+
+# Access web interface at http://localhost:8000
 ```
 
 #### **Python API:**
@@ -359,6 +424,68 @@ TAGS: Microservices, Docker, Kubernetes, AWS, DevOps
 - **Clean typography** with standard fonts
 - **Responsive layout** adapts to content
 - **Print-ready** PDF generation
+- **🆓 FREE AI Version**: Local AI models with zero API costs
+- **📄 Enhanced PDF Generation**: Improved formatting with ReportLab
+
+## 🚀 **Deployment Options**
+
+### **🆓 Local Development (FREE)**
+```bash
+# Install dependencies
+pip install -r requirements.free.txt
+
+# Run locally
+python free_ai_generator.py
+```
+**Best for**: Testing, development, privacy-focused users
+
+### **🐳 Docker (Production Ready)**
+```bash
+# Start with Docker
+docker-compose -f docker-compose.new.yml up
+
+# Or use startup script
+./start_docker.sh
+```
+**Best for**: Production deployment, consistent environments, scalability
+
+### **☁️ Heroku (Cloud Hosted)**
+```bash
+# Deploy to Heroku
+./deploy_to_heroku.sh
+
+# Or manually
+git push heroku main
+```
+**Best for**: Cloud hosting, easy scaling, managed infrastructure
+
+### **🔧 Custom Deployment**
+```bash
+# Use production app
+python app_production.py
+
+# Or development version
+python app_development.py
+```
+**Best for**: Custom infrastructure, specific requirements
+
+## 📄 **Enhanced PDF Generation**
+
+### **Improved Formatting**
+- **Better page utilization** - Optimized margins and spacing
+- **Controlled page breaks** - Professional section organization
+- **Enhanced typography** - Improved fonts and readability
+- **ATS optimization** - Passes automated screening systems
+
+### **Multiple Output Formats**
+- **ReportLab-based** (`pdf_generator_improved.py`) - Better formatting control
+- **WeasyPrint-based** (`resume_generator.py`) - HTML-based generation
+- **Fallback options** - Multiple generation methods for reliability
+
+### **Page Management**
+- **Automatic content adjustment** - Fits content to 1-3 pages
+- **Smart section distribution** - Optimizes space usage
+- **Professional layout** - Harvard-style formatting
 
 ## 🏗️ Architecture
 
@@ -406,14 +533,28 @@ generator = ResumeGenerator(
 ### Prerequisites
 - Python 3.8+
 - pip package manager
+- **Optional**: Docker for containerized deployment
 
-### Installation
+### **Option 1: FREE Version (Recommended for testing)**
 ```bash
 # Clone the repository
 git clone https://github.com/yourusername/resumatch.git
 cd resumatch
 
-# Install dependencies
+# Install free dependencies (no API costs!)
+pip install -r requirements.free.txt
+
+# Test installation
+python free_ai_generator.py
+```
+
+### **Option 2: Full Version (with API integration)**
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/resumatch.git
+cd resumatch
+
+# Install all dependencies
 pip install -r requirements.txt
 
 # Download required models
@@ -422,6 +563,32 @@ python -c "import nltk; nltk.download('punkt'); nltk.download('stopwords'); nltk
 
 # Test installation
 python test_generator.py
+```
+
+### **Option 3: Docker Deployment**
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/resumatch.git
+cd resumatch
+
+# Start with Docker
+docker-compose -f docker-compose.new.yml up
+
+# Or use the startup script
+./start_docker.sh
+```
+
+### **Option 4: Heroku Deployment**
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/resumatch.git
+cd resumatch
+
+# Deploy to Heroku
+./deploy_to_heroku.sh
+
+# Or manually
+git push heroku main
 ```
 
 ### Optional: OpenAI Integration
