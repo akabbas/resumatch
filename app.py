@@ -10,7 +10,7 @@ import tempfile
 from pathlib import Path
 from flask import Flask, render_template, request, jsonify, send_file, flash, redirect, url_for
 from werkzeug.utils import secure_filename
-from resume_generator import ResumeGenerator
+from dynamic_resume_generator_enhanced import EnhancedDynamicResumeGenerator
 from job_matcher import ResumeTailor, BulletPoint
 import uuid
 
@@ -49,6 +49,7 @@ def form_submit():
         company = request.form.get('company', '').strip()
         job_description = request.form.get('job_description', '').strip()
         skills = request.form.get('skills', '').strip()
+        enable_ai_transform = request.form.get('enable_ai_transform', 'on') == 'on'
         
         # Basic validation
         if not all([summary, job_title, company, job_description, skills]):
@@ -75,10 +76,11 @@ def form_submit():
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
         
         # Initialize resume generator with default settings
-        generator = ResumeGenerator(
+        generator = EnhancedDynamicResumeGenerator(
             use_openai=False,  # Default to free mode
             max_pages=2,
-            include_projects=False
+            include_projects=False,
+            no_transform=not enable_ai_transform
         )
         
         # Generate resume using existing logic
@@ -123,6 +125,7 @@ def generate_resume():
         job_description = request.form.get('job_description', '').strip()
         name = request.form.get('name', 'Your Name').strip()
         contact_info = request.form.get('contact_info', 'email@example.com | phone | location').strip()
+        enable_ai_transform = request.form.get('enable_ai_transform', 'on') == 'on'
         
         # Handle experience data
         experience_data = None
@@ -159,10 +162,11 @@ def generate_resume():
         free_mode = request.form.get('free_mode') == 'on'
         use_openai = request.form.get('use_openai') == 'on' and not free_mode
         
-        generator = ResumeGenerator(
+        generator = EnhancedDynamicResumeGenerator(
             use_openai=use_openai,
             max_pages=int(request.form.get('max_pages', 2)),
-            include_projects=request.form.get('include_projects') == 'on'
+            include_projects=request.form.get('include_projects') == 'on',
+            no_transform=not enable_ai_transform
         )
         
         # Generate resume

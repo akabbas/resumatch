@@ -8,7 +8,7 @@ import json
 import sys
 import os
 from pathlib import Path
-from resume_generator import ResumeGenerator
+from dynamic_resume_generator_enhanced import EnhancedDynamicResumeGenerator
 
 def load_json_file(file_path: str) -> dict:
     """Load JSON file safely"""
@@ -121,6 +121,11 @@ Examples:
         action='store_true',
         help='Exclude projects section'
     )
+    parser.add_argument(
+        '--no-transform',
+        action='store_true',
+        help='Do not transform the resume (e.g., for a specific format)'
+    )
     
     # Verbose output
     parser.add_argument(
@@ -167,10 +172,11 @@ Examples:
     
     try:
         # Initialize generator
-        generator = ResumeGenerator(
+        generator = EnhancedDynamicResumeGenerator(
             use_openai=args.use_openai,
             max_pages=args.max_pages,
-            include_projects=not args.no_projects
+            include_projects=not args.no_projects,
+            no_transform=args.no_transform
         )
         
         if args.verbose:
@@ -178,9 +184,10 @@ Examples:
             print(f"Experience data type: {type(experience_data)}")
             print(f"Output path: {args.output}")
             print(f"Using OpenAI: {args.use_openai}")
+            print(f"AI Transformation: {'Disabled' if args.no_transform else 'Enabled'}")
         
         # Generate resume
-        generator.generate_resume(
+        result = generator.generate_resume(
             job_description=job_description,
             experience_data=experience_data,
             output_path=args.output,
