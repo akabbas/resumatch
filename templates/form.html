@@ -278,14 +278,17 @@
                             </div>
                         </div>
                         
-                        <!-- Scenario Selector (Legacy) -->
+                        <!-- Job Scenario Selector -->
                         <div class="row justify-content-center mb-3">
                             <div class="col-md-6">
                                 <select class="form-select" id="scenarioSelector" onchange="loadSampleData()">
                                     <option value="">Choose a job scenario...</option>
-                                    <option value="business_analyst">Business Systems Analyst</option>
-                                    <option value="data_analyst">Data Analyst</option>
-                                    <option value="software_developer">Software Developer</option>
+                                    <option value="business_systems_analyst">Business Systems Analyst</option>
+                                    <option value="data_scientist">Data Scientist</option>
+                                    <option value="software_engineer">Software Engineer</option>
+                                    <option value="devops_engineer">DevOps Engineer</option>
+                                    <option value="product_manager">Product Manager</option>
+                                    <option value="cloud_architect">Cloud Architect</option>
                                 </select>
                             </div>
                         </div>
@@ -386,8 +389,8 @@
                 <!-- Skills -->
                 <div class="form-group">
                     <label for="skills" class="form-label">Skills</label>
-                    <input type="text" class="form-control" id="skills" name="skills" 
-                           placeholder="Python, SQL, Salesforce, REST APIs, Data Analysis, etc." required>
+                    <textarea class="form-control" id="skills" name="skills" rows="4"
+                              placeholder="Python, SQL, Salesforce, REST APIs, Data Analysis, etc." required></textarea>
                     <div class="field-help">
                         <h6><i class="fas fa-tools me-1"></i>Your Skills</h6>
                         <p>Comma-separated list of your key skills and technologies</p>
@@ -519,23 +522,37 @@
                 scenarioSelector.disabled = true;
                 scenarioSelector.innerHTML = '<option>Loading...</option>';
                 
-                // Fetch sample data from API
-                const response = await fetch('/api/sample-data');
+                // Fetch sample data for specific job scenario
+                const response = await fetch(`/api/sample-data/${selectedScenario}`);
                 const data = await response.json();
                 
-                if (data.scenarios && data.scenarios[selectedScenario]) {
-                    const sampleData = data.scenarios[selectedScenario];
-                    
-                    // Populate form fields
-                    document.getElementById('summary').value = sampleData.summary;
-                    document.getElementById('job_title').value = sampleData.job_title;
-                    document.getElementById('company').value = sampleData.company;
-                    document.getElementById('job_description').value = sampleData.job_description;
-                    document.getElementById('skills').value = sampleData.skills;
-                    
-                    // Show success message
-                    showSuccessMessage('Sample data loaded successfully!');
+                // Populate form fields with the sample data
+                if (data.experience && data.experience.summary) {
+                    document.getElementById('summary').value = data.experience.summary;
                 }
+                
+                if (data.experience && data.experience.skills) {
+                    // Join skills array into comma-separated string
+                    const skillsText = Array.isArray(data.experience.skills) 
+                        ? data.experience.skills.join(', ')
+                        : data.experience.skills;
+                    document.getElementById('skills').value = skillsText;
+                }
+                
+                if (data.job_title) {
+                    document.getElementById('job_title').value = data.job_title;
+                }
+                
+                if (data.company) {
+                    document.getElementById('company').value = data.company;
+                }
+                
+                if (data.job_description) {
+                    document.getElementById('job_description').value = data.job_description;
+                }
+                
+                // Show success message
+                showSuccessMessage('Sample data loaded successfully!');
                 
             } catch (error) {
                 console.error('Error loading sample data:', error);
@@ -583,21 +600,22 @@
         }
 
         function rotateJobDescriptions() {
-            const jobSelector = document.getElementById('jobSelector');
-            const options = jobSelector.options;
+            const scenarioSelector = document.getElementById('scenarioSelector');
+            const options = scenarioSelector.options;
             
             // Skip the first option (placeholder)
             if (options.length <= 1) return;
             
             // Get current selection (skip placeholder)
-            let currentIndex = jobSelector.selectedIndex;
+            let currentIndex = scenarioSelector.selectedIndex;
             if (currentIndex === 0) currentIndex = 1; // Start from first real option
             
             // Calculate next index (wrap around)
             const nextIndex = currentIndex >= options.length - 1 ? 1 : currentIndex + 1;
             
-            // Select next job
-            jobSelector.selectedIndex = nextIndex;
+            // Select next job and load its data
+            scenarioSelector.selectedIndex = nextIndex;
+            loadSampleData();
             
             // Load the new job description
             loadJobDescription();
