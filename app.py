@@ -11,14 +11,47 @@ from pathlib import Path
 from flask import Flask, render_template, request, jsonify, send_file, flash, redirect, url_for, session
 from werkzeug.utils import secure_filename
 from dynamic_resume_generator_enhanced import EnhancedDynamicResumeGenerator
-from job_matcher import ResumeTailor, BulletPoint
+from job_matcher_simple import ResumeTailor, BulletPoint
 import uuid
 from resume_parser import parse_resume_file
+from flask_login import LoginManager, login_required, current_user
+from flask_wtf.csrf import CSRFProtect
+from models import db, User
+from auth import auth
 
 app = Flask(__name__)
 app.secret_key = 'resumatch-secret-key-2024'
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
 app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024  # 10MB max file size
+
+# Database configuration
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///resumatch.db')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Initialize extensions
+db.init_app(app)
+csrf = CSRFProtect(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'auth.login'
+login_manager.login_message = 'Please log in to access this page.'
+login_manager.login_message_category = 'info'
+
+# Add Jinja2 global functions
+@app.context_processor
+def inject_functions():
+    """Inject utility functions into Jinja2 templates"""
+    return {
+        'min': min,
+        'max': max,
+        'abs': abs,
+        'round': round
+    }
+
+@login_manager.user_loader
+def load_user(user_id):
+    """Load user for Flask-Login"""
+    return User.query.get(int(user_id))
 
 # Configuration
 UPLOAD_FOLDER = 'uploads'
@@ -27,6 +60,20 @@ MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max file size
 
 # Ensure upload directory exists
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+# Register blueprints
+app.register_blueprint(auth)
+
+# Database initialization route
+@app.route('/init-db')
+def init_db():
+    """Initialize database tables"""
+    try:
+        with app.app_context():
+            db.create_all()
+        return jsonify({'success': True, 'message': 'Database initialized successfully'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': f'Error initializing database: {str(e)}'})
 
 def allowed_file(filename):
     """Check if file extension is allowed"""
@@ -45,6 +92,7 @@ def form():
     return render_template('form.html', resume_data=resume_data)
 
 @app.route('/form', methods=['POST'])
+@csrf.exempt
 def form_submit():
     """Handle form submission and generate resume"""
     try:
@@ -58,8 +106,10 @@ def form_submit():
         
         # Basic validation
         if not all([summary, job_title, company, job_description, skills]):
-            flash('All fields are required', 'error')
-            return redirect('/form')
+            return jsonify({
+                'success': False,
+                'message': 'All fields are required'
+            }), 400
         
         # Convert form data to JSON format expected by resume generator
         experience_data = {
@@ -108,19 +158,31 @@ def form_submit():
                 import shutil
                 shutil.copy2(result, html_path)
                 
-                flash(f'Resume generated successfully! ID: {resume_id} (HTML format)', 'success')
-                return redirect(url_for('download_resume', filename=html_filename))
+                return jsonify({
+                    'success': True,
+                    'message': f'Resume generated successfully! ID: {resume_id} (HTML format)',
+                    'download_url': url_for('download_resume', filename=html_filename),
+                    'view_url': url_for('view_resume', filename=html_filename)
+                })
             else:
                 # PDF was generated successfully
-                flash(f'Resume generated successfully! ID: {resume_id}', 'success')
-                return redirect(url_for('download_resume', filename=output_filename))
+                return jsonify({
+                    'success': True,
+                    'message': f'Resume generated successfully! ID: {resume_id}',
+                    'download_url': url_for('download_resume', filename=output_filename),
+                    'view_url': url_for('view_resume', filename=output_filename)
+                })
         else:
-            flash('Failed to generate resume', 'error')
-            return redirect('/form')
+            return jsonify({
+                'success': False,
+                'message': 'Failed to generate resume'
+            }), 500
             
     except Exception as e:
-        flash(f'Error generating resume: {str(e)}', 'error')
-        return redirect('/form')
+        return jsonify({
+            'success': False,
+            'message': f'Error generating resume: {str(e)}'
+        }), 500
 
 @app.route('/generate', methods=['POST'])
 def generate_resume():
@@ -290,6 +352,25 @@ def download_resume(filename):
             return redirect(url_for('index'))
     except Exception as e:
         flash(f'Error downloading resume: {str(e)}', 'error')
+        return redirect(url_for('index'))
+
+@app.route('/view/<filename>')
+def view_resume(filename):
+    """View generated resume in browser"""
+    try:
+        file_path = os.path.join(UPLOAD_FOLDER, filename)
+        if os.path.exists(file_path):
+            if filename.endswith('.html'):
+                return send_file(file_path)
+            elif filename.endswith('.pdf'):
+                return send_file(file_path, mimetype='application/pdf')
+            else:
+                return send_file(file_path)
+        else:
+            flash('Resume file not found', 'error')
+            return redirect(url_for('index'))
+    except Exception as e:
+        flash(f'Error viewing resume: {str(e)}', 'error')
         return redirect(url_for('index'))
 
 
