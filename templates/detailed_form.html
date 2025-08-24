@@ -144,6 +144,19 @@
             </div>
         </div>
 
+        <!-- Sample Data Button -->
+        <div class="text-center mb-4">
+            <button type="button" class="btn btn-outline-primary btn-lg" onclick="loadSampleData()">
+                <i class="fas fa-magic me-2"></i>Load Ammr's Sample Data
+            </button>
+            <div class="mt-2">
+                <small class="text-muted">
+                    <i class="fas fa-info-circle me-1"></i>
+                    This will populate the form with real professional experience data for demonstration purposes
+                </small>
+            </div>
+        </div>
+
         <!-- Form -->
         <form method="POST" action="/detailed-form" id="detailedResumeForm">
             <!-- Personal Information Section -->
@@ -675,6 +688,121 @@
             });
         }
 
+        // Load Sample Data Function
+        function loadSampleData() {
+            // Personal Information
+            document.getElementById('name').value = 'Ammr Abbasher';
+            document.getElementById('email').value = 'AmmrAbbasher@gmail.com';
+            document.getElementById('phone').value = '817-575-7791';
+            document.getElementById('location').value = 'Dallas, Texas, USA';
+            document.getElementById('linkedin').value = 'https://www.linkedin.com/in/ammrab';
+            document.getElementById('github').value = 'https://github.com/akabbas';
+            document.getElementById('summary').value = 'Software Engineer specializing in workflow automation, cloud infrastructure, and AI applications. 2.5+ years building scalable Python/Docker/Kubernetes systems, integrating REST APIs with ERP/CRM platforms, and developing NLP/video processing tools. Proven ability to deliver measurable process improvements and deploy production-ready solutions in fast-paced environments.';
+            
+            // Skills
+            document.getElementById('skills').value = 'Python, SQL, Bash scripting, JavaScript, Shell scripting, Flask, REST APIs, React (concepts), Node.js (concepts), AWS (EC2, S3), Docker, Kubernetes, Prometheus, Grafana, FFmpeg (video transcoding), OpenCV (image analysis), spaCy (NLP), PostgreSQL, Redis, Oracle CPQ, Salesforce CRM, ERP Integration, JD Edwards, Great Plains, Agile Methodologies, Jira, Azure DevOps, Data Automation, ETL Workflows, Business Process Automation, Requirements Gathering, UAT, Data Reporting, Data Visualization, Excel VBA, Git, Terraform, PowerShell, Zapier, LucidChart, Snowflake, MuleSoft, Metadata API, Salesforce CPQ, RevOps, Data Governance, KPI Dashboards, Cross-functional Collaboration, Technical Documentation, Stakeholder Management, Solution Scoping, Business Analysis, User Stories, Acceptance Criteria, Product Management, UI/UX Design, Computer Vision, Data Analysis, Data Structures & Algorithms, Hadoop, jQuery, .NET, Next.js, NoSQL, SAP Products, Web Development, Frontend, Backend, C/C++, Java';
+            
+            // Clear existing experience items and add new ones
+            const experienceContainer = document.getElementById('experience-container');
+            experienceContainer.innerHTML = '';
+            
+            const experiences = [
+                {
+                    title: 'Data Automation Engineer | Software Developer',
+                    company: 'Flowserve',
+                    duration: 'January 2023 - Present',
+                    description: 'Reduced manual quoting work by 50% through Python/Docker automation integrating REST APIs with ERP and Salesforce. Built internal Flask tools for real-time quote automation, mirroring modern React/Node.js workflows. Developed API-driven pipelines between ERP, Salesforce, and cloud storage for near real-time sync. Led UAT for 100+ users, ensuring adoption and stability in production.'
+                },
+                {
+                    title: 'Business Systems Analyst & Data Automation Specialist',
+                    company: 'Flowserve',
+                    duration: 'August 2017 - December 2022',
+                    description: 'Automated CPQ processes using Python, SQL, and Excel VBA, reducing manual quote validation and pricing efforts by 50%. Built and maintained REST API integrations across Oracle CPQ, Salesforce CRM, and ERP systems (JD Edwards, Great Plains) for real-time data synchronization. Developed custom pricing rules, approval workflows, and guided selling flows in Oracle CPQ to support complex product configurations and speed up quoting cycles. Delivered SQL-based sales dashboards to visualize quote status, pricing trends, and KPIs for executive leadership. Led UAT testing, stakeholder demos, and user training for 100+ global sales and operations users, increasing adoption and reducing errors. Participated in Agile development cycles, sprint planning, backlog grooming, and process documentation with Jira and Azure DevOps. Authored detailed technical documentation on API workflows, pricing logic, and business processes to support internal knowledge transfer and system maintenance.'
+                },
+                {
+                    title: 'Business Systems Developer/Analyst Intern',
+                    company: 'Salesforce',
+                    duration: 'May 2021 - August 2021',
+                    description: 'Collaborated with Solution Architects and MuleSoft Business Analysts to gather, validate, and document client requirements for complex enterprise integration projects. Supported requirements analysis and authored clear documentation covering scope, use cases, and acceptance criteria for customer implementations. Participated in Agile delivery ceremonies and contributed to effort estimation, project scoping, and client communication best practices. Engaged in discovery sessions and stakeholder interviews to align technical solutions with business objectives. Gained hands-on experience with Salesforce ecosystem tools, integration planning, and project documentation standards. Contributed to internal knowledge bases by documenting business process flows, user stories, and lessons learned from client engagements. Developed foundational skills in stakeholder management, solution scoping, and functional requirements documentation.'
+                }
+            ];
+            
+            experiences.forEach((exp, index) => {
+                addExperience();
+                const lastExperience = experienceContainer.lastElementChild;
+                lastExperience.querySelector('input[name^="experience"][name$="[title]"]').value = exp.title;
+                lastExperience.querySelector('input[name^="experience"][name$="[company]"]').value = exp.company;
+                lastExperience.querySelector('input[name^="experience"][name$="[duration]"]').value = exp.duration;
+                lastExperience.querySelector('textarea[name^="experience"][name$="[description]"]').value = exp.description;
+            });
+            
+            // Clear existing education items and add new ones
+            const educationContainer = document.getElementById('education-container');
+            educationContainer.innerHTML = '';
+            
+            addEducation();
+            const lastEducation = educationContainer.lastElementChild;
+            lastEducation.querySelector('input[name^="education"][name$="[degree]"]').value = 'Bachelor\'s in Business Computer Information Systems, Minor in Marketing Business Analytics';
+            lastEducation.querySelector('input[name^="education"][name$="[institution]"]').value = 'University of North Texas (UNT)';
+            lastEducation.querySelector('input[name^="education"][name$="[year]"]').value = '2022';
+            lastEducation.querySelector('input[name^="education"][name$="[gpa]"]').value = '3.5';
+            lastEducation.querySelector('input[name^="education"][name$="[field]"]').value = 'Business Computer Information Systems';
+            
+            // Clear existing project items and add new ones
+            const projectsContainer = document.getElementById('projects-container');
+            projectsContainer.innerHTML = '';
+            
+            const projects = [
+                {
+                    name: 'ResuMatch – AI-Powered Resume Generator',
+                    technologies: 'Python, Flask, Docker, WeasyPrint, spaCy, KeyBERT, NLP, CLI, PDF Generation',
+                    description: 'Developed a production-ready Flask web app and CLI tool that generates ATS-optimized PDFs by analyzing user experience and job descriptions with NLP (spaCy, KeyBERT). Built AI-driven features for job title optimization, summary rewriting, bullet enhancement, and intelligent skill selection; handled 100+ skills with contextual relevance. Designed modular architecture with Python, Docker, and WeasyPrint, enabling fast, scalable resume generation for individual and batch processing.'
+                },
+                {
+                    name: 'JobPulse – AI-Powered Job Market Analytics Platform',
+                    technologies: 'Python, Docker, Kubernetes, Prometheus, Grafana, Heroku, Playwright, REST APIs, AI/ML, Data Analytics',
+                    description: 'Built a production-ready multi-source job data platform integrating 8+ APIs (GitHub Jobs, Remotive) and advanced Playwright-based scraping for blocked sites; achieved 95%+ success rate in job collection. Designed containerized architecture with Docker and Kubernetes, monitored via Prometheus/Grafana, and deployed to Heroku with autoscaling and optimized slug size (23.9MB). Implemented AI-driven skills extraction, duplicate detection, and real-time analytics processing 10K+ listings/day with 99.9% uptime.'
+                },
+                {
+                    name: 'Full Stack Task Manager',
+                    technologies: 'React, Node.js, PostgreSQL, JWT, AWS EC2, Docker',
+                    description: 'Built task management application with React, Node.js, PostgreSQL, and JWT authentication. Deployed on AWS EC2 with Docker.'
+                }
+            ];
+            
+            projects.forEach((project, index) => {
+                addProject();
+                const lastProject = projectsContainer.lastElementChild;
+                lastProject.querySelector('input[name^="projects"][name$="[name]"]').value = project.name;
+                lastProject.querySelector('input[name^="projects"][name$="[technologies]"]').value = project.technologies;
+                lastProject.querySelector('textarea[name^="projects"][name$="[description]"]').value = project.description;
+            });
+            
+            // Clear existing certification items and add new ones
+            const certificationsContainer = document.getElementById('certifications-container');
+            certificationsContainer.innerHTML = '';
+            
+            addCertification();
+            const lastCertification = certificationsContainer.lastElementChild;
+            lastCertification.querySelector('input[name^="certifications"][name$="[name]"]').value = 'CPQ Developer 2024 Certified Implementation Professional – Oracle Cloud Infrastructure';
+            lastCertification.querySelector('input[name^="certifications"][name$="[issuer]"]').value = 'Oracle Cloud Infrastructure';
+            lastCertification.querySelector('input[name^="certifications"][name$="[year]"]').value = '2024';
+            
+            // Update progress after loading data
+            updateProgress();
+            
+            // Show success message
+            const button = event.target;
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-check me-2"></i>Data Loaded Successfully!';
+            button.className = 'btn btn-success btn-lg';
+            
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.className = 'btn btn-outline-primary btn-lg';
+            }, 2000);
+        }
+        
         // Form submission
         document.getElementById('detailedResumeForm').addEventListener('submit', function(e) {
             e.preventDefault();
