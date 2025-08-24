@@ -7,4 +7,11 @@ requests==2.31.0
 beautifulsoup4==4.12.2
 python-dotenv==1.0.0
 reportlab==4.0.4
-Pillow==10.0.1 
+Pillow==10.0.1
+# Additional dependencies for Railway deployment
+python-multipart==0.0.6
+# PDF processing for page limit enforcement
+PyPDF2==3.0.1
+# Resume parsing dependencies
+pdfplumber==0.10.3
+python-docx==1.1.0 

@@ -1,0 +1,71 @@
+# Git files
+.git/
+.gitignore
+
+# Python cache and virtual environments
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+resumatch_env/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+temp/
+tmp/
+
+# Backup files
+backups/
+*.bak
+*.backup
+
+# Documentation
+*.md
+!README.md
+
+# Development files
+.env
+.env.local
+.env.development
+.env.production
+docker-compose*.yml
+Dockerfile*
+deploy_*.sh
+RAILWAY_DEPLOYMENT.md
+DARK_MODE_IMPLEMENTATION.md
+
+# Test files
+test_*.py
+*_test.py
+tests/
+
+# Sample and example files
+examples/
+samples/

@@ -727,9 +727,10 @@ class EnhancedDynamicResumeGenerator:
                     else:
                         contact_info = "email@example.com | phone | location"
                     
-                    # Generate Harvard-style PDF
+                    # Generate Harvard-style PDF with page limit enforcement
                     result_path = generate_harvard_pdf_resume(
-                        experience_data, output_path, name, contact_info
+                        experience_data, output_path, name, contact_info,
+                        max_pages=self.max_pages, job_description=job_description
                     )
                     return result_path
                     

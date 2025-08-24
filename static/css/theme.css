@@ -1,0 +1,243 @@
+/* Dark Mode Theme CSS Variables and Styles */
+
+:root {
+    /* Light theme variables */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --bg-tertiary: #e8f5e8;
+    --bg-quaternary: #f5f7fa;
+    --text-primary: #212529;
+    --text-secondary: #6c757d;
+    --text-muted: #6c757d;
+    --border-color: #e9ecef;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --shadow-color-strong: rgba(0, 0, 0, 0.2);
+    --card-bg: #ffffff;
+    --form-bg: #f8f9fa;
+    --input-bg: #ffffff;
+    --dropdown-bg: #ffffff;
+    --dropdown-border: #e9ecef;
+    --alert-bg: #ffffff;
+    --code-bg: #f8f9fa;
+}
+
+[data-theme="dark"] {
+    /* Dark theme variables */
+    --bg-primary: #121212;
+    --bg-secondary: #1e1e1e;
+    --bg-tertiary: #2d2d2d;
+    --bg-quaternary: #2d2d2d;
+    --text-primary: #e0e0e0;
+    --text-secondary: #b0b0b0;
+    --text-muted: #888888;
+    --border-color: #404040;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --shadow-color-strong: rgba(0, 0, 0, 0.4);
+    --card-bg: #1e1e1e;
+    --form-bg: #1e1e1e;
+    --input-bg: #1e1e1e;
+    --dropdown-bg: #1e1e1e;
+    --dropdown-border: #404040;
+    --alert-bg: #1e1e1e;
+    --code-bg: #2d2d2d;
+}
+
+/* Global theme transitions */
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Theme toggle button styles */
+.theme-toggle {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+}
+
+.theme-toggle:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: scale(1.1);
+}
+
+.theme-toggle i {
+    font-size: 1.2rem;
+    color: white;
+}
+
+/* Form elements */
+.form-control, .form-select, .form-textarea {
+    background-color: var(--input-bg);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+.form-control:focus, .form-select:focus, .form-textarea:focus {
+    background-color: var(--input-bg);
+    color: var(--text-primary);
+    border-color: #667eea;
+}
+
+.form-label {
+    color: var(--text-primary);
+}
+
+.form-text {
+    color: var(--text-muted);
+}
+
+.form-check-label {
+    color: var(--text-primary);
+}
+
+/* Cards and containers */
+.card, .form-container, .viewer-container, .error-container {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+    box-shadow: 0 4px 6px var(--shadow-color);
+}
+
+/* Alerts */
+.alert {
+    background-color: var(--alert-bg);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+/* Dropdowns */
+.dropdown-menu {
+    background-color: var(--dropdown-bg);
+    border-color: var(--dropdown-border);
+    box-shadow: 0 5px 15px var(--shadow-color);
+}
+
+.dropdown-item {
+    color: var(--text-primary);
+}
+
+.dropdown-item:hover {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+/* Background utilities */
+.bg-light {
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-primary);
+}
+
+/* Text utilities */
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+/* Borders */
+.border {
+    border-color: var(--border-color) !important;
+}
+
+/* Shadows */
+.shadow {
+    box-shadow: 0 4px 6px var(--shadow-color) !important;
+}
+
+.shadow-lg {
+    box-shadow: 0 10px 30px var(--shadow-color-strong) !important;
+}
+
+/* Code blocks */
+pre, code {
+    background-color: var(--code-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+/* Tables */
+.table {
+    color: var(--text-primary);
+}
+
+.table th,
+.table td {
+    border-color: var(--border-color);
+}
+
+/* Modal backgrounds */
+.modal-content {
+    background-color: var(--card-bg);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+.modal-header,
+.modal-footer {
+    border-color: var(--border-color);
+}
+
+/* Tooltips */
+.tooltip-inner {
+    background-color: var(--card-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+/* Popovers */
+.popover {
+    background-color: var(--card-bg);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+.popover-header {
+    background-color: var(--bg-secondary);
+    border-bottom-color: var(--border-color);
+}
+
+/* Custom scrollbar for dark mode */
+[data-theme="dark"] ::-webkit-scrollbar {
+    width: 8px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
+}
+
+/* Focus styles for accessibility */
+[data-theme="dark"] .form-control:focus,
+[data-theme="dark"] .form-select:focus {
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+/* Button hover effects */
+[data-theme="dark"] .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px var(--shadow-color);
+}
+
+/* Smooth transitions for all interactive elements */
+* {
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}

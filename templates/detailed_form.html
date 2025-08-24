@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResuMatch - Detailed Resume Builder</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="{{ url_for('static', filename='css/theme.css') }}" rel="stylesheet">
+    
+    <style>
+        .form-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .form-section h5 {
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .experience-item, .education-item, .project-item, .certification-item {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        
+        .remove-item {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: var(--danger-color);
+            cursor: pointer;
+            font-size: 18px;
+        }
+        
+        .remove-item:hover {
+            color: #dc3545;
+        }
+        
+        .add-item-btn {
+            background: var(--success-color);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .add-item-btn:hover {
+            background: #198754;
+        }
+        
+        .skills-input {
+            min-height: 100px;
+        }
+        
+        .progress-bar {
+            background: var(--primary-color);
+        }
+        
+        .form-progress {
+            position: sticky;
+            top: 20px;
+            z-index: 1000;
+        }
+        
+        .section-indicator {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .section-complete {
+            background: var(--success-color);
+        }
+        
+        .section-incomplete {
+            background: var(--secondary-color);
+        }
+        
+        .section-current {
+            background: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-file-alt me-2"></i>ResuMatch
+            </a>
+            
+            <!-- Theme Toggle -->
+            <div class="navbar-nav ms-auto">
+                <button class="btn btn-outline-light" id="themeToggle" onclick="toggleTheme()">
+                    <i class="fas fa-moon" id="themeIcon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Progress Bar -->
+        <div class="form-progress mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title mb-3">
+                        <i class="fas fa-tasks me-2"></i>Form Progress
+                    </h6>
+                    <div class="progress mb-3" style="height: 25px;">
+                        <div class="progress-bar" role="progressbar" id="progressBar" style="width: 0%">0%</div>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="section-indicator section-current" id="personal-indicator">1</span>
+                        <span class="section-indicator section-incomplete" id="experience-indicator">2</span>
+                        <span class="section-indicator section-incomplete" id="skills-indicator">3</span>
+                        <span class="section-indicator section-incomplete" id="education-indicator">4</span>
+                        <span class="section-indicator section-incomplete" id="projects-indicator">5</span>
+                        <span class="section-indicator section-incomplete" id="certifications-indicator">6</span>
+                    </div>
+                    <small class="text-muted mt-2 d-block">Complete each section to proceed</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form -->
+        <form method="POST" action="/detailed-form" id="detailedResumeForm">
+            <!-- Personal Information Section -->
+            <div class="form-section" id="personal-section">
+                <h5><i class="fas fa-user me-2"></i>Personal Information</h5>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="name" class="form-label">Full Name *</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="email" class="form-label">Email *</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="phone" class="form-label">Phone</label>
+                        <input type="tel" class="form-control" id="phone" name="phone">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="location" class="form-label">Location</label>
+                        <input type="text" class="form-control" id="location" name="location" placeholder="City, State, Country">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="linkedin" class="form-label">LinkedIn URL</label>
+                        <input type="url" class="form-control" id="linkedin" name="linkedin" placeholder="https://linkedin.com/in/username">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="github" class="form-label">GitHub URL</label>
+                        <input type="url" class="form-control" id="github" name="github" placeholder="https://github.com/username">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="summary" class="form-label">Professional Summary *</label>
+                    <textarea class="form-control" id="summary" name="summary" rows="4" 
+                              placeholder="Write a compelling 2-3 sentence overview of your professional background, key strengths, and career objectives..." required></textarea>
+                    <div class="form-text">This is your elevator pitch - make it count!</div>
+                </div>
+            </div>
+
+            <!-- Work Experience Section -->
+            <div class="form-section" id="experience-section">
+                <h5><i class="fas fa-briefcase me-2"></i>Work Experience</h5>
+                <div id="experience-container">
+                    <div class="experience-item">
+                        <i class="fas fa-times remove-item" onclick="removeExperience(this)"></i>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Job Title *</label>
+                                <input type="text" class="form-control" name="experience[0][title]" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Company *</label>
+                                <input type="text" class="form-control" name="experience[0][company]" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Duration *</label>
+                                <input type="text" class="form-control" name="experience[0][duration]" 
+                                       placeholder="e.g., January 2023 - Present" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Description *</label>
+                                <textarea class="form-control" name="experience[0][description]" rows="3" 
+                                          placeholder="Describe your key responsibilities, achievements, and impact in this role..." required></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="add-item-btn" onclick="addExperience()">
+                    <i class="fas fa-plus me-2"></i>Add Another Job
+                </button>
+            </div>
+
+            <!-- Skills Section -->
+            <div class="form-section" id="skills-section">
+                <h5><i class="fas fa-tools me-2"></i>Skills</h5>
+                <div class="mb-3">
+                    <label for="skills" class="form-label">Technical & Professional Skills *</label>
+                    <textarea class="form-control skills-input" id="skills" name="skills" 
+                              placeholder="Enter your skills separated by commas. Examples: Python, SQL, Project Management, Leadership, AWS, React..." required></textarea>
+                    <div class="form-text">Separate skills with commas. Include both technical and soft skills.</div>
+                </div>
+            </div>
+
+            <!-- Education Section -->
+            <div class="form-section" id="education-section">
+                <h5><i class="fas fa-graduation-cap me-2"></i>Education</h5>
+                <div id="education-container">
+                    <div class="education-item">
+                        <i class="fas fa-times remove-item" onclick="removeEducation(this)"></i>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Degree *</label>
+                                <input type="text" class="form-control" name="education[0][degree]" 
+                                       placeholder="e.g., Bachelor of Science in Computer Science" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Institution *</label>
+                                <input type="text" class="form-control" name="education[0][institution]" 
+                                       placeholder="e.g., University of Technology" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Year</label>
+                                <input type="text" class="form-control" name="education[0][year]" 
+                                       placeholder="e.g., 2023">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">GPA</label>
+                                <input type="text" class="form-control" name="education[0][gpa]" 
+                                       placeholder="e.g., 3.8/4.0">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Field of Study</label>
+                                <input type="text" class="form-control" name="education[0][field]" 
+                                       placeholder="e.g., Computer Science">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="add-item-btn" onclick="addEducation()">
+                    <i class="fas fa-plus me-2"></i>Add Another Education
+                </button>
+            </div>
+
+            <!-- Projects Section -->
+            <div class="form-section" id="projects-section">
+                <h5><i class="fas fa-project-diagram me-2"></i>Projects</h5>
+                <div id="projects-container">
+                    <div class="project-item">
+                        <i class="fas fa-times remove-item" onclick="removeProject(this)"></i>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Project Name *</label>
+                                <input type="text" class="form-control" name="projects[0][name]" 
+                                       placeholder="e.g., E-commerce Platform" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Technologies Used</label>
+                                <input type="text" class="form-control" name="projects[0][technologies]" 
+                                       placeholder="e.g., React, Node.js, MongoDB">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Description *</label>
+                            <textarea class="form-control" name="projects[0][description]" rows="3" 
+                                      placeholder="Describe what the project does, your role, and key achievements..." required></textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">GitHub URL</label>
+                                <input type="url" class="form-control" name="projects[0][github]" 
+                                       placeholder="https://github.com/username/project">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Live Demo URL</label>
+                                <input type="url" class="form-control" name="projects[0][live_demo]" 
+                                       placeholder="https://project-demo.com">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="add-item-btn" onclick="addProject()">
+                    <i class="fas fa-plus me-2"></i>Add Another Project
+                </button>
+            </div>
+
+            <!-- Certifications Section -->
+            <div class="form-section" id="certifications-section">
+                <h5><i class="fas fa-certificate me-2"></i>Certifications</h5>
+                <div id="certifications-container">
+                    <div class="certification-item">
+                        <i class="fas fa-times remove-item" onclick="removeCertification(this)"></i>
+                        <div class="row">
+                            <div class="col-md-8 mb-3">
+                                <label class="form-label">Certification Name *</label>
+                                <input type="text" class="form-control" name="certifications[0][name]" 
+                                       placeholder="e.g., AWS Certified Solutions Architect" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Year</label>
+                                <input type="text" class="form-control" name="certifications[0][year]" 
+                                       placeholder="e.g., 2024">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Issuing Organization</label>
+                            <input type="text" class="form-control" name="certifications[0][issuer]" 
+                                   placeholder="e.g., Amazon Web Services">
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="add-item-btn" onclick="addCertification()">
+                    <i class="fas fa-plus me-2"></i>Add Another Certification
+                </button>
+            </div>
+
+            <!-- Languages Section -->
+            <div class="form-section" id="languages-section">
+                <h5><i class="fas fa-language me-2"></i>Languages</h5>
+                <div class="mb-3">
+                    <label for="languages" class="form-label">Languages You Speak</label>
+                    <input type="text" class="form-control" id="languages" name="languages" 
+                           placeholder="e.g., English (Native), Spanish (Fluent), French (Intermediate)">
+                    <div class="form-text">List languages and proficiency levels if applicable.</div>
+                </div>
+            </div>
+
+            <!-- Submit Section -->
+            <div class="form-section text-center">
+                <h5><i class="fas fa-rocket me-2"></i>Ready to Generate Your Resume?</h5>
+                <p class="text-muted mb-4">Review your information above and click the button below to proceed to job targeting and resume generation.</p>
+                <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
+                    <i class="fas fa-magic me-2"></i>Generate My Resume
+                </button>
+                <div class="mt-3">
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        You'll be able to edit your information and target specific job descriptions in the next step.
+                    </small>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Theme switching functionality
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('themeIcon');
+            if (icon) {
+                icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            }
+        }
+
+        // Initialize theme when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initTheme();
+            
+            // Add theme toggle event listener
+            const themeToggle = document.getElementById('themeToggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', toggleTheme);
+            }
+            
+            // Initialize form progress tracking
+            updateProgress();
+            
+            // Add form change listeners
+            addFormChangeListeners();
+        });
+
+        // Experience management
+        let experienceCount = 1;
+        
+        function addExperience() {
+            const container = document.getElementById('experience-container');
+            const newItem = document.createElement('div');
+            newItem.className = 'experience-item';
+            newItem.innerHTML = `
+                <i class="fas fa-times remove-item" onclick="removeExperience(this)"></i>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Job Title *</label>
+                        <input type="text" class="form-control" name="experience[${experienceCount}][title]" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Company *</label>
+                        <input type="text" class="form-control" name="experience[${experienceCount}][company]" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Duration *</label>
+                        <input type="text" class="form-control" name="experience[${experienceCount}][duration]" 
+                               placeholder="e.g., January 2023 - Present" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Description *</label>
+                        <textarea class="form-control" name="experience[${experienceCount}][description]" rows="3" 
+                                  placeholder="Describe your key responsibilities, achievements, and impact in this role..." required></textarea>
+                    </div>
+                </div>
+            `;
+            container.appendChild(newItem);
+            experienceCount++;
+            updateProgress();
+        }
+        
+        function removeExperience(element) {
+            if (document.querySelectorAll('.experience-item').length > 1) {
+                element.parentElement.remove();
+                updateProgress();
+            }
+        }
+
+        // Education management
+        let educationCount = 1;
+        
+        function addEducation() {
+            const container = document.getElementById('education-container');
+            const newItem = document.createElement('div');
+            newItem.className = 'education-item';
+            newItem.innerHTML = `
+                <i class="fas fa-times remove-item" onclick="removeEducation(this)"></i>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Degree *</label>
+                        <input type="text" class="form-control" name="education[${educationCount}][degree]" 
+                               placeholder="e.g., Bachelor of Science in Computer Science" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Institution *</label>
+                        <input type="text" class="form-control" name="education[${educationCount}][institution]" 
+                               placeholder="e.g., University of Technology" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Year</label>
+                        <input type="text" class="form-control" name="education[${educationCount}][year]" 
+                               placeholder="e.g., 2023">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">GPA</label>
+                        <input type="text" class="form-control" name="education[${educationCount}][gpa]" 
+                               placeholder="e.g., 3.8/4.0">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Field of Study</label>
+                        <input type="text" class="form-control" name="education[${educationCount}][field]" 
+                               placeholder="e.g., Computer Science">
+                    </div>
+                </div>
+            `;
+            container.appendChild(newItem);
+            educationCount++;
+            updateProgress();
+        }
+        
+        function removeEducation(element) {
+            if (document.querySelectorAll('.education-item').length > 1) {
+                element.parentElement.remove();
+                updateProgress();
+            }
+        }
+
+        // Projects management
+        let projectCount = 1;
+        
+        function addProject() {
+            const container = document.getElementById('projects-container');
+            const newItem = document.createElement('div');
+            newItem.className = 'project-item';
+            newItem.innerHTML = `
+                <i class="fas fa-times remove-item" onclick="removeProject(this)"></i>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Project Name *</label>
+                        <input type="text" class="form-control" name="projects[${projectCount}][name]" 
+                               placeholder="e.g., E-commerce Platform" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Technologies Used</label>
+                        <input type="text" class="form-control" name="projects[${projectCount}][technologies]" 
+                               placeholder="e.g., React, Node.js, MongoDB">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Description *</label>
+                    <textarea class="form-control" name="projects[${projectCount}][description]" rows="3" 
+                              placeholder="Describe what the project does, your role, and key achievements..." required></textarea>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">GitHub URL</label>
+                        <input type="url" class="form-control" name="projects[${projectCount}][github]" 
+                               placeholder="https://github.com/username/project">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Live Demo URL</label>
+                        <input type="url" class="form-control" name="projects[${projectCount}][live_demo]" 
+                               placeholder="https://project-demo.com">
+                    </div>
+                </div>
+            `;
+            container.appendChild(newItem);
+            projectCount++;
+            updateProgress();
+        }
+        
+        function removeProject(element) {
+            if (document.querySelectorAll('.project-item').length > 1) {
+                element.parentElement.remove();
+                updateProgress();
+            }
+        }
+
+        // Certifications management
+        let certificationCount = 1;
+        
+        function addCertification() {
+            const container = document.getElementById('certifications-container');
+            const newItem = document.createElement('div');
+            newItem.className = 'certification-item';
+            newItem.innerHTML = `
+                <i class="fas fa-times remove-item" onclick="removeCertification(this)"></i>
+                <div class="row">
+                    <div class="col-md-8 mb-3">
+                        <label class="form-label">Certification Name *</label>
+                        <input type="text" class="form-control" name="certifications[${certificationCount}][name]" 
+                               placeholder="e.g., AWS Certified Solutions Architect" required>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Year</label>
+                        <input type="text" class="form-control" name="certifications[${certificationCount}][year]" 
+                               placeholder="e.g., 2024">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Issuing Organization</label>
+                    <input type="text" class="form-control" name="certifications[${certificationCount}][issuer]" 
+                           placeholder="e.g., Amazon Web Services">
+                </div>
+            `;
+            container.appendChild(newItem);
+            certificationCount++;
+            updateProgress();
+        }
+        
+        function removeCertification(element) {
+            if (document.querySelectorAll('.certification-item').length > 1) {
+                element.parentElement.remove();
+                updateProgress();
+            }
+        }
+
+        // Progress tracking
+        function updateProgress() {
+            const sections = [
+                'personal-section',
+                'experience-section', 
+                'skills-section',
+                'education-section',
+                'projects-section',
+                'certifications-section'
+            ];
+            
+            let completedSections = 0;
+            const totalSections = sections.length;
+            
+            sections.forEach((sectionId, index) => {
+                const section = document.getElementById(sectionId);
+                const requiredFields = section.querySelectorAll('[required]');
+                let sectionComplete = true;
+                
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        sectionComplete = false;
+                    }
+                });
+                
+                if (sectionComplete) {
+                    completedSections++;
+                    updateSectionIndicator(index + 1, 'complete');
+                } else {
+                    updateSectionIndicator(index + 1, 'incomplete');
+                }
+            });
+            
+            const progressPercentage = Math.round((completedSections / totalSections) * 100);
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = progressPercentage + '%';
+            progressBar.textContent = progressPercentage + '%';
+            
+            // Update submit button state
+            const submitBtn = document.getElementById('submitBtn');
+            if (completedSections === totalSections) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-magic me-2"></i>Generate My Resume';
+            } else {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `<i class="fas fa-lock me-2"></i>Complete All Sections (${completedSections}/${totalSections})`;
+            }
+        }
+        
+        function updateSectionIndicator(sectionNumber, status) {
+            const indicator = document.getElementById(`${getSectionName(sectionNumber)}-indicator`);
+            if (indicator) {
+                indicator.className = `section-indicator section-${status}`;
+            }
+        }
+        
+        function getSectionName(number) {
+            const names = ['', 'personal', 'experience', 'skills', 'education', 'projects', 'certifications'];
+            return names[number] || '';
+        }
+        
+        function addFormChangeListeners() {
+            const form = document.getElementById('detailedResumeForm');
+            const inputs = form.querySelectorAll('input, textarea, select');
+            
+            inputs.forEach(input => {
+                input.addEventListener('input', updateProgress);
+                input.addEventListener('change', updateProgress);
+            });
+        }
+
+        // Form submission
+        document.getElementById('detailedResumeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Show loading state
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+            submitBtn.disabled = true;
+            
+            // Submit form data
+            const formData = new FormData(this);
+            
+            fetch('/detailed-form', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Redirect to job targeting form
+                    window.location.href = data.redirect_url;
+                } else {
+                    // Show error
+                    alert('Error: ' + (data.message || 'Failed to process form data'));
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while processing your form. Please try again.');
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            });
+        });
+    </script>
+</body>
+</html>
