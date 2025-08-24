@@ -4,6 +4,42 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [2.1.0] - 2024-08-24
+
+### 💼 Added
+- **Professional Feature Comparison UI**: Complete overhaul of upgrade page styling
+  - Custom CSS classes for business-ready appearance
+  - Professional FontAwesome icons replacing emojis
+  - Gradient header with subtle shadow effects
+  - Enhanced visual hierarchy with color-coded categories
+  - Smooth hover effects and transitions
+  - Professional typography and spacing
+- **Enhanced Role Detection**: Improved accuracy across multiple job roles
+  - Comprehensive validation testing for 5+ job types
+  - Enhanced confidence scoring and pattern matching
+  - Better keyword extraction and role classification
+- **Web Form Improvements**: Enhanced user experience and functionality
+  - Sample data loading with professional scenarios
+  - AI transformation controls with checkbox interface
+  - Optional resume upload section
+  - JSON-based form submission handling
+
+### 🔧 Changed
+- **Feature Comparison Table**: Replaced casual emoji indicators with professional icons
+- **UI Styling**: Enhanced visual design for corporate environments
+- **Role Detection Logic**: Improved accuracy and confidence scoring
+- **Web Interface**: Better form handling and user experience
+
+### 📚 Documentation
+- **README.md**: Updated with latest features and technical stack
+- **Professional UI Documentation**: Added styling and design guidelines
+
+### 🎯 Features
+- **Professional Appearance**: Business-ready styling suitable for corporate use
+- **Enhanced User Experience**: Improved form functionality and data loading
+- **Better Role Detection**: More accurate job role identification
+- **Corporate-Ready Design**: Professional styling for business contexts
+
 ## [2.0.0] - 2024-08-23
 
 ### 🎓 Added

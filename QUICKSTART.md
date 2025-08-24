@@ -4,13 +4,15 @@ Get your ATS-friendly resume generated in minutes!
 
 ## 🚀 Quick Setup
 
-1. **Install dependencies:**
+### **Option 1: FREE Version (Recommended for testing)**
 ```bash
-pip install -r requirements.txt
+pip install -r requirements.free.txt
+python free_ai_generator.py
 ```
 
-2. **Download required models:**
+### **Option 2: Full Version (with API integration)**
 ```bash
+pip install -r requirements.txt
 python -m spacy download en_core_web_sm
 python -c "import nltk; nltk.download('punkt'); nltk.download('stopwords'); nltk.download('wordnet')"
 ```
@@ -109,6 +111,9 @@ python cli.py --max-pages 1 --job-desc "..." --experience-file exp.json
 # Exclude projects section
 python cli.py --no-projects --job-desc "..." --experience-file exp.json
 
+# Skip AI transformation (classic resume)
+python cli.py --no-transform --job-desc "..." --experience-file exp.json
+
 # Verbose output for debugging
 python cli.py --verbose --job-desc "..." --experience-file exp.json
 ```
@@ -128,6 +133,7 @@ python cli.py --verbose --job-desc "..." --experience-file exp.json
 | `--use-openai` | Use OpenAI for keywords | `--use-openai` |
 | `--max-pages` | Maximum pages | `--max-pages 2` |
 | `--no-projects` | Exclude projects | `--no-projects` |
+| `--no-transform` | Skip AI transformation | `--no-transform` |
 | `--verbose` | Verbose output | `--verbose` |
 
 ## 🔧 Troubleshooting
@@ -158,6 +164,20 @@ python -c "import nltk; nltk.download('punkt'); nltk.download('stopwords'); nltk
 - Check the generated PDF for formatting issues
 - Review the extracted keywords in the console output
 
+## 🆕 **New Features in v2.1.0**
+
+### **Enhanced AI Engine** 🚀
+- **Intelligent role detection** with confidence scoring
+- **Skill transformation** for target roles
+- **Harvard-style PDF generation** using ReportLab
+- **Professional formatting** following business standards
+
+### **Web Interface** 💼
+- **AI transformation controls** with checkbox interface
+- **Sample data loading** with professional scenarios
+- **Enhanced form handling** and user experience
+- **Professional styling** suitable for business use
+
 ## 📊 Example Output
 
 The tool will generate a professional PDF resume that includes:
@@ -166,5 +186,7 @@ The tool will generate a professional PDF resume that includes:
 - ✅ Relevant skills highlighted
 - ✅ Clean, readable design
 - ✅ Professional typography
+- ✅ Harvard-style formatting
+- ✅ Achievement-oriented content
 
 Your resume will be optimized for both ATS systems and human reviewers! 

@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - ResuMatch{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-info text-white text-center py-3">
+                    <h4 class="mb-0">
+                        <i class="fas fa-user-cog me-2"></i>Profile Settings
+                    </h4>
+                    <p class="mb-0 text-white-50">Manage your account information</p>
+                </div>
+                
+                <div class="card-body p-4">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                    
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form.first_name.label(class="form-label") }}
+                                {{ form.first_name(class="form-control" + (" is-invalid" if form.first_name.errors else ""), placeholder="First name") }}
+                                {% if form.first_name.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.first_name.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                {{ form.last_name.label(class="form-label") }}
+                                {{ form.last_name(class="form-control" + (" is-invalid" if form.last_name.errors else ""), placeholder="Last name") }}
+                                {% if form.last_name.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.last_name.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" class="form-control" value="{{ current_user.email }}" readonly>
+                            <div class="form-text">Email address cannot be changed. Contact support if needed.</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Account Type</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" value="{{ current_user.subscription_tier.title() }} Plan" readonly>
+                                {% if current_user.subscription_tier == 'free' %}
+                                    <a href="{{ url_for('auth.upgrade') }}" class="btn btn-success">
+                                        <i class="fas fa-arrow-up me-1"></i>Upgrade
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Member Since</label>
+                            <input type="text" class="form-control" value="{{ current_user.created_at.strftime('%B %d, %Y') }}" readonly>
+                        </div>
+                        
+                        <div class="d-grid">
+                            {{ form.submit(class="btn btn-primary btn-lg") }}
+                        </div>
+                    </form>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <a href="{{ url_for('auth.dashboard') }}" class="btn btn-outline-secondary w-100">
+                                <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger w-100">
+                                <i class="fas fa-sign-out-alt me-1"></i>Sign Out
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Account Actions -->
+            <div class="mt-4">
+                <div class="card border-warning">
+                    <div class="card-header bg-warning text-dark">
+                        <h6 class="mb-0">
+                            <i class="fas fa-exclamation-triangle me-2"></i>Account Actions
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-warning" onclick="exportData()">
+                                <i class="fas fa-download me-2"></i>Export My Data
+                            </button>
+                            <button class="btn btn-outline-danger" onclick="deleteAccount()">
+                                <i class="fas fa-trash me-2"></i>Delete Account
+                            </button>
+                        </div>
+                        <small class="text-muted mt-2 d-block">
+                            <i class="fas fa-info-circle me-1"></i>
+                            These actions cannot be undone. Please be careful.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function exportData() {
+    alert('Data export functionality coming soon!');
+}
+
+function deleteAccount() {
+    if (confirm('Are you sure you want to delete your account? This action cannot be undone and will permanently remove all your data.')) {
+        if (confirm('This is your final warning. All your resumes, data, and account information will be permanently deleted. Are you absolutely sure?')) {
+            // TODO: Implement account deletion
+            alert('Account deletion functionality coming soon!');
+        }
+    }
+}
+</script>
+{% endblock %}

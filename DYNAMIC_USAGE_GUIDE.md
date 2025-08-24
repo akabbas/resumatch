@@ -2,34 +2,47 @@
 
 ## 🎯 **What This Does**
 
-The Dynamic Resume Generator is the **real ResuMatch bot** that:
+The Enhanced Dynamic Resume Generator is the **real ResuMatch bot** that:
 - ✅ **Analyzes ANY job description** (no predefined templates)
 - ✅ **Extracts job title, skills, experience level, industry focus**
 - ✅ **Matches your skills to job requirements**
 - ✅ **Ranks your experience by relevance**
 - ✅ **Generates tailored summary and skills section**
 - ✅ **Creates a custom resume for each job**
+- ✅ **Intelligent role detection** with confidence scoring
+- ✅ **Skill transformation** for target roles
+- ✅ **Harvard-style PDF generation** for professional output
 
 ## 🚀 **Quick Start**
 
 ### **Generate Resume from Job Description**
 ```bash
-python3 dynamic_cli.py --job-desc "We are seeking a Senior Data Engineer with Python and SQL experience..."
+python3 cli.py --job-desc "We are seeking a Senior Data Engineer with Python and SQL experience..."
 ```
 
 ### **Generate Resume from Job Posting File**
 ```bash
-python3 dynamic_cli.py --job-file job_posting.txt
+python3 cli.py --job-file job_posting.txt
+```
+
+### **Generate Resume with AI Transformation (Default)**
+```bash
+python3 cli.py --job-desc "..." --output my_resume.pdf
+```
+
+### **Generate Resume WITHOUT AI Transformation**
+```bash
+python3 cli.py --job-desc "..." --no-transform --output my_resume.pdf
 ```
 
 ### **Analyze Job Without Generating Resume**
 ```bash
-python3 dynamic_cli.py --job-desc "..." --analyze-only
+python3 cli.py --job-desc "..." --analyze-only
 ```
 
 ### **Custom Output Filename**
 ```bash
-python3 dynamic_cli.py --job-desc "..." --output my_custom_resume.html
+python3 cli.py --job-desc "..." --output my_custom_resume.pdf
 ```
 
 ## 📋 **How It Works**
@@ -256,6 +269,32 @@ collaborating with business teams to deliver insights.
 4. **Customize further** if needed for specific companies
 5. **Track your success** and adjust based on responses
 
+## 🆕 **New Features in v2.1.0**
+
+### **Enhanced Role Detection** 🎯
+- **Intelligent job role identification** with confidence scoring
+- **Pattern matching** for common job titles and descriptions
+- **Fallback detection** using skill-based analysis
+- **Comprehensive validation** across multiple job types
+
+### **Skill Transformation** 🔄
+- **Context-aware skill adaptation** for target roles
+- **Role-specific skill mapping** and transformation
+- **Intelligent skill selection** based on job requirements
+- **Professional skill enhancement** for better matching
+
+### **Harvard-Style PDF Generation** 🎓
+- **Professional PDF output** using ReportLab
+- **Harvard Business School standards** for formatting
+- **ATS-optimized layout** for automated screening
+- **Achievement-oriented content** with strong action verbs
+
+### **Professional Web Interface** 💼
+- **AI transformation controls** with checkbox interface
+- **Sample data loading** with professional scenarios
+- **Enhanced form handling** and user experience
+- **Professional styling** suitable for business use
+
 ---
 
-**🎯 Remember**: This is the real ResuMatch bot that analyzes ANY job description and creates a custom resume. No templates, no predefined roles - just intelligent analysis and dynamic customization! 
+**🎯 Remember**: This is the enhanced ResuMatch bot that analyzes ANY job description and creates a custom resume with intelligent role detection, skill transformation, and Harvard-quality PDF output. No templates, no predefined roles - just intelligent analysis and dynamic customization! 

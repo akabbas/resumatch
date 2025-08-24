@@ -433,11 +433,16 @@ class ResumeGenerator:
             <meta charset="UTF-8">
             <title>Professional Resume</title>
             <style>
+                @page {
+                    margin: 0.4in 0.4in 0.4in 0.4in;
+                    size: letter;
+                }
+                
                 body {
                     font-family: 'Times New Roman', Times, serif;
                     line-height: 1.2;
                     margin: 0;
-                    padding: 0.15in;
+                    padding: 0;
                     color: #000;
                     max-width: 11.5in;
                     margin: 0 auto;
@@ -451,174 +456,208 @@ class ResumeGenerator:
                     line-height: 1.1;
                 }
                 .single-page .section {
-                    margin-bottom: 0.06in;
-                }
-                .single-page .job {
-                    margin-bottom: 0.05in;
-                }
-                .single-page .job-description li {
-                    margin-bottom: 0.006in;
-                }
-                .single-page .skills {
-                    margin-bottom: 0.03in;
-                }
-                .single-page .skill {
-                    margin-bottom: 0.01in;
-                }
-                .single-page .project {
-                    margin-bottom: 0.05in;
-                }
-                .single-page .certification {
-                    margin-bottom: 0.01in;
-                }
-                .single-page .education-item {
                     margin-bottom: 0.04in;
                 }
+                .single-page .job {
+                    margin-bottom: 0.03in;
+                }
+                .single-page .job-description li {
+                    margin-bottom: 0.004in;
+                }
+                .single-page .skills {
+                    margin-bottom: 0.02in;
+                }
+                .single-page .skill {
+                    margin-bottom: 0.008in;
+                }
+                .single-page .project {
+                    margin-bottom: 0.03in;
+                }
+                .single-page .certification {
+                    margin-bottom: 0.008in;
+                }
+                .single-page .education-item {
+                    margin-bottom: 0.02in;
+                }
+                
                 .header {
                     text-align: center;
                     border-bottom: 2pt solid #000;
-                    padding-bottom: 0.05in;
-                    margin-bottom: 0.12in;
+                    padding-bottom: 0.03in;
+                    margin-bottom: 0.08in;
+                    page-break-inside: avoid;
                 }
+                
                 .name {
-                    font-size: 18pt;
+                    font-size: 20pt;
                     font-weight: bold;
                     color: #000;
-                    margin-bottom: 0.03in;
+                    margin-bottom: 0.02in;
                     text-transform: uppercase;
-                    letter-spacing: 1pt;
+                    letter-spacing: 0.5pt;
                 }
+                
                 .contact {
                     font-size: 10pt;
                     color: #000;
-                    margin-bottom: 0.03in;
+                    margin-bottom: 0.02in;
                     line-height: 1.3;
                 }
+                
                 .section {
-                    margin-bottom: 0.08in;
+                    margin-bottom: 0.06in;
+                    page-break-inside: avoid;
                 }
+                
                 .section-title {
                     font-size: 12pt;
                     font-weight: bold;
                     color: #000;
                     text-transform: uppercase;
                     border-bottom: 1pt solid #000;
-                    padding-bottom: 0.015in;
-                    margin-bottom: 0.06in;
-                    letter-spacing: 0.5pt;
+                    padding-bottom: 0.01in;
+                    margin-bottom: 0.04in;
+                    letter-spacing: 0.3pt;
+                    page-break-after: avoid;
                 }
+                
                 .job {
-                    margin-bottom: 0.06in;
+                    margin-bottom: 0.04in;
+                    page-break-inside: avoid;
                 }
+                
                 .job-header {
                     display: flex;
                     justify-content: space-between;
                     align-items: baseline;
-                    margin-bottom: 0.02in;
+                    margin-bottom: 0.015in;
                 }
+                
                 .job-title {
                     font-weight: bold;
                     font-size: 11pt;
                     color: #000;
                     text-transform: uppercase;
                 }
+                
                 .job-company {
                     font-weight: bold;
                     color: #000;
                     font-size: 11pt;
                 }
+                
                 .job-duration {
                     color: #000;
                     font-size: 10pt;
                     font-style: italic;
                 }
+                
                 .job-description {
-                    margin-top: 0.015in;
+                    margin-top: 0.01in;
                     font-size: 10pt;
                     line-height: 1.15;
                     text-align: left;
-                    padding-left: 0.1in;
+                    padding-left: 0.05in;
                 }
+                
                 .job-description ul {
                     margin: 0;
-                    padding-left: 0.1in;
+                    padding-left: 0.05in;
                 }
+                
                 .job-description li {
-                    margin-bottom: 0.008in;
+                    margin-bottom: 0.006in;
                 }
+                
                 .skills {
                     display: block;
-                    margin-top: 0.02in;
+                    margin-top: 0.015in;
                 }
+                
                 .skill {
                     display: inline-block;
-                    margin-right: 0.06in;
-                    margin-bottom: 0.012in;
+                    margin-right: 0.04in;
+                    margin-bottom: 0.008in;
                     font-size: 10pt;
                     color: #000;
                 }
+                
                 .project {
-                    margin-bottom: 0.06in;
+                    margin-bottom: 0.04in;
+                    page-break-inside: avoid;
                 }
+                
                 .project-header {
                     display: flex;
                     justify-content: space-between;
                     align-items: baseline;
-                    margin-bottom: 0.02in;
+                    margin-bottom: 0.015in;
                 }
+                
                 .project-name {
                     font-weight: bold;
                     color: #000;
                     font-size: 11pt;
                     text-transform: uppercase;
                 }
+                
                 .project-description {
-                    margin-top: 0.015in;
+                    margin-top: 0.01in;
                     font-size: 10pt;
                     line-height: 1.15;
-                    padding-left: 0.1in;
+                    padding-left: 0.05in;
                 }
+                
                 .certification {
-                    margin-bottom: 0.012in;
+                    margin-bottom: 0.008in;
                     font-size: 10pt;
-                    padding-left: 0.1in;
+                    padding-left: 0.05in;
                 }
+                
                 .summary {
                     font-size: 10pt;
                     line-height: 1.25;
                     text-align: left;
-                    padding-left: 0.1in;
+                    padding-left: 0.05in;
                 }
+                
                 .education-item {
-                    margin-bottom: 0.05in;
+                    margin-bottom: 0.03in;
+                    page-break-inside: avoid;
                 }
+                
                 .education-header {
                     display: flex;
                     justify-content: space-between;
                     align-items: baseline;
-                    margin-bottom: 0.03in;
+                    margin-bottom: 0.02in;
                 }
+                
                 .education-degree {
                     font-weight: bold;
                     font-size: 11pt;
                     color: #000;
                     text-transform: uppercase;
                 }
+                
                 .education-school {
                     font-weight: bold;
                     color: #000;
                     font-size: 11pt;
                 }
+                
                 .education-date {
                     color: #000;
                     font-size: 10pt;
                     font-style: italic;
                 }
+                
                 .education-details {
                     font-size: 10pt;
                     line-height: 1.15;
                     padding-left: 0.15in;
                 }
+                
                 @media print {
                     body {
                         padding: 0.5in;

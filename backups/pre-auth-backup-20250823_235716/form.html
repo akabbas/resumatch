@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResuMatch - Resume Form</title>
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📄</text></svg>">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            /* Light theme variables */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #f5f7fa;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --text-muted: #6c757d;
+            --border-color: #e9ecef;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --card-bg: #ffffff;
+            --form-bg: #ffffff;
+        }
+
+        [data-theme="dark"] {
+            /* Dark theme variables */
+            --bg-primary: #121212;
+            --bg-secondary: #1e1e1e;
+            --bg-tertiary: #2d2d2d;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --text-muted: #888888;
+            --border-color: #404040;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --card-bg: #1e1e1e;
+            --form-bg: #1e1e1e;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+            min-height: 100vh;
+            color: var(--text-primary);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+        
+        .form-container {
+            background: var(--form-bg);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px var(--shadow-color);
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 800px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .form-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+            position: relative;
+        }
+        
+        .theme-toggle {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: rgba(102, 126, 234, 0.1);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(102, 126, 234, 0.2);
+            border-color: rgba(102, 126, 234, 0.5);
+            transform: scale(1.1);
+        }
+
+        .theme-toggle i {
+            font-size: 1.1rem;
+            color: #667eea;
+        }
+        
+        .form-header h1 {
+            color: #667eea;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 2px solid var(--border-color);
+            padding: 0.75rem;
+            transition: all 0.3s ease;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            transform: translateY(-2px);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+        }
+        
+        .form-text {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 15px;
+            padding: 1rem 2rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px var(--shadow-color);
+        }
+        
+        .alert {
+            border-radius: 10px;
+            border: none;
+            margin-bottom: 1rem;
+            background-color: var(--card-bg);
+            color: var(--text-primary);
+        }
+        
+        .nav-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .nav-link:hover {
+            color: #764ba2;
+        }
+        
+        .field-help {
+            background: var(--bg-secondary);
+            border-left: 4px solid #667eea;
+            padding: 0.75rem;
+            margin-top: 0.5rem;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .field-help h6 {
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+            font-weight: 600;
+        }
+        
+        .field-help p {
+            color: var(--text-secondary);
+            margin-bottom: 0;
+            font-size: 0.9rem;
+        }
+        
+        .bg-light {
+            background-color: var(--bg-secondary) !important;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+        
+        .text-muted {
+            color: var(--text-muted) !important;
+        }
+        
+        .form-check-label {
+            color: var(--text-primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <!-- Header -->
+            <div class="form-header">
+                <!-- Theme Toggle Button -->
+                <button class="theme-toggle" id="themeToggle" title="Toggle dark mode">
+                    <i class="fas fa-moon" id="themeIcon"></i>
+                </button>
+                
+                <h1><i class="fas fa-magic me-2"></i>ResuMatch</h1>
+                <p>Fill in your details below to generate a perfectly optimized resume</p>
+                <a href="/" class="nav-link">
+                    <i class="fas fa-arrow-left me-1"></i>Back to Main Page
+                </a>
+            </div>
+
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <!-- Form -->
+            <form method="POST" action="/form" id="resumeForm">
+                <!-- Hidden resume data from session -->
+                {% if resume_data %}
+                <div id="resumeData" data-resume='{{ resume_data | tojson | safe }}' style="display: none;"></div>
+                {% endif %}
+                
+                <!-- Sample Data Section -->
+                <div class="text-center mb-4 p-3 bg-light rounded">
+                    <h6 class="mb-3"><i class="fas fa-flask me-2 text-primary"></i>Resume Data Options</h6>
+                    
+                    <!-- Quick Start Options -->
+                    <div class="row justify-content-center mb-3">
+                        <div class="col-md-6">
+                            <a href="/detailed-form" class="btn btn-success btn-lg w-100 mb-2">
+                                <i class="fas fa-edit me-2"></i>Build Detailed Resume
+                            </a>
+                            <small class="text-muted d-block">Create a comprehensive resume from scratch</small>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="button" class="btn btn-outline-primary btn-lg w-100 mb-2" onclick="showSampleDataOptions()">
+                                <i class="fas fa-magic me-2"></i>Use Sample Data
+                            </a>
+                            <small class="text-muted d-block">Try with example data to see how it works</small>
+                        </div>
+                    </div>
+                    
+                    <!-- Sample Data Options (Hidden by default) -->
+                    <div id="sampleDataOptions" style="display: none;">
+                        <hr class="my-3">
+                        <h6 class="mb-3"><i class="fas fa-flask me-2 text-primary"></i>Try Sample Data</h6>
+                        
+                        <!-- Job Description Selector -->
+                        <div class="row justify-content-center mb-3">
+                            <div class="col-md-8">
+                                <select class="form-select" id="jobSelector" onchange="loadJobDescription()">
+                                    <option value="">Choose a job description...</option>
+                                    <option value="business_systems_analyst">Business Systems Analyst - Revenue Operations</option>
+                                    <option value="data_scientist">Senior Data Scientist - Machine Learning</option>
+                                    <option value="software_engineer">Full Stack Software Engineer</option>
+                                    <option value="devops_engineer">DevOps Engineer - Cloud Infrastructure</option>
+                                    <option value="product_manager">Senior Product Manager - SaaS Platform</option>
+                                    <option value="data_analyst">Business Intelligence Analyst</option>
+                                    <option value="salesforce_administrator">Salesforce Administrator - CRM Specialist</option>
+                                    <option value="cloud_architect">Cloud Solutions Architect</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Scenario Selector (Legacy) -->
+                        <div class="row justify-content-center mb-3">
+                            <div class="col-md-6">
+                                <select class="form-select" id="scenarioSelector" onchange="loadSampleData()">
+                                    <option value="">Choose a job scenario...</option>
+                                    <option value="business_analyst">Business Systems Analyst</option>
+                                    <option value="data_analyst">Data Analyst</option>
+                                    <option value="software_developer">Software Developer</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <small class="text-muted">Select a job description to automatically populate the form with realistic example data</small>
+                        
+                        <!-- Action Buttons -->
+                        <div class="mt-3">
+                            <button type="button" class="btn btn-outline-secondary btn-sm me-2" onclick="clearForm()">
+                                <i class="fas fa-eraser me-1"></i>Clear Form
+                            </button>
+                            <button type="button" class="btn btn-outline-info btn-sm me-2" onclick="showFormHelp()">
+                                <i class="fas fa-question-circle me-1"></i>Form Help
+                            </button>
+                            <button type="button" class="btn btn-outline-success btn-sm" onclick="rotateJobDescriptions()">
+                                <i class="fas fa-random me-1"></i>Random Job
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resume Upload Section -->
+                <div class="text-center mb-4 p-3 bg-primary bg-opacity-10 rounded border border-primary">
+                    <h6 class="mb-3"><i class="fas fa-upload me-2 text-primary"></i>Upload Existing Resume</h6>
+                    
+                    <div class="row justify-content-center mb-3">
+                        <div class="col-md-8">
+                            <div class="input-group">
+                                <input type="file" class="form-control" id="resumeFile" name="resume_file" 
+                                       accept=".pdf,.docx,.doc" onchange="handleFileUpload()">
+                                <button type="button" class="btn btn-primary" onclick="uploadResume()" id="uploadBtn" disabled>
+                                    <i class="fas fa-upload me-1"></i>Parse Resume
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Upload your existing resume (PDF or Word) to automatically extract and populate the form below. 
+                        Supported formats: PDF, DOCX, DOC
+                    </small>
+                    
+                    <!-- Upload Progress -->
+                    <div id="uploadProgress" class="mt-3" style="display: none;">
+                        <div class="progress" style="height: 20px;">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                 role="progressbar" style="width: 0%" id="progressBar">0%</div>
+                        </div>
+                        <small class="text-muted mt-1" id="uploadStatus">Preparing upload...</small>
+                    </div>
+                </div>
+
+                <!-- Summary -->
+                <div class="form-group">
+                    <label for="summary" class="form-label">Professional Summary</label>
+                    <textarea class="form-control" id="summary" name="summary" rows="4" 
+                              placeholder="Detail-oriented professional with X years of experience in..." required></textarea>
+                    <div class="field-help">
+                        <h6><i class="fas fa-info-circle me-1"></i>Professional Summary</h6>
+                        <p>A brief overview of your professional background and key strengths</p>
+                    </div>
+                </div>
+
+                <!-- Job Title -->
+                <div class="form-group">
+                    <label for="job_title" class="form-label">Job Title</label>
+                    <input type="text" class="form-control" id="job_title" name="job_title" 
+                           placeholder="e.g., Business Systems Analyst, Data Analyst, Software Developer" required>
+                    <div class="field-help">
+                        <h6><i class="fas fa-briefcase me-1"></i>Current Position</h6>
+                        <p>Your current or most recent job title</p>
+                    </div>
+                </div>
+
+                <!-- Company -->
+                <div class="form-group">
+                    <label for="company" class="form-label">Company</label>
+                    <input type="text" class="form-control" id="company" name="company" 
+                           placeholder="e.g., Flowserve, Salesforce, Microsoft" required>
+                    <div class="field-help">
+                        <h6><i class="fas fa-building me-1"></i>Employer</h6>
+                        <p>Your current or most recent employer</p>
+                    </div>
+                </div>
+
+                <!-- Job Description -->
+                <div class="form-group">
+                    <label for="job_description" class="form-label">Job Description</label>
+                    <textarea class="form-control" id="job_description" name="job_description" rows="6" 
+                              placeholder="Paste the job description here to optimize your resume..." required></textarea>
+                    <div class="field-help">
+                        <h6><i class="fas fa-search me-1"></i>Target Job</h6>
+                        <p>Paste the job description you want to target</p>
+                    </div>
+                </div>
+
+                <!-- Skills -->
+                <div class="form-group">
+                    <label for="skills" class="form-label">Skills</label>
+                    <input type="text" class="form-control" id="skills" name="skills" 
+                           placeholder="Python, SQL, Salesforce, REST APIs, Data Analysis, etc." required>
+                    <div class="field-help">
+                        <h6><i class="fas fa-tools me-1"></i>Your Skills</h6>
+                        <p>Comma-separated list of your key skills and technologies</p>
+                    </div>
+                </div>
+
+                <!-- AI Transformation Control -->
+                <div class="form-group">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="enable_ai_transform" name="enable_ai_transform" checked>
+                        <label class="form-check-label" for="enable_ai_transform">
+                            <i class="fas fa-magic me-2 text-primary"></i>Enable AI Role Transformation (Recommended)
+                        </label>
+                        <div class="field-help">
+                            <h6><i class="fas fa-info-circle me-1"></i>AI Transformation</h6>
+                            <p>When enabled, our AI will intelligently transform your resume content to better match the target job role. Uncheck to generate a classic resume without transformation.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; padding: 1rem;">
+                        Generate Resume
+                    </button>
+                </div>
+            </form>
+
+            <!-- Info Section -->
+            <div class="mt-4 p-3 bg-light rounded">
+                <h6><i class="fas fa-lightbulb me-2 text-warning"></i>How it works:</h6>
+                <ol class="mb-0">
+                    <li>Fill in your professional details above</li>
+                    <li>Paste the job description you want to target</li>
+                    <li>Our AI will optimize your resume for ATS systems</li>
+                    <li>Get both HTML and PDF versions of your resume</li>
+                </ol>
+                <div class="mt-3 p-2 bg-info bg-opacity-10 rounded">
+                    <small><i class="fas fa-info-circle me-1"></i><strong>New:</strong> Your resume will be generated in both HTML (for viewing/printing) and PDF (for professional submission) formats!</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Theme switching functionality
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('themeIcon');
+            if (icon) {
+                icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            }
+        }
+
+        // Initialize theme when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initTheme();
+            
+            // Add theme toggle event listener
+            const themeToggle = document.getElementById('themeToggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', toggleTheme);
+            }
+            
+            // Pre-populate form with session data
+            populateFormWithSessionData();
+        });
+        
+        // Pre-populate form with session data
+        function populateFormWithSessionData() {
+            // Check if we have resume data from the detailed form
+            const resumeDataElement = document.getElementById('resumeData');
+            if (resumeDataElement && resumeDataElement.dataset.resume) {
+                try {
+                    const resumeData = JSON.parse(resumeDataElement.dataset.resume);
+                    
+                    if (resumeData.summary) {
+                        document.getElementById('summary').value = resumeData.summary;
+                    }
+                    
+                    if (resumeData.contact && resumeData.contact.name) {
+                        document.getElementById('job_title').value = resumeData.contact.name;
+                    }
+                    
+                    if (resumeData.contact && resumeData.contact.location) {
+                        document.getElementById('company').value = resumeData.contact.location;
+                    }
+                    
+                    if (resumeData.skills && resumeData.skills.length > 0) {
+                        document.getElementById('skills').value = resumeData.skills.join(', ');
+                    }
+                    
+                    // Show success message
+                    if (resumeData.summary) {
+                        showSuccessMessage('Resume data loaded from detailed form! You can now add a job description to generate your resume.');
+                    }
+                } catch (error) {
+                    console.error('Error parsing resume data:', error);
+                }
+            }
+        }
+
+        async function loadSampleData() {
+            const scenarioSelector = document.getElementById('scenarioSelector');
+            const selectedScenario = scenarioSelector.value;
+            
+            if (!selectedScenario) {
+                return; // No scenario selected
+            }
+            
+            try {
+                // Show loading state
+                scenarioSelector.disabled = true;
+                scenarioSelector.innerHTML = '<option>Loading...</option>';
+                
+                // Fetch sample data from API
+                const response = await fetch('/api/sample-data');
+                const data = await response.json();
+                
+                if (data.scenarios && data.scenarios[selectedScenario]) {
+                    const sampleData = data.scenarios[selectedScenario];
+                    
+                    // Populate form fields
+                    document.getElementById('summary').value = sampleData.summary;
+                    document.getElementById('job_title').value = sampleData.job_title;
+                    document.getElementById('company').value = sampleData.company;
+                    document.getElementById('job_description').value = sampleData.job_description;
+                    document.getElementById('skills').value = sampleData.skills;
+                    
+                    // Show success message
+                    showSuccessMessage('Sample data loaded successfully!');
+                }
+                
+            } catch (error) {
+                console.error('Error loading sample data:', error);
+                showErrorMessage('Failed to load sample data. Please try again.');
+            } finally {
+                // Restore scenario selector
+                restoreScenarioSelector();
+            }
+        }
+
+        async function loadJobDescription() {
+            const jobSelector = document.getElementById('jobSelector');
+            const selectedJob = jobSelector.value;
+            
+            if (!selectedJob) {
+                return; // No job selected
+            }
+
+            try {
+                // Show loading state
+                jobSelector.disabled = true;
+                jobSelector.innerHTML = '<option value="">Loading...</option>';
+
+                // Fetch job description from API
+                const response = await fetch(`/api/job-description/${selectedJob}`);
+                const data = await response.json();
+
+                if (data.success && data.job_description) {
+                    // Populate form fields
+                    document.getElementById('job_description').value = data.job_description;
+                    document.getElementById('job_title').value = data.job_title;
+                    document.getElementById('company').value = data.company;
+                    
+                    showSuccessMessage('Job description loaded successfully!');
+                } else {
+                    showErrorMessage('Failed to load job description. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error loading job description:', error);
+                showErrorMessage('An error occurred while loading the job description. Please try again.');
+            } finally {
+                // Restore job selector
+                restoreJobSelector();
+            }
+        }
+
+        function rotateJobDescriptions() {
+            const jobSelector = document.getElementById('jobSelector');
+            const options = jobSelector.options;
+            
+            // Skip the first option (placeholder)
+            if (options.length <= 1) return;
+            
+            // Get current selection (skip placeholder)
+            let currentIndex = jobSelector.selectedIndex;
+            if (currentIndex === 0) currentIndex = 1; // Start from first real option
+            
+            // Calculate next index (wrap around)
+            const nextIndex = currentIndex >= options.length - 1 ? 1 : currentIndex + 1;
+            
+            // Select next job
+            jobSelector.selectedIndex = nextIndex;
+            
+            // Load the new job description
+            loadJobDescription();
+        }
+
+        function restoreJobSelector() {
+            const jobSelector = document.getElementById('jobSelector');
+            jobSelector.disabled = false;
+            jobSelector.innerHTML = `
+                <option value="">Choose a job description...</option>
+                <option value="business_systems_analyst">Business Systems Analyst - Revenue Operations</option>
+                <option value="data_scientist">Senior Data Scientist - Machine Learning</option>
+                <option value="software_engineer">Full Stack Software Engineer</option>
+                <option value="devops_engineer">DevOps Engineer - Cloud Infrastructure</option>
+                <option value="product_manager">Senior Product Manager - SaaS Platform</option>
+                <option value="data_analyst">Business Intelligence Analyst</option>
+                <option value="salesforce_administrator">Salesforce Administrator - CRM Specialist</option>
+                <option value="cloud_architect">Cloud Solutions Architect</option>
+            `;
+        }
+        
+        function showSuccessMessage(message) {
+            // Create success alert
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-success alert-dismissible fade show';
+            alertDiv.innerHTML = `
+                <i class="fas fa-check me-2"></i>${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            // Insert after the sample data section
+            const sampleSection = document.querySelector('.bg-light.rounded');
+            sampleSection.parentNode.insertBefore(alertDiv, sampleSection.nextSibling);
+            
+            // Auto-remove after 3 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.remove();
+                }
+            }, 3000);
+        }
+        
+        function showErrorMessage(message) {
+            // Create error alert
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-danger alert-dismissible fade show';
+            alertDiv.innerHTML = `
+                <i class="fas fa-exclamation-triangle me-2"></i>${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            // Insert after the sample data section
+            const sampleSection = document.querySelector('.bg-light.rounded');
+            sampleSection.parentNode.insertBefore(alertDiv, sampleSection.nextSibling);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.remove();
+                }
+            }, 5000);
+        }
+        
+        function restoreScenarioSelector() {
+            const scenarioSelector = document.getElementById('scenarioSelector');
+            scenarioSelector.disabled = false;
+            scenarioSelector.innerHTML = `
+                <option value="">Choose a job scenario...</option>
+                <option value="business_analyst">Business Systems Analyst</option>
+                <option value="data_analyst">Data Analyst</option>
+                <option value="software_developer">Software Developer</option>
+            `;
+        }
+        
+        function clearForm() {
+            // Clear all form fields
+            document.getElementById('summary').value = '';
+            document.getElementById('job_title').value = '';
+            document.getElementById('company').value = '';
+            document.getElementById('job_description').value = '';
+            document.getElementById('skills').value = '';
+            
+            // Reset selectors
+            document.getElementById('scenarioSelector').value = '';
+            document.getElementById('jobSelector').value = '';
+            
+            // Show success message
+            showSuccessMessage('Form cleared successfully!');
+        }
+        
+        function showFormHelp() {
+            const helpText = `
+                <div class="alert alert-info">
+                    <h6><i class="fas fa-info-circle me-2"></i>Form Help</h6>
+                    <ul class="mb-0">
+                        <li><strong>Summary:</strong> Write a compelling 2-3 sentence overview of your professional background and key strengths</li>
+                        <li><strong>Job Title:</strong> Your current or most recent position title</li>
+                        <li><strong>Company:</strong> Your current or most recent employer</li>
+                        <li><strong>Job Description:</strong> Paste the job posting you want to target - our AI will optimize your resume for it</li>
+                        <li><strong>Skills:</strong> List your key technical and soft skills, separated by commas</li>
+                    </ul>
+                    <hr>
+                    <small><strong>Pro Tip:</strong> Use the sample data scenarios above to see how the form works!</small>
+                </div>
+            `;
+            
+            // Create help alert
+            const helpDiv = document.createElement('div');
+            helpDiv.innerHTML = helpText;
+            
+            // Insert after the sample data section
+            const sampleSection = document.querySelector('.bg-light.rounded');
+            sampleSection.parentNode.insertBefore(helpDiv, sampleSection.nextSibling);
+            
+            // Auto-remove after 10 seconds
+            setTimeout(() => {
+                if (helpDiv.parentNode) {
+                    helpDiv.remove();
+                }
+            }, 10000);
+        }
+
+        function showSampleDataOptions() {
+            const sampleDataOptions = document.getElementById('sampleDataOptions');
+            if (sampleDataOptions) {
+                sampleDataOptions.style.display = 'block';
+            }
+        }
+        
+        // Handle form submission
+        document.getElementById('resumeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Show loading state
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Generating Resume...';
+            submitBtn.disabled = true;
+            
+            // Submit form data
+            const formData = new FormData(this);
+            
+            fetch('/form', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Redirect to view page
+                    if (data.view_url) {
+                        window.location.href = data.view_url;
+                    } else {
+                        // Fallback to download
+                        window.location.href = data.download_url;
+                    }
+                } else {
+                    // Show error
+                    showErrorMessage(data.message || 'Failed to generate resume');
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showErrorMessage('An error occurred while generating your resume. Please try again.');
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            });
+        });
+        
+        // File Upload Functions
+        function handleFileUpload() {
+            const fileInput = document.getElementById('resumeFile');
+            const uploadBtn = document.getElementById('uploadBtn');
+            
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                const fileSize = file.size / (1024 * 1024); // Convert to MB
+                
+                // Check file size (max 10MB)
+                if (fileSize > 10) {
+                    showErrorMessage('File size too large. Please upload a file smaller than 10MB.');
+                    fileInput.value = '';
+                    uploadBtn.disabled = true;
+                    return;
+                }
+                
+                // Check file type
+                const allowedTypes = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/msword'];
+                if (!allowedTypes.includes(file.type)) {
+                    showErrorMessage('Invalid file type. Please upload a PDF or Word document.');
+                    fileInput.value = '';
+                    uploadBtn.disabled = true;
+                    return;
+                }
+                
+                // Enable upload button
+                uploadBtn.disabled = false;
+                showSuccessMessage(`File "${file.name}" selected successfully!`);
+            } else {
+                uploadBtn.disabled = true;
+            }
+        }
+        
+        async function uploadResume() {
+            const fileInput = document.getElementById('resumeFile');
+            const uploadBtn = document.getElementById('uploadBtn');
+            const uploadProgress = document.getElementById('uploadProgress');
+            const progressBar = document.getElementById('progressBar');
+            const uploadStatus = document.getElementById('uploadStatus');
+            
+            if (!fileInput.files.length) {
+                showErrorMessage('Please select a file first.');
+                return;
+            }
+            
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append('resume_file', file);
+            
+            try {
+                // Show progress bar
+                uploadProgress.style.display = 'block';
+                uploadBtn.disabled = true;
+                uploadStatus.textContent = 'Uploading file...';
+                
+                // Simulate progress (since we can't track actual upload progress easily)
+                let progress = 0;
+                const progressInterval = setInterval(() => {
+                    progress += Math.random() * 15;
+                    if (progress > 90) progress = 90;
+                    progressBar.style.width = progress + '%';
+                    progressBar.textContent = Math.round(progress) + '%';
+                }, 200);
+                
+                // Upload file
+                const response = await fetch('/upload-resume', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                clearInterval(progressInterval);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Show completion
+                    progressBar.style.width = '100%';
+                    progressBar.textContent = '100%';
+                    uploadStatus.textContent = 'Parsing resume...';
+                    
+                    // Wait a moment for parsing
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    
+                    // Populate form with parsed data
+                    if (data.parsed_data) {
+                        populateFormWithResumeData(data.parsed_data);
+                        showSuccessMessage('Resume parsed successfully! Form populated with extracted data. Please review and edit as needed.');
+                    } else {
+                        showErrorMessage('Resume uploaded but parsing failed. Please fill in the form manually.');
+                    }
+                    
+                    // Hide progress bar
+                    uploadProgress.style.display = 'none';
+                    
+                } else {
+                    throw new Error(data.message || 'Failed to parse resume');
+                }
+                
+            } catch (error) {
+                console.error('Upload error:', error);
+                showErrorMessage('Failed to upload and parse resume: ' + error.message);
+                uploadProgress.style.display = 'none';
+            } finally {
+                uploadBtn.disabled = false;
+            }
+        }
+        
+        function populateFormWithResumeData(parsedData) {
+            // Populate form fields with parsed data
+            if (parsedData.summary) {
+                document.getElementById('summary').value = parsedData.summary;
+            }
+            
+            if (parsedData.job_title) {
+                document.getElementById('job_title').value = parsedData.job_title;
+            }
+            
+            if (parsedData.company) {
+                document.getElementById('company').value = parsedData.company;
+            }
+            
+            if (parsedData.skills) {
+                document.getElementById('skills').value = parsedData.skills;
+            }
+            
+            // Note: We don't populate job_description as that's the target job, not the user's current role
+        }
+    </script>
+</body>
+</html>

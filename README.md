@@ -4,7 +4,8 @@
 
 ResuMatch takes your comprehensive experience data and any job description, then generates a professional, ATS-optimized PDF resume tailored specifically for that opportunity.
 
-**🆓 NEW: FREE AI Version Available!** - Generate resumes with local AI models, zero API costs, 100% privacy.
+**🆓 NEW: FREE AI Version Available!** - Generate resumes with local AI models, zero API costs, 100% privacy.  
+**🎓 NEW: Harvard-Style PDF Generation** - Professional, business-ready resume formatting.
 
 ## 🚀 **One Click → Perfect Resume**
 
@@ -28,6 +29,8 @@ ResuMatch uses AI to intelligently optimize your resume for each job:
 - **Bullet Point Enhancement**: Optimizes descriptions with strong action verbs
 - **Intelligent Skill Selection**: Picks most relevant skills from your database
 - **Page Optimization**: Automatically adjusts content to fit 1-3 pages
+- **Role Detection**: Intelligent job role identification with confidence scoring
+- **Skill Transformation**: Context-aware skill adaptation for target roles
 
 ## 🆓 **Free vs Paid Options**
 
@@ -73,23 +76,26 @@ ResuMatch uses AI to intelligently optimize your resume for each job:
 ## 🚀 **Current Project Status**
 
 ### **✅ Fully Functional Features:**
-- **AI-Powered Resume Generation**: Complete with job title optimization, summary rewriting, and bullet point enhancement
-- **Intelligent Skill Matching**: Comprehensive skills database with context-aware selection
-- **Web Interface**: Modern Flask-based UI for easy resume generation
-- **Command Line Interface**: CLI for batch processing and automation
-- **ATS Optimization**: Harvard-style formatting that passes automated screening
-- **Page Management**: Automatic content adjustment for 1-3 page resumes
+- **Enhanced AI-Powered Resume Generation**: Complete with intelligent role detection, skill transformation, and content optimization
+- **Intelligent Skill Matching**: Comprehensive skills database with context-aware selection and role-based transformation
+- **Web Interface**: Modern Flask-based UI with AI transformation controls and sample data loading
+- **Command Line Interface**: Enhanced CLI with `--no-transform` flag for backward compatibility
+- **ATS Optimization**: Harvard-style PDF formatting that passes automated screening
+- **Page Management**: Automatic content adjustment for 1-3 page resumes with compression
 - **🆓 FREE AI Version**: Local AI models with zero API costs
-- **📄 Improved PDF Generation**: Better formatting, spacing, and page control
+- **📄 Harvard PDF Generation**: Professional ReportLab-based PDF generation
 - **🐳 Docker Support**: Production-ready containerization
 - **🔒 Enhanced Security**: Privacy protection and comprehensive .gitignore
+- **🎯 Role Detection**: Intelligent job role identification with confidence scoring
+- **🔄 Skill Transformation**: Context-aware skill adaptation for target roles
 
 ### **🔧 Technical Stack:**
 - **Backend**: Python 3.13, Flask, spaCy, NLTK, KeyBERT
-- **AI/ML**: Intelligent skill matching, keyword extraction, content optimization
-- **Frontend**: Bootstrap 5, modern responsive design
-- **Output**: Professional PDF resumes with WeasyPrint + ReportLab
+- **AI/ML**: Enhanced role detection, skill transformation, intelligent content optimization
+- **Frontend**: Bootstrap 5, modern responsive design with professional styling
+- **Output**: Professional PDF resumes with Harvard-style ReportLab generation
 - **Deployment**: Docker, Heroku, local development support
+- **Core Engine**: EnhancedDynamicResumeGenerator with modular architecture
 
 ### **📊 Project Metrics:**
 - **Lines of Code**: 15,000+ lines across multiple modules
@@ -100,10 +106,12 @@ ResuMatch uses AI to intelligently optimize your resume for each job:
 
 ### **🔄 Recent Evolution:**
 - **🆓 FREE AI Version**: Local AI models eliminate API costs
-- **📄 Enhanced PDF Generation**: Improved formatting and page control
+- **🎓 Harvard-Style PDF Generation**: Professional ReportLab-based formatting
+- **🚀 Enhanced AI Engine**: Intelligent role detection and skill transformation
 - **🐳 Docker Containerization**: Production-ready deployment
-- **🔒 Security Improvements**: Privacy protection and .gitignore patterns
+- **🔒 Security Improvements**: Privacy protection and comprehensive .gitignore
 - **🚀 Enhanced Deployment**: Multiple deployment options for different needs
+- **💼 Professional UI**: Business-ready feature comparison and styling
 
 ## 🚀 Quick Start
 

@@ -1,71 +1,72 @@
-# Git files
-.git/
-.gitignore
+# Exclude EVERYTHING except essential app files
+*
 
-# Python cache and virtual environments
+# Only include these essential files
+!app.py
+!requirements.txt
+!Procfile
+!railway.json
+!runtime.txt
+!resume_parser.py
+!dynamic_resume_generator_enhanced.py
+!harvard_pdf_generator.py
+!job_matcher.py
+
+# Include templates directory
+!templates/
+!templates/*.html
+
+# Include static directory
+!static/
+!static/css/
+!static/js/
+!static/css/*
+!static/js/*
+
+# Include data directory
+!data/
+!data/*.json
+
+# Include services directory
+!services/
+!services/*.py
+
+# Exclude all other files and directories
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-.Python
-env/
+.env*
+.venv/
 venv/
-ENV/
-env.bak/
-venv.bak/
-resumatch_env/
-
-# IDE files
+env/
+*.md
+*.html
+*.json
+!my_experience.json
+uploads/
+backups/
+ammr_*.html
+test_*.py
+*_test.py
+examples/
+samples/
+.git/
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
-
-# OS files
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# Logs
 logs/
 *.log
-
-# Temporary files
 *.tmp
 *.temp
 temp/
 tmp/
-
-# Backup files
-backups/
 *.bak
 *.backup
-
-# Documentation
-*.md
-!README.md
-
-# Development files
-.env
-.env.local
-.env.development
-.env.production
+deploy_*.sh
+start_*.sh
 docker-compose*.yml
 Dockerfile*
-deploy_*.sh
-RAILWAY_DEPLOYMENT.md
-DARK_MODE_IMPLEMENTATION.md
-
-# Test files
-test_*.py
-*_test.py
-tests/
-
-# Sample and example files
-examples/
-samples/

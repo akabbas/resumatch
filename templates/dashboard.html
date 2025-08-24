@@ -1,0 +1,302 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - ResuMatch{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <!-- Welcome Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h3 class="mb-2">
+                                <i class="fas fa-user-circle me-2"></i>
+                                Welcome back, {{ current_user.get_full_name() }}!
+                            </h3>
+                            <p class="mb-0 opacity-75">
+                                You're on the <strong>{{ current_user.subscription_tier.title() }}</strong> plan
+                                {% if current_user.subscription_tier == 'free' %}
+                                    - <a href="{{ url_for('auth.upgrade') }}" class="text-white text-decoration-none">Upgrade to Pro</a>
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="col-md-4 text-md-end">
+                            <a href="{{ url_for('auth.profile') }}" class="btn btn-outline-light me-2">
+                                <i class="fas fa-cog me-1"></i>Profile
+                            </a>
+                            <a href="{{ url_for('form') }}" class="btn btn-light">
+                                <i class="fas fa-plus me-1"></i>New Resume
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-file-alt text-primary fa-2x mb-2"></i>
+                    <h4 class="mb-1">{{ stats.total_resumes }}</h4>
+                    <p class="text-muted mb-0">Total Resumes</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-calendar-alt text-success fa-2x mb-2"></i>
+                    <h4 class="mb-1">{{ stats.this_month }}</h4>
+                    <p class="text-muted mb-0">This Month</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-chart-line text-info fa-2x mb-2"></i>
+                    <h4 class="mb-1">{{ "%.2f"|format(stats.total_storage_mb) }}</h4>
+                    <p class="text-muted mb-0">Storage Used (MB)</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-crown text-warning fa-2x mb-2"></i>
+                    <h4 class="mb-1">{{ stats.subscription_tier.title() }}</h4>
+                    <p class="text-muted mb-0">Plan</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resumes Section -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-file-alt me-2"></i>My Resumes
+                    </h5>
+                    <div>
+                        {% if stats.can_create_more %}
+                            <a href="{{ url_for('form') }}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-plus me-1"></i>Create New
+                            </a>
+                        {% else %}
+                            <button class="btn btn-secondary btn-sm" disabled>
+                                <i class="fas fa-lock me-1"></i>Limit Reached
+                            </button>
+                            <a href="{{ url_for('auth.upgrade') }}" class="btn btn-success btn-sm ms-2">
+                                <i class="fas fa-arrow-up me-1"></i>Upgrade
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    {% if resumes %}
+                        <div class="row">
+                            {% for resume in resumes %}
+                            <div class="col-md-6 col-lg-4 mb-3">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <h6 class="card-title mb-0">{{ resume.title }}</h6>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="{{ url_for('form') }}">
+                                                        <i class="fas fa-edit me-2"></i>Edit
+                                                    </a></li>
+                                                    <li><a class="dropdown-item" href="#" onclick="alert('Download feature coming soon!')">
+                                                        <i class="fas fa-download me-2"></i>Download
+                                                    </a></li>
+                                                    <li><a class="dropdown-item" href="#" onclick="alert('Duplicate feature coming soon!')">
+                                                        <i class="fas fa-copy me-2"></i>Duplicate
+                                                    </a></li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li><a class="dropdown-item text-danger" href="#" onclick="deleteResume({{ resume.id }})">
+                                                        <i class="fas fa-trash me-2"></i>Delete
+                                                    </a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        
+                                        {% if resume.job_title %}
+                                        <p class="text-muted small mb-2">
+                                            <i class="fas fa-briefcase me-1"></i>{{ resume.job_title }}
+                                            {% if resume.company %}at {{ resume.company }}{% endif %}
+                                        </p>
+                                        {% endif %}
+                                        
+                                        <p class="card-text small text-muted">
+                                            {{ resume.get_summary() }}
+                                        </p>
+                                        
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <small class="text-muted">
+                                                <i class="fas fa-clock me-1"></i>
+                                                {{ resume.updated_at.strftime('%b %d, %Y') }}
+                                            </small>
+                                            {% if resume.generated_pdf_url %}
+                                            <span class="badge bg-success">
+                                                <i class="fas fa-check me-1"></i>PDF Ready
+                                            </span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-file-alt text-muted fa-3x mb-3"></i>
+                            <h5 class="text-muted">No resumes yet</h5>
+                            <p class="text-muted">Create your first resume to get started!</p>
+                            <a href="{{ url_for('form') }}" class="btn btn-primary">
+                                <i class="fas fa-plus me-1"></i>Create Your First Resume
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mt-4">
+        <div class="col-md-6 mb-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-bolt me-2"></i>Quick Actions
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('form') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-plus me-2"></i>Create New Resume
+                        </a>
+                        <a href="{{ url_for('auth.profile') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-user me-2"></i>Edit Profile
+                        </a>
+                        <a href="{{ url_for('auth.upgrade') }}" class="btn btn-outline-success">
+                            <i class="fas fa-arrow-up me-2"></i>Upgrade Plan
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>Usage Summary
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>Resume Storage</span>
+                            <span>{{ "%.1f"|format(stats.total_storage_mb) }} MB</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            {% set usage_percent = (stats.total_storage_mb / 10) * 100 %}
+                            <div class="progress-bar" style="width: {{ min(usage_percent, 100) }}%"></div>
+                        </div>
+                        <small class="text-muted">10 MB limit on free plan</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>Resume Count</span>
+                            <span>{{ stats.total_resumes }}/{{ '∞' if stats.subscription_tier != 'free' else '3' }}</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            {% if stats.subscription_tier == 'free' %}
+                                {% set resume_percent = (stats.total_resumes / 3) * 100 %}
+                            {% else %}
+                                {% set resume_percent = 0 %}
+                            {% endif %}
+                            <div class="progress-bar bg-success" style="width: {{ min(resume_percent, 100) }}%"></div>
+                        </div>
+                        <small class="text-muted">
+                            {% if stats.subscription_tier == 'free' %}
+                                {{ 3 - stats.total_resumes }} resumes remaining
+                            {% else %}
+                                Unlimited resumes
+                            {% endif %}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Resume</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this resume? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let resumeToDelete = null;
+
+function deleteResume(resumeId) {
+    resumeToDelete = resumeId;
+    const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    deleteModal.show();
+}
+
+document.getElementById('confirmDelete').addEventListener('click', function() {
+    if (resumeToDelete) {
+        fetch(`/resume/${resumeToDelete}/delete`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Error deleting resume: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error deleting resume');
+        });
+    }
+    
+    const deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
+    deleteModal.hide();
+});
+</script>
+{% endblock %}
