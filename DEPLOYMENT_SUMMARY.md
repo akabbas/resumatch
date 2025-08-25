@@ -200,6 +200,14 @@ The Harvard-Style PDF Generation System has been successfully deployed and is no
 - **Better Web Experience**: Enhanced form functionality and sample data
 - **Corporate Design**: Professional appearance suitable for business use
 
+### **Latest Updates (v2.1.1) - CI/CD & Railway Deployment**
+- **CI/CD Pipeline Fixed**: Resolved GitHub Actions deployment failures
+- **Railway Production Ready**: Complete production deployment configuration
+- **Health Monitoring**: Added /health endpoint for production monitoring
+- **Docker Support**: Fixed Docker build and deployment issues
+- **Production Files**: Created missing production requirements and app files
+- **Auto-Deployment**: GitHub integration with Railway for continuous deployment
+
 ### **Next Steps**
 1. **Monitor Performance**: Track PDF generation metrics
 2. **User Feedback**: Collect feedback on new PDF quality and UI

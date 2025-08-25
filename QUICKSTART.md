@@ -178,6 +178,29 @@ python -c "import nltk; nltk.download('punkt'); nltk.download('stopwords'); nltk
 - **Enhanced form handling** and user experience
 - **Professional styling** suitable for business use
 
+## 🚀 **Deploy to Railway (Production)**
+
+### **Quick Railway Deployment**
+1. **Connect GitHub** to [Railway](https://railway.com/dashboard)
+2. **Select repository**: `akabbas/resumatch`
+3. **Auto-deploy** on every push to main branch
+4. **Your app**: Available at `https://your-app.railway.app`
+
+### **Environment Variables**
+Set these in Railway dashboard:
+```bash
+FLASK_ENV=production
+SECRET_KEY=your-super-secret-key
+OPENAI_API_KEY=your-openai-key
+```
+
+### **Production Features**
+- ✅ **HTTPS enabled** automatically
+- ✅ **Global CDN** for fast loading
+- ✅ **Auto-scaling** based on traffic
+- ✅ **Health monitoring** at `/health`
+- ✅ **Professional hosting** with custom domains
+
 ## 📊 Example Output
 
 The tool will generate a professional PDF resume that includes:
