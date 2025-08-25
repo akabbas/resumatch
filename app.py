@@ -21,6 +21,7 @@ from auth import auth
 
 app = Flask(__name__)
 app.secret_key = 'resumatch-secret-key-2024'
+app.config['VERSION'] = '2.1.2'
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
 app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024  # 10MB max file size
 
