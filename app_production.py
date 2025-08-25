@@ -1,82 +1,104 @@
 #!/usr/bin/env python3
 """
 ResuMatch Production Web Interface
-A production-ready Flask application with all current features enabled
+Production-ready Flask application with health checks and monitoring
 """
 
 import os
 import json
 import tempfile
-import logging
+import datetime
 from pathlib import Path
-from flask import Flask, render_template, request, jsonify, send_file, flash, redirect, url_for
+from flask import Flask, render_template, request, jsonify, send_file, flash, redirect, url_for, session
 from werkzeug.utils import secure_filename
-from werkzeug.middleware.proxy_fix import ProxyFix
-from resume_generator import ResumeGenerator
-from job_matcher import ResumeTailor, BulletPoint
+from dynamic_resume_generator_enhanced import EnhancedDynamicResumeGenerator
+from job_matcher_simple import ResumeTailor, BulletPoint
 import uuid
-from dotenv import load_dotenv
-
-# Load production environment variables
-load_dotenv('env.production')
-
-# Configure logging
-logging.basicConfig(
-    level=getattr(logging, os.getenv('LOG_LEVEL', 'WARNING')),
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
+from resume_parser import parse_resume_file
+from flask_login import LoginManager, login_required, current_user
+from flask_wtf.csrf import CSRFProtect
+from models import db, User
+from auth import auth
 
 app = Flask(__name__)
+app.secret_key = os.environ.get('SECRET_KEY', 'production-secret-key-change-this')
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'production-secret-key-change-this')
+app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024  # 10MB max file size
 
-# Production configuration
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'fallback-secret-key')
-app.config['DEBUG'] = False
-app.config['TESTING'] = False
+# Production database configuration
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///resumatch.db')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Security headers
-app.config['SESSION_COOKIE_SECURE'] = os.getenv('SESSION_COOKIE_SECURE', 'True').lower() == 'true'
-app.config['SESSION_COOKIE_HTTPONLY'] = os.getenv('SESSION_COOKIE_HTTPONLY', 'True').lower() == 'true'
-app.config['SESSION_COOKIE_SAMESITE'] = os.getenv('SESSION_COOKIE_SAMESITE', 'Lax')
+# Initialize extensions
+db.init_app(app)
+csrf = CSRFProtect(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'auth.login'
+login_manager.login_message = 'Please log in to access this page.'
+login_manager.login_message_category = 'info'
 
-# Feature flags - all current features enabled
-ENABLE_ANALYTICS = os.getenv('ENABLE_ANALYTICS', 'True').lower() == 'true'
-ENABLE_MONITORING = os.getenv('ENABLE_MONITORING', 'True').lower() == 'true'
-ENABLE_INTELLIGENT_SKILL_MATCHING = os.getenv('ENABLE_INTELLIGENT_SKILL_MATCHING', 'True').lower() == 'true'
-ENABLE_JOB_TITLE_OPTIMIZATION = os.getenv('ENABLE_JOB_TITLE_OPTIMIZATION', 'True').lower() == 'true'
-ENABLE_SUMMARY_OPTIMIZATION = os.getenv('ENABLE_SUMMARY_OPTIMIZATION', 'True').lower() == 'true'
-ENABLE_BULLET_OPTIMIZATION = os.getenv('ENABLE_BULLET_OPTIMIZATION', 'True').lower() == 'true'
-ENABLE_PAGE_OPTIMIZATION = os.getenv('ENABLE_PAGE_OPTIMIZATION', 'True').lower() == 'true'
+# Add Jinja2 global functions
+@app.context_processor
+def inject_functions():
+    """Inject utility functions into Jinja2 templates"""
+    return {
+        'min': min,
+        'max': max,
+        'abs': abs,
+        'round': round
+    }
+
+@login_manager.user_loader
+def load_user(user_id):
+    """Load user for Flask-Login"""
+    return User.query.get(int(user_id))
 
 # Configuration
-UPLOAD_FOLDER = os.getenv('UPLOAD_FOLDER', 'uploads')
-ALLOWED_EXTENSIONS = set(os.getenv('ALLOWED_EXTENSIONS', 'txt,json').split(','))
-MAX_CONTENT_LENGTH = int(os.getenv('MAX_CONTENT_LENGTH', 16 * 1024 * 1024))
+UPLOAD_FOLDER = 'uploads'
+ALLOWED_EXTENSIONS = {'txt', 'json', 'pdf', 'docx', 'doc'}
+MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max file size
 
 # Ensure upload directory exists
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-# Initialize monitoring if enabled
-if ENABLE_MONITORING:
-    try:
-        import sentry_sdk
-        from sentry_sdk.integrations.flask import FlaskIntegration
-        
-        sentry_sdk.init(
-            dsn=os.getenv('SENTRY_DSN'),
-            integrations=[FlaskIntegration()],
-            environment='production',
-            traces_sample_rate=0.1,
-            profiles_sample_rate=0.1
-        )
-        logger.info("Sentry monitoring initialized")
-    except ImportError:
-        logger.warning("Sentry SDK not available, monitoring disabled")
-    except Exception as e:
-        logger.error(f"Failed to initialize Sentry: {e}")
+# Register blueprints
+app.register_blueprint(auth)
 
-# Add ProxyFix for proper handling behind reverse proxy
-app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
+# Health check endpoint for production
+@app.route('/health')
+def health_check():
+    """Health check endpoint for production monitoring"""
+    try:
+        # Basic health checks
+        db_status = "healthy"
+        try:
+            db.session.execute("SELECT 1")
+        except Exception:
+            db_status = "unhealthy"
+        
+        return jsonify({
+            'status': 'healthy',
+            'database': db_status,
+            'timestamp': str(datetime.datetime.utcnow())
+        }), 200
+    except Exception as e:
+        return jsonify({
+            'status': 'unhealthy',
+            'error': str(e),
+            'timestamp': str(datetime.datetime.utcnow())
+        }), 500
+
+# Database initialization route
+@app.route('/init-db')
+def init_db():
+    """Initialize database tables"""
+    try:
+        with app.app_context():
+            db.create_all()
+        return jsonify({'success': True, 'message': 'Database initialized successfully'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': f'Error initializing database: {str(e)}'})
 
 def allowed_file(filename):
     """Check if file extension is allowed"""
@@ -85,212 +107,267 @@ def allowed_file(filename):
 @app.route('/')
 def index():
     """Main page with resume generation form"""
-    return render_template('index.html', 
-                         env='production',
-                         features={
-                             'intelligent_skill_matching': ENABLE_INTELLIGENT_SKILL_MATCHING,
-                             'job_title_optimization': ENABLE_JOB_TITLE_OPTIMIZATION,
-                             'summary_optimization': ENABLE_SUMMARY_OPTIMIZATION,
-                             'bullet_optimization': ENABLE_BULLET_OPTIMIZATION,
-                             'page_optimization': ENABLE_PAGE_OPTIMIZATION
-                         })
+    return render_template('index.html')
 
-@app.route('/generate', methods=['POST'])
-def generate_resume():
-    """Generate resume from form data with all features enabled"""
+@app.route('/form')
+def form():
+    """Resume form page"""
+    # Check if we have resume data from the detailed form
+    resume_data = session.get('resume_data', {})
+    return render_template('form.html', resume_data=resume_data)
+
+@app.route('/form', methods=['POST'])
+@csrf.exempt
+def form_submit():
+    """Handle form submission and generate resume"""
     try:
-        # Get form data
+        # Get form data directly from request
+        summary = request.form.get('summary', '').strip()
+        skills = request.form.get('skills', '').strip()
         job_description = request.form.get('job_description', '').strip()
-        name = request.form.get('name', 'Your Name').strip()
-        contact_info = request.form.get('contact_info', 'email@example.com | phone | location').strip()
+        enable_ai_transform = request.form.get('enable_ai_transform') == 'on'
         
-        # Handle experience data
-        experience_data = None
-        experience_format = request.form.get('experience_format', 'json')
+        # Validate required fields
+        if not summary or not skills:
+            return jsonify({
+                'success': False,
+                'message': 'Professional summary and skills are required.'
+            }), 400
         
-        if experience_format == 'json':
-            experience_json = request.form.get('experience_json', '{}')
-            try:
-                experience_data = json.loads(experience_json)
-            except json.JSONDecodeError:
-                logger.error("Invalid JSON format in experience data")
-                flash('Invalid JSON format in experience data', 'error')
-                return redirect(url_for('index'))
-        
-        elif experience_format == 'text':
-            experience_data = request.form.get('experience_text', '')
-        
-        # Validate inputs
-        if not job_description:
-            flash('Job description is required', 'error')
-            return redirect(url_for('index'))
-        
-        if not experience_data:
-            flash('Experience data is required', 'error')
-            return redirect(url_for('index'))
-        
-        # Generate unique filename
-        resume_id = str(uuid.uuid4())[:8]
-        output_filename = f"resume_{resume_id}.pdf"
-        output_path = os.path.join(UPLOAD_FOLDER, output_filename)
-        
-        # Initialize resume generator with all features enabled
-        generator = ResumeGenerator(
-            use_openai=request.form.get('use_openai') == 'on',
-            max_pages=int(request.form.get('max_pages', 2)),
-            include_projects=request.form.get('include_projects') == 'on'
-        )
+        # Create temporary experience data
+        experience_data = {
+            'summary': summary,
+            'skills': skills.split(','),
+            'experience': [],
+            'education': [],
+            'projects': []
+        }
         
         # Generate resume
-        logger.info(f"Generating resume {resume_id} for job: {job_description[:100]}...")
-        result = generator.generate_resume(
-            job_description=job_description,
+        generator = EnhancedDynamicResumeGenerator(
             experience_data=experience_data,
-            output_path=output_path,
-            name=name,
-            contact_info=contact_info
+            job_description=job_description,
+            no_transform=not enable_ai_transform
         )
         
-        if result:
-            # Log analytics if enabled
-            if ENABLE_ANALYTICS:
-                log_resume_generation(resume_id, job_description[:100])
-            
-            logger.info(f"Resume {resume_id} generated successfully")
-            flash(f'Resume generated successfully! ID: {resume_id}', 'success')
-            return jsonify({
-                'success': True,
-                'message': 'Resume generated successfully',
-                'download_url': url_for('download_resume', filename=output_filename),
-                'resume_id': resume_id,
-                'environment': 'production',
-                'features_enabled': {
-                    'intelligent_skill_matching': ENABLE_INTELLIGENT_SKILL_MATCHING,
-                    'job_title_optimization': ENABLE_JOB_TITLE_OPTIMIZATION,
-                    'summary_optimization': ENABLE_SUMMARY_OPTIMIZATION,
-                    'bullet_optimization': ENABLE_BULLET_OPTIMIZATION,
-                    'page_optimization': ENABLE_PAGE_OPTIMIZATION
-                }
-            })
-        else:
-            logger.error(f"Failed to generate resume {resume_id}")
-            flash('Failed to generate resume', 'error')
-            return redirect(url_for('index'))
-            
+        # Generate HTML resume
+        html_content = generator.generate_html_resume()
+        
+        # Generate unique filename
+        filename = f"resume_{uuid.uuid4().hex[:8]}.html"
+        filepath = os.path.join(UPLOAD_FOLDER, filename)
+        
+        # Save HTML file
+        with open(filepath, 'w', encoding='utf-8') as f:
+            f.write(html_content)
+        
+        return jsonify({
+            'success': True,
+            'message': 'Resume generated successfully!',
+            'download_url': url_for('download_resume', filename=filename, _external=True)
+        })
+        
     except Exception as e:
-        logger.error(f"Error generating resume: {str(e)}", exc_info=True)
-        
-        if ENABLE_MONITORING:
-            try:
-                import sentry_sdk
-                sentry_sdk.capture_exception(e)
-            except:
-                pass
-        
-        flash(f'Error generating resume: {str(e)}', 'error')
-        return redirect(url_for('index'))
+        app.logger.error(f"Error generating resume: {str(e)}")
+        return jsonify({
+            'success': False,
+            'message': f'Error generating resume: {str(e)}'
+        }), 500
 
 @app.route('/download/<filename>')
 def download_resume(filename):
-    """Download generated resume"""
+    """Download generated resume file"""
     try:
-        file_path = os.path.join(UPLOAD_FOLDER, filename)
-        if os.path.exists(file_path):
-            logger.info(f"Downloading resume: {filename}")
-            return send_file(file_path, as_attachment=True, download_name=filename)
+        filepath = os.path.join(UPLOAD_FOLDER, filename)
+        if os.path.exists(filepath):
+            return send_file(filepath, as_attachment=True)
         else:
-            logger.warning(f"Resume file not found: {filename}")
-            flash('Resume file not found', 'error')
-            return redirect(url_for('index'))
+            return jsonify({'error': 'File not found'}), 404
     except Exception as e:
-        logger.error(f"Error downloading resume {filename}: {str(e)}")
-        flash('Error downloading resume', 'error')
-        return redirect(url_for('index'))
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/detailed-form')
+def detailed_form():
+    """Detailed resume form page"""
+    return render_template('detailed_form.html')
+
+@app.route('/generate', methods=['POST'])
+def generate_resume():
+    """Generate resume from detailed form data"""
+    try:
+        # Get form data
+        form_data = request.form.to_dict()
+        
+        # Extract basic information
+        name = form_data.get('name', '')
+        email = form_data.get('email', '')
+        phone = form_data.get('phone', '')
+        location = form_data.get('location', '')
+        linkedin = form_data.get('linkedin', '')
+        github = form_data.get('github', '')
+        summary = form_data.get('summary', '')
+        skills = form_data.get('skills', '')
+        job_description = form_data.get('job_description', '')
+        enable_ai_transform = form_data.get('enable_ai_transform') == 'on'
+        
+        # Validate required fields
+        if not name or not summary or not skills:
+            return jsonify({
+                'success': False,
+                'message': 'Name, professional summary, and skills are required.'
+            }), 400
+        
+        # Create experience data structure
+        experience_data = {
+            'name': name,
+            'email': email,
+            'phone': phone,
+            'location': location,
+            'linkedin': linkedin,
+            'github': github,
+            'summary': summary,
+            'skills': [skill.strip() for skill in skills.split(',') if skill.strip()],
+            'experience': [],
+            'education': [],
+            'projects': []
+        }
+        
+        # Extract experience items
+        i = 0
+        while f'experience[{i}][title]' in form_data:
+            title = form_data.get(f'experience[{i}][title]', '')
+            company = form_data.get(f'experience[{i}][company]', '')
+            duration = form_data.get(f'experience[{i}][duration]', '')
+            description = form_data.get(f'experience[{i}][description]', '')
+            
+            if title and company:
+                experience_data['experience'].append({
+                    'title': title,
+                    'company': company,
+                    'duration': duration,
+                    'description': description
+                })
+            i += 1
+        
+        # Extract education items
+        i = 0
+        while f'education[{i}][degree]' in form_data:
+            degree = form_data.get(f'education[{i}][degree]', '')
+            institution = form_data.get(f'education[{i}][institution]', '')
+            year = form_data.get(f'education[{i}][year]', '')
+            gpa = form_data.get(f'education[{i}][gpa]', '')
+            field = form_data.get(f'education[{i}][field]', '')
+            
+            if degree and institution:
+                experience_data['education'].append({
+                    'degree': degree,
+                    'institution': institution,
+                    'year': year,
+                    'gpa': gpa,
+                    'field': field
+                })
+            i += 1
+        
+        # Extract project items
+        i = 0
+        while f'projects[{i}][name]' in form_data:
+            name = form_data.get(f'projects[{i}][name]', '')
+            technologies = form_data.get(f'projects[{i}][technologies]', '')
+            description = form_data.get(f'projects[{i}][description]', '')
+            
+            if name and description:
+                experience_data['projects'].append({
+                    'name': name,
+                    'technologies': technologies,
+                    'description': description
+                })
+            i += 1
+        
+        # Generate resume
+        generator = EnhancedDynamicResumeGenerator(
+            experience_data=experience_data,
+            job_description=job_description,
+            no_transform=not enable_ai_transform
+        )
+        
+        # Generate HTML resume
+        html_content = generator.generate_html_resume()
+        
+        # Generate unique filename
+        filename = f"resume_{uuid.uuid4().hex[:8]}.html"
+        filepath = os.path.join(UPLOAD_FOLDER, filename)
+        
+        # Save HTML file
+        with open(filepath, 'w', encoding='utf-8') as f:
+            f.write(html_content)
+        
+        return jsonify({
+            'success': True,
+            'message': 'Resume generated successfully!',
+            'download_url': url_for('download_resume', filename=filename, _external=True)
+        })
+        
+    except Exception as e:
+        app.logger.error(f"Error generating resume: {str(e)}")
+        return jsonify({
+            'success': False,
+            'message': f'Error generating resume: {str(e)}'
+        }), 500
 
 @app.route('/api/sample-data')
 def get_sample_data():
-    """Get sample data for the form"""
-    sample_data = {
-        'experience_json': json.dumps({
-            "summary": "Experienced software developer with expertise in Python, web development, and AI/ML technologies. Proven track record of delivering scalable solutions and leading technical projects.",
-            "experience": [
-                {
-                    "title": "Software Developer",
-                    "company": "Tech Company",
-                    "duration": "2022 - Present",
-                    "description": [
-                        "Developed REST APIs using Django and FastAPI serving 1M+ requests daily",
-                        "Implemented microservices architecture with Docker and Kubernetes",
-                        "Managed PostgreSQL databases and optimized queries for 40% performance improvement",
-                        "Integrated React frontend with REST APIs and implemented real-time features"
-                    ],
-                    "skills_used": ["Python", "Django", "FastAPI", "React", "PostgreSQL", "Docker", "Kubernetes"]
-                }
-            ],
-            "skills": ["Python", "JavaScript", "React", "Django", "FastAPI", "PostgreSQL", "Docker", "Kubernetes", "AWS", "Git"],
-            "projects": [
-                {
-                    "name": "ResuMatch - AI Resume Generator",
-                    "description": [
-                        "Built intelligent resume generation system using Python, Flask, and NLP",
-                        "Implemented AI-powered job title optimization and skill matching",
-                        "Created web interface with Bootstrap 5 and professional PDF output"
-                    ],
-                    "technologies": ["Python", "Flask", "NLP", "AI/ML", "Bootstrap", "WeasyPrint"]
-                }
-            ],
-            "certifications": ["AWS Certified Developer", "Python Professional Certification"],
-            "education": [
-                {
-                    "degree": "Bachelor of Science in Computer Science",
-                    "school": "University Name",
-                    "graduation_year": "2022"
-                }
-            ]
-        }, indent=2),
-        'job_description': "We are seeking a talented Senior Python Developer to join our dynamic team. You will be responsible for developing and maintaining high-quality software solutions.\n\nRequirements:\n- 5+ years of experience with Python development\n- Strong experience with Django and web frameworks\n- Experience with cloud platforms (AWS, Azure, GCP)\n- Knowledge of database systems and SQL\n- Experience with CI/CD pipelines\n- Understanding of microservices architecture"
-    }
-    return jsonify(sample_data)
-
-@app.route('/health')
-def health_check():
-    """Health check endpoint for production monitoring"""
-    return jsonify({
-        'status': 'healthy',
-        'environment': 'production',
-        'features_enabled': {
-            'intelligent_skill_matching': ENABLE_INTELLIGENT_SKILL_MATCHING,
-            'job_title_optimization': ENABLE_JOB_TITLE_OPTIMIZATION,
-            'summary_optimization': ENABLE_SUMMARY_OPTIMIZATION,
-            'bullet_optimization': ENABLE_BULLET_OPTIMIZATION,
-            'page_optimization': ENABLE_PAGE_OPTIMIZATION
-        }
-    })
-
-def log_resume_generation(resume_id: str, job_description_preview: str):
-    """Log resume generation for analytics"""
+    """Get sample data for form population"""
     try:
-        logger.info(f"Resume generation analytics - ID: {resume_id}, Job: {job_description_preview}")
-        # Here you could send to analytics service like Google Analytics, Mixpanel, etc.
+        # Load sample data from JSON file
+        sample_file = 'my_experience.json'
+        if os.path.exists(sample_file):
+            with open(sample_file, 'r', encoding='utf-8') as f:
+                sample_data = json.load(f)
+            return jsonify(sample_data)
+        else:
+            return jsonify({'error': 'Sample data file not found'}), 404
     except Exception as e:
-        logger.error(f"Failed to log analytics: {e}")
+        return jsonify({'error': str(e)}), 500
 
-@app.errorhandler(404)
-def not_found(error):
-    """Handle 404 errors"""
-    return render_template('404.html'), 404
+@app.route('/api/sample-data/<scenario>')
+def get_scenario_data(scenario):
+    """Get sample data for specific scenarios"""
+    try:
+        # Load sample data from JSON file
+        sample_file = 'my_experience.json'
+        if os.path.exists(sample_file):
+            with open(sample_file, 'r', encoding='utf-8') as f:
+                sample_data = json.load(f)
+            
+            # Return specific scenario data if available
+            if scenario in sample_data:
+                return jsonify(sample_data[scenario])
+            else:
+                return jsonify({'error': f'Scenario {scenario} not found'}), 404
+        else:
+            return jsonify({'error': 'Sample data file not found'}), 404
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
-@app.errorhandler(500)
-def internal_error(error):
-    """Handle 500 errors"""
-    logger.error(f"Internal server error: {error}")
-    return render_template('500.html'), 500
+@app.route('/view/<filename>')
+def view_resume(filename):
+    """View generated resume file"""
+    try:
+        filepath = os.path.join(UPLOAD_FOLDER, filename)
+        if os.path.exists(filepath):
+            with open(filepath, 'r', encoding='utf-8') as f:
+                content = f.read()
+            return content
+        else:
+            return jsonify({'error': 'File not found'}), 404
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    port = int(os.getenv('FLASK_PORT', 8000))
-    debug = os.getenv('FLASK_DEBUG', 'False').lower() == 'true'
+    # Production settings
+    port = int(os.environ.get('PORT', 8000))
+    debug = os.environ.get('FLASK_ENV') != 'production'
     
-    logger.info(f"Starting ResuMatch production server on port {port}")
     app.run(
         host='0.0.0.0',
         port=port,
