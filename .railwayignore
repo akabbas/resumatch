@@ -1,72 +1,42 @@
-# Exclude EVERYTHING except essential app files
-*
-
-# Only include these essential files
-!app.py
-!requirements.txt
-!Procfile
-!railway.json
-!runtime.txt
-!resume_parser.py
-!dynamic_resume_generator_enhanced.py
-!harvard_pdf_generator.py
-!job_matcher.py
-
-# Include templates directory
-!templates/
-!templates/*.html
-
-# Include static directory
-!static/
-!static/css/
-!static/js/
-!static/css/*
-!static/js/*
-
-# Include data directory
-!data/
-!data/*.json
-
-# Include services directory
-!services/
-!services/*.py
-
-# Exclude all other files and directories
+# Development files
+.env
+env.*
+.venv/
+venv/
+resumatch_env/
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-.env*
-.venv/
-venv/
-env/
-*.md
-*.html
-*.json
-!my_experience.json
-uploads/
-backups/
-ammr_*.html
-test_*.py
-*_test.py
-examples/
-samples/
+.Python
+*.log
+
+# Git
 .git/
+.gitignore
+
+# IDE
 .vscode/
 .idea/
 *.swp
 *.swo
-*~
+
+# OS
 .DS_Store
-logs/
-*.log
+Thumbs.db
+
+# Temporary files
 *.tmp
 *.temp
-temp/
-tmp/
-*.bak
-*.backup
-deploy_*.sh
-start_*.sh
-docker-compose*.yml
-Dockerfile*
+uploads/
+logs/
+backups/
+
+# Test files
+test_*.py
+*_test.py
+comprehensive_*.py
+
+# Documentation
+*.md
+!README.md
