@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - ResuMatch</title>
+    <title>Profile - ResuMatch</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -134,7 +134,7 @@
             min-height: calc(100vh - 100px);
         }
 
-        .dashboard-header {
+        .profile-header {
             text-align: center;
             margin-bottom: 4rem;
             opacity: 0;
@@ -142,10 +142,11 @@
             animation: fadeInUp 0.8s ease-out forwards;
         }
 
-        .dashboard-title {
+        .profile-title {
             font-size: 3rem;
             font-weight: 800;
             background: var(--gradient-primary);
+            -webkit-background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -153,25 +154,24 @@
             letter-spacing: -0.02em;
         }
 
-        .dashboard-subtitle {
+        .profile-subtitle {
             font-size: 1.25rem;
             color: var(--text-secondary);
             font-weight: 400;
         }
 
-        .stats-grid {
+        .profile-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
             gap: 2rem;
             margin-bottom: 4rem;
         }
 
-        .stat-card {
+        .profile-card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 16px;
             padding: 2rem;
-            text-align: center;
             backdrop-filter: blur(20px);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             opacity: 0;
@@ -179,116 +179,86 @@
             animation: fadeInUp 0.8s ease-out forwards;
         }
 
-        .stat-card:nth-child(1) { animation-delay: 0.1s; }
-        .stat-card:nth-child(2) { animation-delay: 0.2s; }
-        .stat-card:nth-child(3) { animation-delay: 0.3s; }
-        .stat-card:nth-child(4) { animation-delay: 0.4s; }
+        .profile-card:nth-child(1) { animation-delay: 0.1s; }
+        .profile-card:nth-child(2) { animation-delay: 0.2s; }
+        .profile-card:nth-child(3) { animation-delay: 0.3s; }
+        .profile-card:nth-child(4) { animation-delay: 0.4s; }
 
-        .stat-card:hover {
+        .profile-card:hover {
             transform: translateY(-8px);
             border-color: var(--border-focus);
             box-shadow: var(--shadow-glow);
         }
 
-        .stat-icon {
-            width: 64px;
-            height: 64px;
-            border-radius: 16px;
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
             background: var(--gradient-primary);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
-            margin: 0 auto 1rem;
+            font-size: 1.5rem;
         }
 
-        .stat-value {
-            font-size: 2.5rem;
-            font-weight: 800;
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
             color: var(--text-primary);
-            margin-bottom: 0.5rem;
         }
 
-        .stat-label {
+        .card-content {
             color: var(--text-secondary);
-            font-size: 1rem;
-            font-weight: 500;
+            line-height: 1.7;
         }
 
-        .resumes-section {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 2rem;
-            backdrop-filter: blur(20px);
-            margin-bottom: 3rem;
+        .profile-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 3rem;
             opacity: 0;
             transform: translateY(30px);
             animation: fadeInUp 0.8s ease-out 0.5s forwards;
         }
 
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .resume-list {
-            display: grid;
-            gap: 1rem;
-        }
-
-        .resume-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.5rem;
-            background: var(--bg-tertiary);
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .resume-item:hover {
-            border-color: var(--border-focus);
-            transform: translateX(8px);
-        }
-
-        .resume-info h4 {
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .resume-meta {
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-        }
-
-        .resume-actions {
-            display: flex;
-            gap: 0.75rem;
-        }
-
         .btn {
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1.5rem;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             font-family: inherit;
-            font-size: 0.875rem;
-            font-weight: 500;
+            font-size: 1rem;
+            font-weight: 600;
             text-decoration: none;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
         }
 
         .btn-primary {
@@ -310,6 +280,7 @@
         .btn-secondary:hover {
             background: var(--bg-secondary);
             border-color: var(--border-focus);
+            transform: translateY(-2px);
         }
 
         .btn-success {
@@ -320,16 +291,6 @@
         .btn-success:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
-        }
-
-        .dashboard-actions {
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            margin-top: 3rem;
-            opacity: 0;
-            transform: translateY(30px);
-            animation: fadeInUp 0.8s ease-out 0.6s forwards;
         }
 
         /* Animations */
@@ -346,16 +307,16 @@
                 padding: 0 1rem;
             }
             
-            .dashboard-title {
+            .profile-title {
                 font-size: 2rem;
             }
             
-            .stats-grid {
+            .profile-grid {
                 grid-template-columns: 1fr;
                 gap: 1.5rem;
             }
             
-            .dashboard-actions {
+            .profile-actions {
                 flex-direction: column;
                 align-items: center;
             }
@@ -377,8 +338,8 @@
                 <a href="/" class="nav-link">Home</a>
                 <a href="/form" class="nav-link">Simple Form</a>
                 <a href="/detailed-form" class="nav-link">Detailed Form</a>
-                <a href="/dashboard" class="nav-link active">Dashboard</a>
-                <a href="/profile" class="nav-link">Profile</a>
+                <a href="/dashboard" class="nav-link">Dashboard</a>
+                <a href="/profile" class="nav-link active">Profile</a>
             </div>
             <div class="profile-nav">
                 <div class="profile-avatar" onclick="window.location.href='/profile'">👤</div>
@@ -389,97 +350,86 @@
     <!-- Main Content -->
     <main class="main-content">
         <div class="container">
-            <!-- Dashboard Header -->
-            <header class="dashboard-header">
-                <h1 class="dashboard-title">Your Dashboard</h1>
-                <p class="dashboard-subtitle">Track your resume creation progress and manage your account</p>
+            <!-- Profile Header -->
+            <header class="profile-header">
+                <h1 class="profile-title">Your Profile</h1>
+                <p class="profile-subtitle">Manage your account, preferences, and resume history</p>
             </header>
 
-            <!-- Statistics Grid -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon">📄</div>
-                    <div class="stat-value">12</div>
-                    <div class="stat-label">Total Resumes</div>
+            <!-- Profile Grid -->
+            <div class="profile-grid">
+                <!-- Personal Information -->
+                <div class="profile-card">
+                    <div class="card-header">
+                        <div class="card-icon">👤</div>
+                        <h3 class="card-title">Personal Information</h3>
+                    </div>
+                    <div class="card-content">
+                        <p><strong>Name:</strong> Your Name</p>
+                        <p><strong>Email:</strong> your.email@example.com</p>
+                        <p><strong>Location:</strong> Your City, State</p>
+                        <p><strong>Phone:</strong> (555) 123-4567</p>
+                        <p><strong>LinkedIn:</strong> linkedin.com/in/yourprofile</p>
+                    </div>
                 </div>
-                
-                <div class="stat-card">
-                    <div class="stat-icon">📅</div>
-                    <div class="stat-value">3</div>
-                    <div class="stat-label">This Month</div>
-                </div>
-                
-                <div class="stat-card">
-                    <div class="stat-icon">💾</div>
-                    <div class="stat-value">2.4</div>
-                    <div class="stat-label">Storage Used (MB)</div>
-                </div>
-                
-                <div class="stat-card">
-                    <div class="stat-icon">👑</div>
-                    <div class="stat-value">Free</div>
-                    <div class="stat-label">Plan</div>
-                </div>
-            </div>
 
-            <!-- Resumes Section -->
-            <div class="resumes-section">
-                <div class="section-header">
-                    <h2 class="section-title">Recent Resumes</h2>
-                    <a href="/form" class="btn btn-primary">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 5v14M5 12h14"/>
-                        </svg>
-                        <span>Create New</span>
-                    </a>
+                <!-- Resume Statistics -->
+                <div class="profile-card">
+                    <div class="card-header">
+                        <div class="card-icon">📊</div>
+                        <h3 class="card-title">Resume Statistics</h3>
+                    </div>
+                    <div class="card-content">
+                        <p><strong>Total Resumes:</strong> 12</p>
+                        <p><strong>This Month:</strong> 3</p>
+                        <p><strong>Downloads:</strong> 28</p>
+                        <p><strong>Last Generated:</strong> 2 days ago</p>
+                        <p><strong>Favorite Templates:</strong> Modern, Professional</p>
+                    </div>
                 </div>
-                
-                <div class="resume-list">
-                    <div class="resume-item">
-                        <div class="resume-info">
-                            <h4>Software Engineer Resume</h4>
-                            <div class="resume-meta">Created 2 days ago • HTML + PDF</div>
-                        </div>
-                        <div class="resume-actions">
-                            <a href="/view/resume_37fc4e4b.html" class="btn btn-secondary">View</a>
-                            <a href="/download/resume_37fc4e4b.html" class="btn btn-success">Download</a>
-                        </div>
+
+                <!-- Account Settings -->
+                <div class="profile-card">
+                    <div class="card-header">
+                        <div class="card-icon">⚙️</div>
+                        <h3 class="card-title">Account Settings</h3>
                     </div>
-                    
-                    <div class="resume-item">
-                        <div class="resume-info">
-                            <h4>Data Analyst Resume</h4>
-                            <div class="resume-meta">Created 1 week ago • HTML + PDF</div>
-                        </div>
-                        <div class="resume-actions">
-                            <a href="/view/resume_430c744c.html" class="btn btn-secondary">View</a>
-                            <a href="/download/resume_430c744c.html" class="btn btn-success">Download</a>
-                        </div>
+                    <div class="card-content">
+                        <p><strong>Account Type:</strong> Free</p>
+                        <p><strong>Member Since:</strong> August 2025</p>
+                        <p><strong>Email Notifications:</strong> Enabled</p>
+                        <p><strong>Two-Factor Auth:</strong> Disabled</p>
+                        <p><strong>Data Privacy:</strong> High</p>
                     </div>
-                    
-                    <div class="resume-item">
-                        <div class="resume-info">
-                            <h4>Business Analyst Resume</h4>
-                            <div class="resume-meta">Created 2 weeks ago • HTML + PDF</div>
-                        </div>
-                        <div class="resume-actions">
-                            <a href="/view/resume_f87b8809.html" class="btn btn-secondary">View</a>
-                            <a href="/download/resume_f87b8809.html" class="btn btn-success">Download</a>
-                        </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="profile-card">
+                    <div class="card-header">
+                        <div class="card-icon">🕒</div>
+                        <h3 class="card-title">Recent Activity</h3>
+                    </div>
+                    <div class="card-content">
+                        <p><strong>Last Login:</strong> Today, 2:30 PM</p>
+                        <p><strong>Resume Created:</strong> Software Engineer</p>
+                        <p><strong>Form Used:</strong> Detailed Form</p>
+                        <p><strong>Downloaded:</strong> HTML + PDF</p>
+                        <p><strong>Next Action:</strong> Review & Edit</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Dashboard Actions -->
-            <div class="dashboard-actions">
+            <!-- Profile Actions -->
+            <div class="profile-actions">
                 <a href="/form" class="btn btn-primary">
+                    <span>Create New Resume</span>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M12 5v14M5 12h14"/>
                     </svg>
-                    <span>Create New Resume</span>
                 </a>
                 
                 <a href="/detailed-form" class="btn btn-secondary">
+                    <span>Use Detailed Form</span>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
                         <polyline points="14,2 14,8 20,8"/>
@@ -487,15 +437,16 @@
                         <line x1="16" y1="17" x2="8" y2="17"/>
                         <polyline points="10,9 9,9 8,9"/>
                     </svg>
-                    <span>Use Advanced Form</span>
                 </a>
                 
-                <a href="/profile" class="btn btn-success">
+                <a href="/dashboard" class="btn btn-success">
+                    <span>View Dashboard</span>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                        <circle cx="12" cy="7" r="4"/>
+                        <rect x="3" y="3" width="7" height="7"/>
+                        <rect x="14" y="3" width="7" height="7"/>
+                        <rect x="14" y="14" width="7" height="7"/>
+                        <rect x="3" y="14" width="7" height="7"/>
                     </svg>
-                    <span>View Profile</span>
                 </a>
             </div>
         </div>
@@ -541,9 +492,9 @@
             });
         }, observerOptions);
 
-        // Observe all animated elements
-        document.querySelectorAll('.stat-card, .resumes-section, .dashboard-actions').forEach(element => {
-            observer.observe(element);
+        // Observe all profile cards
+        document.querySelectorAll('.profile-card').forEach(card => {
+            observer.observe(card);
         });
     </script>
 </body>

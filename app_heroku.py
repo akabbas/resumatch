@@ -116,23 +116,34 @@ def form_submit():
             # Only HTML generated
             return jsonify({
                 'success': True,
-                'message': 'Resume generated successfully (HTML format only)',
+                'message': 'Resume generated successfully (HTML format)',
                 'view_url': url_for('view_resume', filename=html_filename),
-                'html_download_url': url_for('download_resume', filename=html_filename),
+                'download_url': url_for('download_resume', filename=html_filename),
                 'resume_id': resume_id,
-                'formats': ['html']
+                'format': 'html'
             })
         else:
-            return jsonify({
-                'success': False,
-                'message': 'Failed to generate resume'
-            })
-            
+            flash('Failed to generate resume', 'error')
+            return jsonify({'success': False, 'message': 'Failed to generate resume'})
+    
     except Exception as e:
-        return jsonify({
-            'success': False,
-            'message': f'Error generating resume: {str(e)}'
-        })
+        flash(f'Error generating resume: {str(e)}', 'error')
+        return jsonify({'success': False, 'message': str(e)})
+
+@app.route('/detailed-form')
+def detailed_form():
+    """Detailed form page for comprehensive resume creation"""
+    return render_template('detailed_form.html')
+
+@app.route('/dashboard')
+def dashboard():
+    """User dashboard showing resume history and analytics"""
+    return render_template('dashboard.html')
+
+@app.route('/profile')
+def profile():
+    """User profile page"""
+    return render_template('profile.html')
 
 @app.route('/generate', methods=['POST'])
 def generate_resume():
