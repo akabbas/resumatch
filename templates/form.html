@@ -641,6 +641,12 @@
                                 <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
                             </svg>
                         </button>
+                        <button class="btn btn-secondary" onclick="testSampleData()">
+                            <span>Test Sample Data</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </button>
                     </div>
                 </div>
 
@@ -819,23 +825,75 @@
                     // Add active class to clicked button
                     this.classList.add('active');
                     currentScenario = this.dataset.scenario;
+                    console.log('Scenario selected:', currentScenario);
                 });
             });
+            
+            // Log initial setup
+            console.log('Scenario selector initialized. Current scenario:', currentScenario);
+        }
+
+        // Test sample data functionality
+        function testSampleData() {
+            console.log('Testing sample data functionality...');
+            console.log('Current scenario:', currentScenario);
+            
+            // Test API endpoint
+            fetch('/api/sample-data')
+                .then(response => {
+                    console.log('API Response status:', response.status);
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('API Response data:', data);
+                    console.log('Available scenarios:', Object.keys(data.scenarios || {}));
+                    
+                    if (data.scenarios && data.scenarios[currentScenario]) {
+                        console.log('Current scenario data:', data.scenarios[currentScenario]);
+                    } else {
+                        console.log('Current scenario not found in data');
+                    }
+                })
+                .catch(error => {
+                    console.error('API Test failed:', error);
+                });
         }
 
         // Load sample data
         function loadSampleData() {
+            // First, make all form fields visible so we can populate them
+            document.querySelectorAll('.form-group').forEach(group => {
+                group.classList.add('visible');
+            });
+            
+            // Set current step to show all fields
+            currentStep = totalSteps;
+            updateStepDisplay();
+            
             fetch('/api/sample-data')
                 .then(response => response.json())
                 .then(data => {
                     const scenarios = data.scenarios || {};
                     const scenario = scenarios[currentScenario] || scenarios['data_analyst'] || {};
                     
-                    if (scenario.job_title) document.getElementById('job_title').value = scenario.job_title;
-                    if (scenario.company) document.getElementById('company').value = scenario.company;
-                    if (scenario.job_description) document.getElementById('job_description').value = scenario.job_description;
-                    if (scenario.summary) document.getElementById('summary').value = scenario.summary;
-                    if (scenario.skills) document.getElementById('skills').value = scenario.skills;
+                    // Populate form fields with error handling
+                    const fields = {
+                        'job_title': scenario.job_title,
+                        'company': scenario.company,
+                        'job_description': scenario.job_description,
+                        'summary': scenario.summary,
+                        'skills': scenario.skills
+                    };
+                    
+                    Object.entries(fields).forEach(([fieldId, value]) => {
+                        const element = document.getElementById(fieldId);
+                        if (element && value) {
+                            element.value = value;
+                        }
+                    });
+                    
+                    // Show success message
+                    console.log('Sample data loaded successfully for:', currentScenario);
                 })
                 .catch(error => {
                     console.error('Error loading sample data:', error);
