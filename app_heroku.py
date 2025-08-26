@@ -8,11 +8,12 @@ import os
 import json
 import tempfile
 from pathlib import Path
+import uuid
+import re
 from flask import Flask, render_template, request, jsonify, send_file, flash, redirect, url_for
 from werkzeug.utils import secure_filename
 from resume_generator_simple import SimpleResumeGenerator
 from pdf_generator import PDFResumeGenerator
-import uuid
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'resumatch-secret-key-2024')
@@ -163,13 +164,24 @@ def detailed_form():
         # Get experience data (multiple entries)
         experience_data = []
         experience_count = 0
-        while f'experience[{experience_count}][title]' in request.form:
-            title = request.form.get(f'experience[{experience_count}][title]', '').strip()
-            company = request.form.get(f'experience[{experience_count}][company]', '').strip()
-            duration = request.form.get(f'experience[{experience_count}][duration]', '').strip()
-            description = request.form.get(f'experience[{experience_count}][description]', '').strip()
+        
+        # First, find all experience entries by looking for any index
+        experience_indices = set()
+        for key in request.form.keys():
+            if key.startswith('experience[') and '][title]' in key:
+                # Extract the index from experience[index][title]
+                index_match = re.search(r'experience\[(\d+)\]\[title\]', key)
+                if index_match:
+                    experience_indices.add(int(index_match.group(1)))
+        
+        # Sort indices to process in order
+        for index in sorted(experience_indices):
+            title = request.form.get(f'experience[{index}][title]', '').strip()
+            company = request.form.get(f'experience[{index}][company]', '').strip()
+            duration = request.form.get(f'experience[{index}][duration]', '').strip()
+            description = request.form.get(f'experience[{index}][description]', '').strip()
             
-            print(f"   Experience {experience_count}:")
+            print(f"   Experience {index}:")
             print(f"     Title: '{title}'")
             print(f"     Company: '{company}'")
             print(f"     Description: '{description}'")
@@ -181,17 +193,26 @@ def detailed_form():
                     "duration": duration,
                     "description": [description]  # Convert to list format
                 })
-            experience_count += 1
         
         print(f"   Total experience entries: {len(experience_data)}")
         
         # Get education data (multiple entries)
         education_data = []
-        education_count = 0
-        while f'education[{education_count}][degree]' in request.form:
-            degree = request.form.get(f'education[{education_count}][degree]', '').strip()
-            institution = request.form.get(f'education[{education_count}][institution]', '').strip()
-            year = request.form.get(f'education[{education_count}][year]', '').strip()
+        
+        # First, find all education entries by looking for any index
+        education_indices = set()
+        for key in request.form.keys():
+            if key.startswith('education[') and '][degree]' in key:
+                # Extract the index from education[index][degree]
+                index_match = re.search(r'education\[(\d+)\]\[degree\]', key)
+                if index_match:
+                    education_indices.add(int(index_match.group(1)))
+        
+        # Sort indices to process in order
+        for index in sorted(education_indices):
+            degree = request.form.get(f'education[{index}][degree]', '').strip()
+            institution = request.form.get(f'education[{index}][institution]', '').strip()
+            year = request.form.get(f'education[{index}][year]', '').strip()
             
             if degree and institution:  # Only add if required fields are filled
                 education_data.append({
@@ -199,7 +220,6 @@ def detailed_form():
                     "institution": institution,
                     "year": year
                 })
-            education_count += 1
         
         # Basic validation
         print(f"🔍 Validation check:")
