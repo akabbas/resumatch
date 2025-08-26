@@ -3,928 +3,931 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ResuMatch - Resume Form</title>
-    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📄</text></svg>">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>Resume Tailoring - ResuMatch</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            /* Light theme variables */
-            --bg-primary: #ffffff;
-            --bg-secondary: #f8f9fa;
-            --bg-tertiary: #f5f7fa;
-            --text-primary: #212529;
-            --text-secondary: #6c757d;
-            --text-muted: #6c757d;
-            --border-color: #e9ecef;
-            --shadow-color: rgba(0, 0, 0, 0.1);
-            --card-bg: #ffffff;
-            --form-bg: #ffffff;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        [data-theme="dark"] {
-            /* Dark theme variables */
-            --bg-primary: #121212;
-            --bg-secondary: #1e1e1e;
-            --bg-tertiary: #2d2d2d;
-            --text-primary: #e0e0e0;
-            --text-secondary: #b0b0b0;
-            --text-muted: #888888;
-            --border-color: #404040;
-            --shadow-color: rgba(0, 0, 0, 0.3);
-            --card-bg: #1e1e1e;
-            --form-bg: #1e1e1e;
+        :root {
+            --bg-primary: #0f0f0f;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #252525;
+            --bg-card: rgba(37, 37, 37, 0.8);
+            --text-primary: #ffffff;
+            --text-secondary: #b3b3b3;
+            --text-muted: #808080;
+            --accent-primary: #00d4ff;
+            --accent-secondary: #0099cc;
+            --accent-glow: rgba(0, 212, 255, 0.15);
+            --border-color: #333333;
+            --border-focus: #00d4ff;
+            --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --shadow-glow: 0 0 40px rgba(0, 212, 255, 0.2);
+            --gradient-primary: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+            --gradient-secondary: linear-gradient(135deg, #1a1a1a 0%, #252525 100%);
+            --success-color: #10b981;
+            --error-color: #ef4444;
         }
 
         body {
-            background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
-            min-height: 100vh;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
             color: var(--text-primary);
-            transition: background 0.3s ease, color 0.3s ease;
+            line-height: 1.6;
+            overflow-x: hidden;
+            font-weight: 400;
+            min-height: 100vh;
         }
-        
-        .form-container {
-            background: var(--form-bg);
-            border-radius: 20px;
-            box-shadow: 0 20px 40px var(--shadow-color);
-            padding: 2rem;
-            margin: 2rem auto;
+
+        .container {
             max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            backdrop-filter: blur(20px);
+            background: rgba(15, 15, 15, 0.8);
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.875rem;
+        }
+
+        .nav-link:hover {
+            color: var(--text-primary);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding-top: 100px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-container {
+            width: 100%;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
             border: 1px solid var(--border-color);
-        }
-        
-        .form-header {
-            text-align: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid var(--border-color);
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: var(--shadow-soft);
             position: relative;
+            overflow: hidden;
         }
-        
-        .theme-toggle {
+
+        .form-container::before {
+            content: '';
             position: absolute;
             top: 0;
+            left: 0;
             right: 0;
-            background: rgba(102, 126, 234, 0.1);
-            border: 2px solid rgba(102, 126, 234, 0.3);
+            height: 3px;
+            background: var(--gradient-primary);
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .form-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .form-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+        }
+
+        /* Form Steps */
+        .form-steps {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            margin: 0 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            width: 45px;
-            height: 45px;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border-color);
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .theme-toggle:hover {
-            background: rgba(102, 126, 234, 0.2);
-            border-color: rgba(102, 126, 234, 0.5);
-            transform: scale(1.1);
-        }
-
-        .theme-toggle i {
-            font-size: 1.1rem;
-            color: #667eea;
-        }
-        
-        .form-header h1 {
-            color: #667eea;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-        
-        .form-header p {
+            font-weight: 600;
             color: var(--text-secondary);
-            font-size: 1.1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        
+
+        .step.active .step-number {
+            background: var(--gradient-primary);
+            border-color: var(--accent-primary);
+            color: var(--text-primary);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .step.completed .step-number {
+            background: var(--success-color);
+            border-color: var(--success-color);
+            color: var(--text-primary);
+        }
+
+        .step-label {
+            margin-left: 0.75rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .step.active .step-label {
+            color: var(--text-primary);
+        }
+
+        .step.completed .step-label {
+            color: var(--success-color);
+        }
+
+        .step-connector {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            width: 100px;
+            height: 2px;
+            background: var(--border-color);
+            transform: translateX(-50%);
+            z-index: 1;
+        }
+
+        .step-connector.active {
+            background: var(--gradient-primary);
+        }
+
+        /* Form Fields */
         .form-group {
+            margin-bottom: 2rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .form-group.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            resize: vertical;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 4px rgba(0, 212, 255, 0.1);
+            background: var(--bg-secondary);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        textarea.form-input {
+            min-height: 120px;
+        }
+
+        /* Sample Data Section */
+        .sample-data-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .sample-data-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
             margin-bottom: 1.5rem;
         }
-        
-        .form-label {
+
+        .sample-data-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .sample-data-title {
+            font-size: 1.125rem;
             font-weight: 600;
             color: var(--text-primary);
-            margin-bottom: 0.5rem;
         }
-        
-        .form-control, .form-select {
-            border-radius: 10px;
-            border: 2px solid var(--border-color);
-            padding: 0.75rem;
-            transition: all 0.3s ease;
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-        }
-        
-        .form-control:focus, .form-select:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-            transform: translateY(-2px);
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-        }
-        
-        .form-text {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-top: 0.25rem;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            border-radius: 15px;
-            padding: 1rem 2rem;
-            font-weight: 600;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px var(--shadow-color);
-        }
-        
-        .alert {
-            border-radius: 10px;
-            border: none;
-            margin-bottom: 1rem;
-            background-color: var(--card-bg);
-            color: var(--text-primary);
-        }
-        
-        .nav-link {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 500;
-        }
-        
-        .nav-link:hover {
-            color: #764ba2;
-        }
-        
-        .field-help {
-            background: var(--bg-secondary);
-            border-left: 4px solid #667eea;
-            padding: 0.75rem;
-            margin-top: 0.5rem;
-            border-radius: 0 5px 5px 0;
-        }
-        
-        .field-help h6 {
-            color: var(--text-primary);
-            margin-bottom: 0.25rem;
-            font-weight: 600;
-        }
-        
-        .field-help p {
+
+        .sample-data-description {
             color: var(--text-secondary);
-            margin-bottom: 0;
-            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.875rem;
         }
-        
-        .bg-light {
-            background-color: var(--bg-secondary) !important;
+
+        .scenario-selector {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .scenario-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-family: inherit;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .scenario-btn:hover {
+            border-color: var(--accent-primary);
             color: var(--text-primary);
+        }
+
+        .scenario-btn.active {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: var(--text-primary);
+        }
+
+        .sample-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: var(--text-primary);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
             border: 1px solid var(--border-color);
         }
-        
-        .text-muted {
-            color: var(--text-muted) !important;
-        }
-        
-        .form-check-label {
+
+        .btn-secondary:hover {
+            background: var(--bg-secondary);
+            border-color: var(--accent-primary);
             color: var(--text-primary);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Form Actions */
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .form-progress {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Loading State */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 15, 15, 0.9);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .loading-content {
+            text-align: center;
+            color: var(--text-primary);
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1.5rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 1.125rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .loading-subtext {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Success Message */
+        .success-message {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: none;
+        }
+
+        .success-message.visible {
+            display: block;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .success-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .success-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--success-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .success-title {
+            font-weight: 600;
+            color: var(--success-color);
+        }
+
+        .success-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .success-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            .form-container {
+                padding: 2rem 1.5rem;
+                border-radius: 16px;
+            }
+
+            .form-title {
+                font-size: 2rem;
+            }
+
+            .form-steps {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .step-connector {
+                display: none;
+            }
+
+            .form-actions {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .sample-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-primary);
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="form-container">
-            <!-- Header -->
-            <div class="form-header">
-                <!-- Theme Toggle Button -->
-                <button class="theme-toggle" id="themeToggle" title="Toggle dark mode">
-                    <i class="fas fa-moon" id="themeIcon"></i>
-                </button>
-                
-                <h1><i class="fas fa-magic me-2"></i>ResuMatch</h1>
-                <p>Fill in your details below to generate a perfectly optimized resume</p>
-                <a href="/" class="nav-link">
-                    <i class="fas fa-arrow-left me-1"></i>Back to Main Page
-                </a>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="/" class="logo">ResuMatch</a>
+            <div class="nav-links">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/form" class="nav-link">Resume Builder</a>
             </div>
+        </div>
+    </nav>
 
-            <!-- Flash Messages -->
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show" role="alert">
-                            {{ message }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            <div class="form-container">
+                <!-- Form Header -->
+                <div class="form-header">
+                    <h1 class="form-title">Resume Tailoring</h1>
+                    <p class="form-subtitle">Transform your experience into a targeted resume in minutes</p>
+                </div>
 
-            <!-- Form -->
-            <form method="POST" action="/form" id="resumeForm">
-                <!-- Hidden resume data from session -->
-                {% if resume_data %}
-                <div id="resumeData" data-resume='{{ resume_data | tojson | safe }}' style="display: none;"></div>
-                {% endif %}
-                
+                <!-- Form Steps -->
+                <div class="form-steps">
+                    <div class="step active" data-step="1">
+                        <div class="step-number">1</div>
+                        <div class="step-label">Job Details</div>
+                    </div>
+                    <div class="step" data-step="2">
+                        <div class="step-number">2</div>
+                        <div class="step-label">Your Experience</div>
+                    </div>
+                    <div class="step" data-step="3">
+                        <div class="step-number">3</div>
+                        <div class="step-label">Skills & Generate</div>
+                    </div>
+                </div>
+
                 <!-- Sample Data Section -->
-                <div class="text-center mb-4 p-3 bg-light rounded">
-                    <h6 class="mb-3"><i class="fas fa-flask me-2 text-primary"></i>Resume Data Options</h6>
-                    
-                    <!-- Quick Start Options -->
-                    <div class="row justify-content-center mb-3">
-                        <div class="col-md-6">
-                            <a href="/detailed-form" class="btn btn-success btn-lg w-100 mb-2">
-                                <i class="fas fa-edit me-2"></i>Build Detailed Resume
-                            </a>
-                            <small class="text-muted d-block">Create a comprehensive resume from scratch</small>
-                        </div>
-                        <div class="col-md-6">
-                            <button type="button" class="btn btn-outline-primary btn-lg w-100 mb-2" onclick="showSampleDataOptions()">
-                                <i class="fas fa-magic me-2"></i>Use Sample Data
-                            </a>
-                            <small class="text-muted d-block">Try with example data to see how it works</small>
+                <div class="sample-data-section">
+                    <div class="sample-data-header">
+                        <div class="sample-data-icon">🎯</div>
+                        <div>
+                            <div class="sample-data-title">Quick Start with Sample Data</div>
+                            <div class="sample-data-description">Choose a job scenario or load sample data to see how it works</div>
                         </div>
                     </div>
                     
-                    <!-- Sample Data Options (Hidden by default) -->
-                    <div id="sampleDataOptions" style="display: none;">
-                        <hr class="my-3">
-                        <h6 class="mb-3"><i class="fas fa-flask me-2 text-primary"></i>Try Sample Data</h6>
-                        
-                        <!-- Job Description Selector -->
-                        <div class="row justify-content-center mb-3">
-                            <div class="col-md-8">
-                                <select class="form-select" id="jobSelector" onchange="loadJobDescription()">
-                                    <option value="">Choose a job description...</option>
-                                    <option value="business_systems_analyst">Business Systems Analyst - Revenue Operations</option>
-                                    <option value="data_scientist">Senior Data Scientist - Machine Learning</option>
-                                    <option value="software_engineer">Full Stack Software Engineer</option>
-                                    <option value="devops_engineer">DevOps Engineer - Cloud Infrastructure</option>
-                                    <option value="product_manager">Senior Product Manager - SaaS Platform</option>
-                                    <option value="data_analyst">Business Intelligence Analyst</option>
-                                    <option value="salesforce_administrator">Salesforce Administrator - CRM Specialist</option>
-                                    <option value="cloud_architect">Cloud Solutions Architect</option>
-                                </select>
-                            </div>
+                    <div class="scenario-selector">
+                        <button class="scenario-btn active" data-scenario="data-analyst">Data Analyst</button>
+                        <button class="scenario-btn" data-scenario="business-analyst">Business Analyst</button>
+                        <button class="scenario-btn" data-scenario="salesforce-admin">Salesforce Admin</button>
+                        <button class="scenario-btn" data-scenario="revops-developer">RevOps Developer</button>
+                    </div>
+                    
+                    <div class="sample-actions">
+                        <button class="btn btn-primary" onclick="loadSampleData()">
+                            <span>Load Sample Data</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                            </svg>
+                        </button>
+                        <button class="btn btn-secondary" onclick="clearForm()">
+                            <span>Clear Form</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Success Message -->
+                <div class="success-message" id="successMessage">
+                    <div class="success-header">
+                        <div class="success-icon">✓</div>
+                        <div class="success-title">Resume Generated Successfully!</div>
+                    </div>
+                    <div class="success-description">
+                        Your tailored resume is ready. You can view it online or download it in multiple formats.
+                    </div>
+                    <div class="success-actions">
+                        <a href="#" class="btn btn-primary" id="viewResumeBtn">
+                            <span>View Resume</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="btn btn-secondary" id="downloadPdfBtn">
+                            <span>Download PDF</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Resume Form -->
+                <form id="resumeForm" onsubmit="submitForm(event)">
+                    <!-- Step 1: Job Details -->
+                    <div class="form-group visible" data-step="1">
+                        <label for="job_title" class="form-label">Job Title</label>
+                        <input type="text" id="job_title" name="job_title" class="form-input" placeholder="e.g., Senior Data Analyst" required>
+                    </div>
+
+                    <div class="form-group visible" data-step="1">
+                        <label for="company" class="form-label">Company</label>
+                        <input type="text" id="company" name="company" class="form-input" placeholder="e.g., TechCorp Inc." required>
+                    </div>
+
+                    <div class="form-group visible" data-step="1">
+                        <label for="job_description" class="form-label">Job Description</label>
+                        <textarea id="job_description" name="job_description" class="form-input" placeholder="Paste the job description here..." required></textarea>
+                    </div>
+
+                    <!-- Step 2: Your Experience -->
+                    <div class="form-group" data-step="2">
+                        <label for="summary" class="form-label">Professional Summary</label>
+                        <textarea id="summary" name="summary" class="form-input" placeholder="Brief overview of your professional background and key strengths..." required></textarea>
+                    </div>
+
+                    <!-- Step 3: Skills & Generate -->
+                    <div class="form-group" data-step="3">
+                        <label for="skills" class="form-label">Skills (comma-separated)</label>
+                        <input type="text" id="skills" name="skills" class="form-input" placeholder="e.g., Python, SQL, Tableau, Data Analysis, Machine Learning" required>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <div class="form-progress">
+                            Step <span id="currentStep">1</span> of 3
                         </div>
-                        
-                        <!-- Job Scenario Selector -->
-                        <div class="row justify-content-center mb-3">
-                            <div class="col-md-6">
-                                <select class="form-select" id="scenarioSelector" onchange="loadSampleData()">
-                                    <option value="">Choose a job scenario...</option>
-                                    <option value="business_systems_analyst">Business Systems Analyst</option>
-                                    <option value="data_scientist">Data Scientist</option>
-                                    <option value="software_engineer">Software Engineer</option>
-                                    <option value="devops_engineer">DevOps Engineer</option>
-                                    <option value="product_manager">Product Manager</option>
-                                    <option value="cloud_architect">Cloud Architect</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <small class="text-muted">Select a job description to automatically populate the form with realistic example data</small>
-                        
-                        <!-- Action Buttons -->
-                        <div class="mt-3">
-                            <button type="button" class="btn btn-outline-secondary btn-sm me-2" onclick="clearForm()">
-                                <i class="fas fa-eraser me-1"></i>Clear Form
+                        <div class="form-buttons">
+                            <button type="button" class="btn btn-secondary" id="prevBtn" onclick="previousStep()" style="display: none;">
+                                <span>Previous</span>
                             </button>
-                            <button type="button" class="btn btn-outline-info btn-sm me-2" onclick="showFormHelp()">
-                                <i class="fas fa-question-circle me-1"></i>Form Help
+                            <button type="button" class="btn btn-primary" id="nextBtn" onclick="nextStep()">
+                                <span>Next</span>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                                </svg>
                             </button>
-                            <button type="button" class="btn btn-outline-success btn-sm" onclick="rotateJobDescriptions()">
-                                <i class="fas fa-random me-1"></i>Random Job
+                            <button type="submit" class="btn btn-primary" id="submitBtn" style="display: none;">
+                                <span>Generate Resume</span>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 2v6m0 0v6m0-6h6m-6 0H6"/>
+                                </svg>
                             </button>
                         </div>
                     </div>
-                </div>
-
-                <!-- Resume Upload Section (Optional) -->
-                <div class="text-center mb-4 p-3 bg-primary bg-opacity-10 rounded border border-primary">
-                    <h6 class="mb-3"><i class="fas fa-upload me-2 text-primary"></i>Upload Existing Resume (Optional)</h6>
-                    
-                    <div class="row justify-content-center mb-3">
-                        <div class="col-md-8">
-                            <div class="input-group">
-                                <input type="file" class="form-control" id="resumeFile" name="resume_file" 
-                                       accept=".pdf,.docx,.doc" onchange="handleFileUpload()">
-                                <button type="button" class="btn btn-primary" onclick="uploadResume()" id="uploadBtn" disabled>
-                                    <i class="fas fa-upload me-1"></i>Parse Resume
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <small class="text-muted">
-                        <i class="fas fa-info-circle me-1"></i>
-                        <strong>Optional:</strong> Upload your existing resume to automatically extract and populate the form below. 
-                        You can also fill out the form manually. Supported formats: PDF, DOCX, DOC
-                    </small>
-                    
-                    <!-- Upload Progress -->
-                    <div id="uploadProgress" class="mt-3" style="display: none;">
-                        <div class="progress" style="height: 20px;">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated" 
-                                 role="progressbar" style="width: 0%" id="progressBar">0%</div>
-                        </div>
-                        <small class="text-muted mt-1" id="uploadStatus">Preparing upload...</small>
-                    </div>
-                </div>
-
-                <!-- Manual Entry Note -->
-                <div class="alert alert-info mb-4">
-                    <i class="fas fa-info-circle me-2"></i>
-                    <strong>Manual Entry:</strong> Fill out the form below with your information. The upload section above is optional and only needed if you want to parse an existing resume.
-                </div>
-
-                <!-- Summary -->
-                <div class="form-group">
-                    <label for="summary" class="form-label">Professional Summary</label>
-                    <textarea class="form-control" id="summary" name="summary" rows="4" 
-                              placeholder="Detail-oriented professional with X years of experience in..." required></textarea>
-                    <div class="field-help">
-                        <h6><i class="fas fa-info-circle me-1"></i>Professional Summary</h6>
-                        <p>A brief overview of your professional background and key strengths</p>
-                    </div>
-                </div>
-
-                <!-- Job Title -->
-                <div class="form-group">
-                    <label for="job_title" class="form-label">Job Title</label>
-                    <input type="text" class="form-control" id="job_title" name="job_title" 
-                           placeholder="e.g., Business Systems Analyst, Data Analyst, Software Developer" required>
-                    <div class="field-help">
-                        <h6><i class="fas fa-briefcase me-1"></i>Current Position</h6>
-                        <p>Your current or most recent job title</p>
-                    </div>
-                </div>
-
-                <!-- Company -->
-                <div class="form-group">
-                    <label for="company" class="form-label">Company</label>
-                    <input type="text" class="form-control" id="company" name="company" 
-                           placeholder="e.g., Flowserve, Salesforce, Microsoft" required>
-                    <div class="field-help">
-                        <h6><i class="fas fa-building me-1"></i>Employer</h6>
-                        <p>Your current or most recent employer</p>
-                    </div>
-                </div>
-
-                <!-- Job Description -->
-                <div class="form-group">
-                    <label for="job_description" class="form-label">Job Description</label>
-                    <textarea class="form-control" id="job_description" name="job_description" rows="6" 
-                              placeholder="Paste the job description here to optimize your resume..." required></textarea>
-                    <div class="field-help">
-                        <h6><i class="fas fa-search me-1"></i>Target Job</h6>
-                        <p>Paste the job description you want to target</p>
-                    </div>
-                </div>
-
-                <!-- Skills -->
-                <div class="form-group">
-                    <label for="skills" class="form-label">Skills</label>
-                    <textarea class="form-control" id="skills" name="skills" rows="4"
-                              placeholder="Python, SQL, Salesforce, REST APIs, Data Analysis, etc." required></textarea>
-                    <div class="field-help">
-                        <h6><i class="fas fa-tools me-1"></i>Your Skills</h6>
-                        <p>Comma-separated list of your key skills and technologies</p>
-                    </div>
-                </div>
-
-                <!-- AI Transformation Control -->
-                <div class="form-group">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="enable_ai_transform" name="enable_ai_transform" checked>
-                        <label class="form-check-label" for="enable_ai_transform">
-                            <i class="fas fa-magic me-2 text-primary"></i>Enable AI Role Transformation (Recommended)
-                        </label>
-                        <div class="field-help">
-                            <h6><i class="fas fa-info-circle me-1"></i>AI Transformation</h6>
-                            <p>When enabled, our AI will intelligently transform your resume content to better match the target job role. Uncheck to generate a classic resume without transformation.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Submit Button -->
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; padding: 1rem;">
-                        Generate Resume
-                    </button>
-                </div>
-            </form>
-
-            <!-- Info Section -->
-            <div class="mt-4 p-3 bg-light rounded">
-                <h6><i class="fas fa-lightbulb me-2 text-warning"></i>How it works:</h6>
-                <ol class="mb-0">
-                    <li>Fill in your professional details above</li>
-                    <li>Paste the job description you want to target</li>
-                    <li>Our AI will optimize your resume for ATS systems</li>
-                    <li>Get both HTML and PDF versions of your resume</li>
-                </ol>
-                <div class="mt-3 p-2 bg-info bg-opacity-10 rounded">
-                    <small><i class="fas fa-info-circle me-1"></i><strong>New:</strong> Your resume will be generated in both HTML (for viewing/printing) and PDF (for professional submission) formats!</small>
-                </div>
+                </form>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Crafting Your Resume</div>
+            <div class="loading-subtext">This usually takes 10-30 seconds</div>
+        </div>
+    </div>
+
     <script>
-        // Theme switching functionality
-        function initTheme() {
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            document.documentElement.setAttribute('data-theme', savedTheme);
-            updateThemeIcon(savedTheme);
-        }
+        let currentStep = 1;
+        const totalSteps = 3;
+        let currentScenario = 'data-analyst';
 
-        function toggleTheme() {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            
-            document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            updateThemeIcon(newTheme);
-        }
-
-        function updateThemeIcon(theme) {
-            const icon = document.getElementById('themeIcon');
-            if (icon) {
-                icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-            }
-        }
-
-        // Initialize theme when page loads
+        // Initialize form
         document.addEventListener('DOMContentLoaded', function() {
-            initTheme();
-            
-            // Add theme toggle event listener
-            const themeToggle = document.getElementById('themeToggle');
-            if (themeToggle) {
-                themeToggle.addEventListener('click', toggleTheme);
-            }
-            
-            // Pre-populate form with session data
-            populateFormWithSessionData();
+            updateStepDisplay();
+            setupScenarioSelector();
         });
-        
-        // Pre-populate form with session data
-        function populateFormWithSessionData() {
-            // Check if we have resume data from the detailed form
-            const resumeDataElement = document.getElementById('resumeData');
-            if (resumeDataElement && resumeDataElement.dataset.resume) {
-                try {
-                    const resumeData = JSON.parse(resumeDataElement.dataset.resume);
+
+        // Step navigation
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                updateStepDisplay();
+            }
+        }
+
+        function previousStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateStepDisplay();
+            }
+        }
+
+        function updateStepDisplay() {
+            // Update step indicators
+            document.querySelectorAll('.step').forEach((step, index) => {
+                const stepNum = index + 1;
+                step.classList.remove('active', 'completed');
+                
+                if (stepNum === currentStep) {
+                    step.classList.add('active');
+                } else if (stepNum < currentStep) {
+                    step.classList.add('completed');
+                }
+            });
+
+            // Update form groups visibility
+            document.querySelectorAll('.form-group').forEach((group, index) => {
+                const stepNum = index + 1;
+                if (stepNum <= currentStep) {
+                    group.classList.add('visible');
+                }
+            });
+
+            // Update buttons
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const submitBtn = document.getElementById('submitBtn');
+
+            prevBtn.style.display = currentStep > 1 ? 'inline-flex' : 'none';
+            
+            if (currentStep === totalSteps) {
+                nextBtn.style.display = 'none';
+                submitBtn.style.display = 'inline-flex';
+            } else {
+                nextBtn.style.display = 'inline-flex';
+                submitBtn.style.display = 'none';
+            }
+
+            // Update progress text
+            document.getElementById('currentStep').textContent = currentStep;
+
+            // Animate new visible groups
+            document.querySelectorAll('.form-group[data-step="' + currentStep + '"]').forEach(group => {
+                if (!group.classList.contains('visible')) {
+                    group.classList.add('visible');
+                }
+            });
+        }
+
+        // Scenario selector
+        function setupScenarioSelector() {
+            document.querySelectorAll('.scenario-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active'));
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    currentScenario = this.dataset.scenario;
+                });
+            });
+        }
+
+        // Load sample data
+        function loadSampleData() {
+            fetch('/api/sample-data')
+                .then(response => response.json())
+                .then(data => {
+                    const scenarios = data.scenarios || {};
+                    const scenario = scenarios[currentScenario] || scenarios['data-analyst'] || {};
                     
-                    if (resumeData.summary) {
-                        document.getElementById('summary').value = resumeData.summary;
+                    if (scenario.job_title) document.getElementById('job_title').value = scenario.job_title;
+                    if (scenario.company) document.getElementById('company').value = scenario.company;
+                    if (scenario.job_description) document.getElementById('job_description').value = scenario.job_description;
+                    if (scenario.summary) document.getElementById('summary').value = scenario.summary;
+                    if (scenario.skills) document.getElementById('skills').value = scenario.skills;
+                })
+                .catch(error => {
+                    console.error('Error loading sample data:', error);
+                    alert('Error loading sample data. Please try again.');
+                });
+        }
+
+        // Clear form
+        function clearForm() {
+            document.getElementById('resumeForm').reset();
+            currentStep = 1;
+            updateStepDisplay();
+            document.getElementById('successMessage').classList.remove('visible');
+        }
+
+        // Form submission
+        function submitForm(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const data = {
+                summary: formData.get('summary'),
+                job_title: formData.get('job_title'),
+                company: formData.get('company'),
+                job_description: formData.get('job_description'),
+                skills: formData.get('skills')
+            };
+
+            // Validate required fields
+            if (!data.summary || !data.job_title || !data.company || !data.job_description || !data.skills) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+
+            // Show loading
+            document.getElementById('loadingOverlay').style.display = 'flex';
+
+            // Submit form
+            fetch('/form', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                document.getElementById('loadingOverlay').style.display = 'none';
+                
+                if (result.success) {
+                    // Update success message links
+                    if (result.view_url) {
+                        document.getElementById('viewResumeBtn').href = result.view_url;
                     }
-                    
-                    if (resumeData.contact && resumeData.contact.name) {
-                        document.getElementById('job_title').value = resumeData.contact.name;
-                    }
-                    
-                    if (resumeData.contact && resumeData.contact.location) {
-                        document.getElementById('company').value = resumeData.contact.location;
-                    }
-                    
-                    if (resumeData.skills && resumeData.skills.length > 0) {
-                        document.getElementById('skills').value = resumeData.skills.join(', ');
+                    if (result.pdf_download_url) {
+                        document.getElementById('downloadPdfBtn').href = result.pdf_download_url;
                     }
                     
                     // Show success message
-                    if (resumeData.summary) {
-                        showSuccessMessage('Resume data loaded from detailed form! You can now add a job description to generate your resume.');
-                    }
-                } catch (error) {
-                    console.error('Error parsing resume data:', error);
-                }
-            }
-        }
-
-        async function loadSampleData() {
-            const scenarioSelector = document.getElementById('scenarioSelector');
-            const selectedScenario = scenarioSelector.value;
-            
-            if (!selectedScenario) {
-                return; // No scenario selected
-            }
-            
-            try {
-                // Show loading state
-                scenarioSelector.disabled = true;
-                scenarioSelector.innerHTML = '<option>Loading...</option>';
-                
-                // Fetch sample data for specific job scenario
-                const response = await fetch(`/api/sample-data/${selectedScenario}`);
-                const data = await response.json();
-                
-                // Populate form fields with the sample data
-                if (data.experience && data.experience.summary) {
-                    document.getElementById('summary').value = data.experience.summary;
-                }
-                
-                if (data.experience && data.experience.skills) {
-                    // Join skills array into comma-separated string
-                    const skillsText = Array.isArray(data.experience.skills) 
-                        ? data.experience.skills.join(', ')
-                        : data.experience.skills;
-                    document.getElementById('skills').value = skillsText;
-                }
-                
-                if (data.job_title) {
-                    document.getElementById('job_title').value = data.job_title;
-                }
-                
-                if (data.company) {
-                    document.getElementById('company').value = data.company;
-                }
-                
-                if (data.job_description) {
-                    document.getElementById('job_description').value = data.job_description;
-                }
-                
-                // Show success message
-                showSuccessMessage('Sample data loaded successfully!');
-                
-            } catch (error) {
-                console.error('Error loading sample data:', error);
-                showErrorMessage('Failed to load sample data. Please try again.');
-            } finally {
-                // Restore scenario selector
-                restoreScenarioSelector();
-            }
-        }
-
-        async function loadJobDescription() {
-            const jobSelector = document.getElementById('jobSelector');
-            const selectedJob = jobSelector.value;
-            
-            if (!selectedJob) {
-                return; // No job selected
-            }
-
-            try {
-                // Show loading state
-                jobSelector.disabled = true;
-                jobSelector.innerHTML = '<option value="">Loading...</option>';
-
-                // Fetch job description from API
-                const response = await fetch(`/api/job-description/${selectedJob}`);
-                const data = await response.json();
-
-                if (data.success && data.job_description) {
-                    // Populate form fields
-                    document.getElementById('job_description').value = data.job_description;
-                    document.getElementById('job_title').value = data.job_title;
-                    document.getElementById('company').value = data.company;
+                    document.getElementById('successMessage').classList.add('visible');
                     
-                    showSuccessMessage('Job description loaded successfully!');
+                    // Scroll to success message
+                    document.getElementById('successMessage').scrollIntoView({ behavior: 'smooth' });
                 } else {
-                    showErrorMessage('Failed to load job description. Please try again.');
-                }
-            } catch (error) {
-                console.error('Error loading job description:', error);
-                showErrorMessage('An error occurred while loading the job description. Please try again.');
-            } finally {
-                // Restore job selector
-                restoreJobSelector();
-            }
-        }
-
-        function rotateJobDescriptions() {
-            const scenarioSelector = document.getElementById('scenarioSelector');
-            const options = scenarioSelector.options;
-            
-            // Skip the first option (placeholder)
-            if (options.length <= 1) return;
-            
-            // Get current selection (skip placeholder)
-            let currentIndex = scenarioSelector.selectedIndex;
-            if (currentIndex === 0) currentIndex = 1; // Start from first real option
-            
-            // Calculate next index (wrap around)
-            const nextIndex = currentIndex >= options.length - 1 ? 1 : currentIndex + 1;
-            
-            // Select next job and load its data
-            scenarioSelector.selectedIndex = nextIndex;
-            loadSampleData();
-            
-            // Load the new job description
-            loadJobDescription();
-        }
-
-        function restoreJobSelector() {
-            const jobSelector = document.getElementById('jobSelector');
-            jobSelector.disabled = false;
-            jobSelector.innerHTML = `
-                <option value="">Choose a job description...</option>
-                <option value="business_systems_analyst">Business Systems Analyst - Revenue Operations</option>
-                <option value="data_scientist">Senior Data Scientist - Machine Learning</option>
-                <option value="software_engineer">Full Stack Software Engineer</option>
-                <option value="devops_engineer">DevOps Engineer - Cloud Infrastructure</option>
-                <option value="product_manager">Senior Product Manager - SaaS Platform</option>
-                <option value="data_analyst">Business Intelligence Analyst</option>
-                <option value="salesforce_administrator">Salesforce Administrator - CRM Specialist</option>
-                <option value="cloud_architect">Cloud Solutions Architect</option>
-            `;
-        }
-        
-        function showSuccessMessage(message) {
-            // Create success alert
-            const alertDiv = document.createElement('div');
-            alertDiv.className = 'alert alert-success alert-dismissible fade show';
-            alertDiv.innerHTML = `
-                <i class="fas fa-check me-2"></i>${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            `;
-            
-            // Insert after the sample data section
-            const sampleSection = document.querySelector('.bg-light.rounded');
-            sampleSection.parentNode.insertBefore(alertDiv, sampleSection.nextSibling);
-            
-            // Auto-remove after 3 seconds
-            setTimeout(() => {
-                if (alertDiv.parentNode) {
-                    alertDiv.remove();
-                }
-            }, 3000);
-        }
-        
-        function showErrorMessage(message) {
-            // Create error alert
-            const alertDiv = document.createElement('div');
-            alertDiv.className = 'alert alert-danger alert-dismissible fade show';
-            alertDiv.innerHTML = `
-                <i class="fas fa-exclamation-triangle me-2"></i>${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            `;
-            
-            // Insert after the sample data section
-            const sampleSection = document.querySelector('.bg-light.rounded');
-            sampleSection.parentNode.insertBefore(alertDiv, sampleSection.nextSibling);
-            
-            // Auto-remove after 5 seconds
-            setTimeout(() => {
-                if (alertDiv.parentNode) {
-                    alertDiv.remove();
-                }
-            }, 5000);
-        }
-        
-        function restoreScenarioSelector() {
-            const scenarioSelector = document.getElementById('scenarioSelector');
-            scenarioSelector.disabled = false;
-            scenarioSelector.innerHTML = `
-                <option value="">Choose a job scenario...</option>
-                <option value="business_analyst">Business Systems Analyst</option>
-                <option value="data_analyst">Data Analyst</option>
-                <option value="software_developer">Software Developer</option>
-            `;
-        }
-        
-        function clearForm() {
-            // Clear all form fields
-            document.getElementById('summary').value = '';
-            document.getElementById('job_title').value = '';
-            document.getElementById('company').value = '';
-            document.getElementById('job_description').value = '';
-            document.getElementById('skills').value = '';
-            
-            // Reset selectors
-            document.getElementById('scenarioSelector').value = '';
-            document.getElementById('jobSelector').value = '';
-            
-            // Show success message
-            showSuccessMessage('Form cleared successfully!');
-        }
-        
-        function showFormHelp() {
-            const helpText = `
-                <div class="alert alert-info">
-                    <h6><i class="fas fa-info-circle me-2"></i>Form Help</h6>
-                    <ul class="mb-0">
-                        <li><strong>Summary:</strong> Write a compelling 2-3 sentence overview of your professional background and key strengths</li>
-                        <li><strong>Job Title:</strong> Your current or most recent position title</li>
-                        <li><strong>Company:</strong> Your current or most recent employer</li>
-                        <li><strong>Job Description:</strong> Paste the job posting you want to target - our AI will optimize your resume for it</li>
-                        <li><strong>Skills:</strong> List your key technical and soft skills, separated by commas</li>
-                    </ul>
-                    <hr>
-                    <small><strong>Pro Tip:</strong> Use the sample data scenarios above to see how the form works!</small>
-                </div>
-            `;
-            
-            // Create help alert
-            const helpDiv = document.createElement('div');
-            helpDiv.innerHTML = helpText;
-            
-            // Insert after the sample data section
-            const sampleSection = document.querySelector('.bg-light.rounded');
-            sampleSection.parentNode.insertBefore(helpDiv, sampleSection.nextSibling);
-            
-            // Auto-remove after 10 seconds
-            setTimeout(() => {
-                if (helpDiv.parentNode) {
-                    helpDiv.remove();
-                }
-            }, 10000);
-        }
-
-        function showSampleDataOptions() {
-            const sampleDataOptions = document.getElementById('sampleDataOptions');
-            if (sampleDataOptions) {
-                sampleDataOptions.style.display = 'block';
-            }
-        }
-        
-        // Handle form submission
-        document.getElementById('resumeForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Show loading state
-            const submitBtn = this.querySelector('button[type="submit"]');
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Generating Resume...';
-            submitBtn.disabled = true;
-            
-            // Submit form data
-            const formData = new FormData(this);
-            
-            fetch('/form', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Redirect to view page
-                    if (data.view_url) {
-                        window.location.href = data.view_url;
-                    } else {
-                        // Fallback to download
-                        window.location.href = data.download_url;
-                    }
-                } else {
-                    // Show error
-                    showErrorMessage(data.message || 'Failed to generate resume');
-                    submitBtn.innerHTML = originalText;
-                    submitBtn.disabled = false;
+                    alert('Error: ' + result.message);
                 }
             })
             .catch(error => {
+                document.getElementById('loadingOverlay').style.display = 'none';
                 console.error('Error:', error);
-                showErrorMessage('An error occurred while generating your resume. Please try again.');
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
+                alert('An error occurred while generating your resume. Please try again.');
             });
+        }
+
+        // Smooth animations for form groups
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all form groups
+        document.querySelectorAll('.form-group').forEach(group => {
+            observer.observe(group);
         });
-        
-        // File Upload Functions
-        function handleFileUpload() {
-            const fileInput = document.getElementById('resumeFile');
-            const uploadBtn = document.getElementById('uploadBtn');
-            
-            if (fileInput.files.length > 0) {
-                const file = fileInput.files[0];
-                const fileSize = file.size / (1024 * 1024); // Convert to MB
-                
-                // Check file size (max 10MB)
-                if (fileSize > 10) {
-                    showErrorMessage('File size too large. Please upload a file smaller than 10MB.');
-                    fileInput.value = '';
-                    uploadBtn.disabled = true;
-                    return;
-                }
-                
-                // Check file type
-                const allowedTypes = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/msword'];
-                if (!allowedTypes.includes(file.type)) {
-                    showErrorMessage('Invalid file type. Please upload a PDF or Word document.');
-                    fileInput.value = '';
-                    uploadBtn.disabled = true;
-                    return;
-                }
-                
-                // Enable upload button
-                uploadBtn.disabled = false;
-                showSuccessMessage(`File "${file.name}" selected successfully!`);
-            } else {
-                uploadBtn.disabled = true;
-            }
-        }
-        
-        async function uploadResume() {
-            const fileInput = document.getElementById('resumeFile');
-            const uploadBtn = document.getElementById('uploadBtn');
-            const uploadProgress = document.getElementById('uploadProgress');
-            const progressBar = document.getElementById('progressBar');
-            const uploadStatus = document.getElementById('uploadStatus');
-            
-            if (!fileInput.files.length) {
-                showErrorMessage('Please select a file first.');
-                return;
-            }
-            
-            const file = fileInput.files[0];
-            const formData = new FormData();
-            formData.append('resume_file', file);
-            
-            try {
-                // Show progress bar
-                uploadProgress.style.display = 'block';
-                uploadBtn.disabled = true;
-                uploadStatus.textContent = 'Uploading file...';
-                
-                // Simulate progress (since we can't track actual upload progress easily)
-                let progress = 0;
-                const progressInterval = setInterval(() => {
-                    progress += Math.random() * 15;
-                    if (progress > 90) progress = 90;
-                    progressBar.style.width = progress + '%';
-                    progressBar.textContent = Math.round(progress) + '%';
-                }, 200);
-                
-                // Upload file
-                const response = await fetch('/upload-resume', {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                clearInterval(progressInterval);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    // Show completion
-                    progressBar.style.width = '100%';
-                    progressBar.textContent = '100%';
-                    uploadStatus.textContent = 'Parsing resume...';
-                    
-                    // Wait a moment for parsing
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-                    
-                    // Populate form with parsed data
-                    if (data.parsed_data) {
-                        populateFormWithResumeData(data.parsed_data);
-                        showSuccessMessage('Resume parsed successfully! Form populated with extracted data. Please review and edit as needed.');
-                    } else {
-                        showErrorMessage('Resume uploaded but parsing failed. Please fill in the form manually.');
-                    }
-                    
-                    // Hide progress bar
-                    uploadProgress.style.display = 'none';
-                    
-                } else {
-                    throw new Error(data.message || 'Failed to parse resume');
-                }
-                
-            } catch (error) {
-                console.error('Upload error:', error);
-                showErrorMessage('Failed to upload and parse resume: ' + error.message);
-                uploadProgress.style.display = 'none';
-            } finally {
-                uploadBtn.disabled = false;
-            }
-        }
-        
-        function populateFormWithResumeData(parsedData) {
-            // Populate form fields with parsed data
-            if (parsedData.summary) {
-                document.getElementById('summary').value = parsedData.summary;
-            }
-            
-            if (parsedData.job_title) {
-                document.getElementById('job_title').value = parsedData.job_title;
-            }
-            
-            if (parsedData.company) {
-                document.getElementById('company').value = parsedData.company;
-            }
-            
-            if (parsedData.skills) {
-                document.getElementById('skills').value = parsedData.skills;
-            }
-            
-            // Note: We don't populate job_description as that's the target job, not the user's current role
-        }
     </script>
 </body>
 </html>
