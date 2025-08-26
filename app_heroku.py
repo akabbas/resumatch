@@ -213,12 +213,20 @@ def view_resume(filename):
     """View generated resume in browser"""
     try:
         file_path = os.path.join(UPLOAD_FOLDER, filename)
+        print(f"🔍 View resume request for: {filename}")
+        print(f"📁 File path: {file_path}")
+        print(f"📂 Upload folder: {UPLOAD_FOLDER}")
+        print(f"📄 File exists: {os.path.exists(file_path)}")
+        
         if os.path.exists(file_path) and filename.endswith('.html'):
+            print(f"✅ Rendering view_resume.html template for {filename}")
             return render_template('view_resume.html', filename=filename, resume_id=filename.replace('.html', '').replace('resume_', ''))
         else:
+            print(f"❌ File not found or invalid format: {filename}")
             flash('Resume not found or invalid format', 'error')
             return redirect(url_for('index'))
     except Exception as e:
+        print(f"💥 Error in view_resume: {str(e)}")
         flash(f'Error viewing resume: {str(e)}', 'error')
         return redirect(url_for('index'))
 

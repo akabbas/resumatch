@@ -501,7 +501,7 @@
 
                 <!-- Resume Viewer -->
                 <div class="resume-viewer">
-                    <iframe id="resumeFrame" class="resume-iframe" src="{{ url_for('view_resume', filename=filename) }}" onload="resumeLoaded()">
+                    <iframe id="resumeFrame" class="resume-iframe" src="{{ url_for('download_resume', filename=filename) }}" onload="resumeLoaded()">
                         <div class="resume-loading">
                             <div class="loading-spinner"></div>
                             <span>Loading your resume...</span>
@@ -563,7 +563,7 @@
                 <div class="info-grid">
                     <div class="info-card">
                         <div class="info-card-title">Generated At</div>
-                        <div class="info-card-value" id="generatedAt">{{ moment().format('MMMM Do YYYY, h:mm a') }}</div>
+                        <div class="info-card-value" id="generatedAt">Loading...</div>
                     </div>
                     
                     <div class="info-card">
