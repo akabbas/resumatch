@@ -130,10 +130,146 @@ def form_submit():
         flash(f'Error generating resume: {str(e)}', 'error')
         return jsonify({'success': False, 'message': str(e)})
 
-@app.route('/detailed-form')
+@app.route('/detailed-form', methods=['GET', 'POST'])
 def detailed_form():
     """Detailed form page for comprehensive resume creation"""
-    return render_template('detailed_form.html')
+    if request.method == 'GET':
+        return render_template('detailed_form.html')
+    
+    # POST method handling for detailed form
+    try:
+        # Get form data from the detailed form
+        name = request.form.get('name', '').strip()
+        email = request.form.get('email', '').strip()
+        phone = request.form.get('phone', '').strip()
+        location = request.form.get('location', '').strip()
+        linkedin = request.form.get('linkedin', '').strip()
+        github = request.form.get('github', '').strip()
+        summary = request.form.get('summary', '').strip()
+        skills = request.form.get('skills', '').strip()
+        
+        # Get experience data (multiple entries)
+        experience_data = []
+        experience_count = 0
+        while f'experience[{experience_count}][title]' in request.form:
+            title = request.form.get(f'experience[{experience_count}][title]', '').strip()
+            company = request.form.get(f'experience[{experience_count}][company]', '').strip()
+            duration = request.form.get(f'experience[{experience_count}][duration]', '').strip()
+            description = request.form.get(f'experience[{experience_count}][description]', '').strip()
+            
+            if title and company and description:  # Only add if required fields are filled
+                experience_data.append({
+                    "title": title,
+                    "company": company,
+                    "duration": duration,
+                    "description": [description]  # Convert to list format
+                })
+            experience_count += 1
+        
+        # Get education data (multiple entries)
+        education_data = []
+        education_count = 0
+        while f'education[{education_count}][degree]' in request.form:
+            degree = request.form.get(f'education[{education_count}][degree]', '').strip()
+            institution = request.form.get(f'education[{education_count}][institution]', '').strip()
+            year = request.form.get(f'education[{education_count}][year]', '').strip()
+            
+            if degree and institution:  # Only add if required fields are filled
+                education_data.append({
+                    "degree": degree,
+                    "institution": institution,
+                    "year": year
+                })
+            education_count += 1
+        
+        # Basic validation
+        if not all([name, email, summary, skills]) or not experience_data:
+            return jsonify({
+                'success': False,
+                'message': 'Please fill in all required fields: Name, Email, Summary, Skills, and at least one work experience.'
+            })
+        
+        # Convert form data to JSON format expected by resume generator
+        resume_data = {
+            "name": name,
+            "contact_info": f"{email} | {phone} | {location}",
+            "summary": summary,
+            "experience": experience_data,
+            "education": education_data,
+            "skills": [s.strip() for s in skills.split(",") if s.strip()],
+            "certifications": [],
+            "projects": [],
+            "linkedin": linkedin,
+            "github": github
+        }
+        
+        # Generate unique filename for both HTML and PDF
+        resume_id = str(uuid.uuid4())[:8]
+        html_filename = f"resume_{resume_id}.html"
+        pdf_filename = f"resume_{resume_id}.pdf"
+        
+        html_path = os.path.join(UPLOAD_FOLDER, html_filename)
+        pdf_path = os.path.join(UPLOAD_FOLDER, pdf_filename)
+        
+        # Generate HTML version
+        html_generator = SimpleResumeGenerator(
+            max_pages=2,
+            include_projects=False
+        )
+        
+        # Use the first experience description as job description for generation
+        job_description = experience_data[0]['description'][0] if experience_data else summary
+        
+        html_result = html_generator.generate_resume(
+            job_description=job_description,
+            experience_data=resume_data,
+            output_path=html_path,
+            name=name,
+            contact_info=resume_data["contact_info"]
+        )
+        
+        # Generate PDF version
+        pdf_generator = PDFResumeGenerator()
+        pdf_result = pdf_generator.generate_pdf(
+            experience_data=resume_data,
+            output_path=pdf_path,
+            name=name,
+            contact_info=resume_data["contact_info"]
+        )
+        
+        if html_result and os.path.exists(html_path) and pdf_result and os.path.exists(pdf_path):
+            # Both formats generated successfully
+            return jsonify({
+                'success': True,
+                'message': 'Resume generated successfully in both HTML and PDF formats',
+                'view_url': url_for('view_resume', filename=html_filename),
+                'html_download_url': url_for('download_resume', filename=html_filename),
+                'pdf_download_url': url_for('download_resume', filename=pdf_filename),
+                'resume_id': resume_id,
+                'formats': ['html', 'pdf']
+            })
+        elif html_result and os.path.exists(html_path):
+            # Only HTML generated
+            return jsonify({
+                'success': True,
+                'message': 'Resume generated successfully (HTML format)',
+                'view_url': url_for('view_resume', filename=html_filename),
+                'download_url': url_for('download_resume', filename=html_filename),
+                'resume_id': resume_id,
+                'format': 'html'
+            })
+        else:
+            return jsonify({
+                'success': False,
+                'message': 'Failed to generate resume. Please try again.'
+            })
+    
+    except Exception as e:
+        print(f"💥 Error in detailed form processing: {str(e)}")
+        return jsonify({
+            'success': False,
+            'message': f'Error processing detailed form: {str(e)}'
+        })
 
 @app.route('/dashboard')
 def dashboard():

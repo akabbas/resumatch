@@ -823,8 +823,21 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Redirect to job targeting form
-                    window.location.href = data.redirect_url;
+                    // Show success message
+                    submitBtn.innerHTML = '<i class="fas fa-check me-2"></i>Resume Generated!';
+                    submitBtn.className = 'btn btn-success btn-lg';
+                    
+                    // Redirect to view resume page after a short delay
+                    setTimeout(() => {
+                        if (data.view_url) {
+                            window.location.href = data.view_url;
+                        } else if (data.redirect_url) {
+                            window.location.href = data.redirect_url;
+                        } else {
+                            // Fallback to home page
+                            window.location.href = '/';
+                        }
+                    }, 1500);
                 } else {
                     // Show error
                     alert('Error: ' + (data.message || 'Failed to process form data'));
