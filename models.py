@@ -143,3 +143,4 @@ class Subscription(db.Model):
         if self.current_period_end and datetime.utcnow() > self.current_period_end:
             return False
         return True
+

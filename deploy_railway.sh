@@ -87,3 +87,4 @@ echo "  railway variables     - View environment variables"
 echo "  railway open          - Open in browser"
 echo ""
 echo "For more information, see: RAILWAY_DEPLOYMENT.md"
+

@@ -106,3 +106,4 @@ class SubscriptionUpgradeForm(FlaskForm):
         ('enterprise', 'Enterprise Plan - $29.99/month')
     ], validators=[DataRequired()])
     submit = SubmitField('Upgrade Subscription')
+

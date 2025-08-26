@@ -378,3 +378,4 @@ This feature positions ResuMatch as the **premier choice** for users who want to
 ---
 
 *The Resume Upload Feature is now **production-ready** and **fully integrated** into the ResuMatch platform. Users can immediately benefit from this powerful capability to streamline their resume generation process.*
+

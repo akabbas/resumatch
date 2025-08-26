@@ -1,0 +1,117 @@
+{
+  "analysis_timestamp": "2024-01-XX",
+  "resume_health_score_version": "1.0",
+  "analyses": [
+    {
+      "analysis_id": 1,
+      "target_role": "General",
+      "health_score": {
+        "overall_grade": "C+",
+        "overall_score": 36.666666666666664,
+        "summary": "Resume needs improvement (C+). Focus on strengthening bullet points and adding quantifiable results.",
+        "top_priorities": [
+          "Resume is in good shape - focus on minor refinements"
+        ]
+      },
+      "dimension_scores": {
+        "impact": {
+          "grade": "C+",
+          "score": 36.666666666666664,
+          "feedback": [
+            "Total bullet points analyzed: 6",
+            "High-impact bullets: 1",
+            "Medium-impact bullets: 2",
+            "Low-impact bullets: 3",
+            "Bullets needing improvement: 3"
+          ],
+          "suggestions": [
+            "Replace weak action verbs with strong, impactful verbs",
+            "Use the STAR method: Situation, Task, Action, Result",
+            "Include specific metrics and outcomes for each achievement"
+          ]
+        }
+      },
+      "transformed_skills": [
+        "Automated business processes and data analysis using Python",
+        "Analyzed business data and created SQL-based reports",
+        "Analyzed business processes and configured Salesforce solutions",
+        "Data Analysis",
+        "Project Management"
+      ]
+    },
+    {
+      "analysis_id": 2,
+      "target_role": "General",
+      "health_score": {
+        "overall_grade": "C+",
+        "overall_score": 36.666666666666664,
+        "summary": "Resume needs improvement (C+). Focus on strengthening bullet points and adding quantifiable results.",
+        "top_priorities": [
+          "Resume is in good shape - focus on minor refinements"
+        ]
+      },
+      "dimension_scores": {
+        "impact": {
+          "grade": "C+",
+          "score": 36.666666666666664,
+          "feedback": [
+            "Total bullet points analyzed: 6",
+            "High-impact bullets: 1",
+            "Medium-impact bullets: 2",
+            "Low-impact bullets: 3",
+            "Bullets needing improvement: 3"
+          ],
+          "suggestions": [
+            "Replace weak action verbs with strong, impactful verbs",
+            "Use the STAR method: Situation, Task, Action, Result",
+            "Include specific metrics and outcomes for each achievement"
+          ]
+        }
+      },
+      "transformed_skills": [
+        "Automated business processes and data analysis using Python",
+        "Analyzed business data and created SQL-based reports",
+        "Analyzed business processes and configured Salesforce solutions",
+        "Data Analysis",
+        "Project Management"
+      ]
+    },
+    {
+      "analysis_id": 3,
+      "target_role": "General",
+      "health_score": {
+        "overall_grade": "C+",
+        "overall_score": 36.666666666666664,
+        "summary": "Resume needs improvement (C+). Focus on strengthening bullet points and adding quantifiable results.",
+        "top_priorities": [
+          "Resume is in good shape - focus on minor refinements"
+        ]
+      },
+      "dimension_scores": {
+        "impact": {
+          "grade": "C+",
+          "score": 36.666666666666664,
+          "feedback": [
+            "Total bullet points analyzed: 6",
+            "High-impact bullets: 1",
+            "Medium-impact bullets: 2",
+            "Low-impact bullets: 3",
+            "Bullets needing improvement: 3"
+          ],
+          "suggestions": [
+            "Replace weak action verbs with strong, impactful verbs",
+            "Use the STAR method: Situation, Task, Action, Result",
+            "Include specific metrics and outcomes for each achievement"
+          ]
+        }
+      },
+      "transformed_skills": [
+        "Automated business processes and data analysis using Python",
+        "Analyzed business data and created SQL-based reports",
+        "Analyzed business processes and configured Salesforce solutions",
+        "Data Analysis",
+        "Project Management"
+      ]
+    }
+  ]
+}

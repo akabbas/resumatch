@@ -622,10 +622,10 @@
                     </div>
                     
                     <div class="scenario-selector">
-                        <button class="scenario-btn active" data-scenario="data-analyst">Data Analyst</button>
-                        <button class="scenario-btn" data-scenario="business-analyst">Business Analyst</button>
-                        <button class="scenario-btn" data-scenario="salesforce-admin">Salesforce Admin</button>
-                        <button class="scenario-btn" data-scenario="revops-developer">RevOps Developer</button>
+                        <button class="scenario-btn active" data-scenario="data_analyst">Data Analyst</button>
+                        <button class="scenario-btn" data-scenario="business_analyst">Business Analyst</button>
+                        <button class="scenario-btn" data-scenario="software_developer">Software Developer</button>
+                        <button class="scenario-btn" data-scenario="salesforce_admin">Salesforce Admin</button>
                     </div>
                     
                     <div class="sample-actions">
@@ -740,7 +740,7 @@
     <script>
         let currentStep = 1;
         const totalSteps = 3;
-        let currentScenario = 'data-analyst';
+        let currentScenario = 'data_analyst';
 
         // Initialize form
         document.addEventListener('DOMContentLoaded', function() {
@@ -829,7 +829,7 @@
                 .then(response => response.json())
                 .then(data => {
                     const scenarios = data.scenarios || {};
-                    const scenario = scenarios[currentScenario] || scenarios['data-analyst'] || {};
+                    const scenario = scenarios[currentScenario] || scenarios['data_analyst'] || {};
                     
                     if (scenario.job_title) document.getElementById('job_title').value = scenario.job_title;
                     if (scenario.company) document.getElementById('company').value = scenario.company;

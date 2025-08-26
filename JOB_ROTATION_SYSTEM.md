@@ -427,3 +427,4 @@ The Job Rotation System transforms ResuMatch from a simple resume generator into
 - **Improve their applications** through targeted practice
 
 This system makes ResuMatch not just a tool for creating resumes, but a platform for career development and job market understanding. Users can now confidently apply to different types of positions, knowing their resume has been tested against realistic job descriptions.
+

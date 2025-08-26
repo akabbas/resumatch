@@ -34,11 +34,6 @@ def index():
     """Main page with resume generation form"""
     return render_template('index.html')
 
-@app.route('/form')
-def form():
-    """Resume form page"""
-    return render_template('form.html')
-
 @app.route('/form', methods=['GET', 'POST'])
 def form_submit():
     """Handle form submission and generate resume"""
@@ -272,6 +267,13 @@ def get_sample_data():
             "company": "InnovateTech",
             "job_description": "We are seeking a Full-Stack Developer to join our engineering team. You will be responsible for developing and maintaining web applications, APIs, and database systems.\n\nRequirements:\n- 3+ years of full-stack development experience\n- Strong JavaScript/TypeScript and Python skills\n- Experience with React, Node.js, and Django/Flask\n- Knowledge of database design and SQL\n- Experience with cloud platforms (AWS, Azure, GCP)",
             "skills": "JavaScript, TypeScript, React, Node.js, Python, Django, Flask, SQL, PostgreSQL, MongoDB, AWS, Docker, Git, REST APIs, GraphQL"
+        },
+        "salesforce_admin": {
+            "summary": "Certified Salesforce Administrator with 2+ years of experience managing Salesforce orgs, implementing automation workflows, and optimizing business processes. Skilled in user management, security, and custom object development.",
+            "job_title": "Salesforce Administrator",
+            "company": "SalesForce Solutions",
+            "job_description": "We are looking for a Salesforce Administrator to join our team. You will be responsible for managing our Salesforce org, implementing automation, and ensuring optimal system performance.\n\nRequirements:\n- 2+ years of Salesforce administration experience\n- Salesforce Administrator certification\n- Experience with Process Builder, Flow, and Workflow Rules\n- Knowledge of Salesforce security and user management\n- Experience with custom objects, fields, and validation rules",
+            "skills": "Salesforce CRM, Process Builder, Flow, Workflow Rules, User Management, Security, Custom Objects, Validation Rules, Reports & Dashboards, Data Import/Export, Apex, Lightning Components"
         }
     }
     

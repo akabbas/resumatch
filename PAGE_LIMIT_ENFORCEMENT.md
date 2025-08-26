@@ -395,3 +395,4 @@ generator.add_compression_strategy(CustomCompressionStrategy())
 The Page Limit Enforcement System provides **guaranteed compliance** with page limits while maintaining professional resume quality. Through intelligent compression strategies and ATS-based content prioritization, it ensures that users always get exactly what they requested - no more, no less.
 
 The system is **production-ready**, **well-tested**, and **highly configurable**, making it suitable for both simple and complex resume generation scenarios.
+

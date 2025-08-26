@@ -245,3 +245,4 @@ class SimpleResumeTailor:
 # Export the main classes
 ResumeTailor = SimpleResumeTailor
 BulletPoint = BulletPoint
+
