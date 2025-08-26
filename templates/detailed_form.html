@@ -375,6 +375,12 @@
             <div class="form-section text-center">
                 <h5><i class="fas fa-rocket me-2"></i>Ready to Generate Your Resume?</h5>
                 <p class="text-muted mb-4">Review your information above and click the button below to proceed to job targeting and resume generation.</p>
+                
+                <!-- Debug button -->
+                <button type="button" class="btn btn-outline-info btn-sm me-2" onclick="testFormData()">
+                    <i class="fas fa-bug me-1"></i>Test Form Data
+                </button>
+                
                 <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
                     <i class="fas fa-magic me-2"></i>Generate My Resume
                 </button>
@@ -803,9 +809,81 @@
             }, 2000);
         }
         
+        // Test form data function for debugging
+        function testFormData() {
+            const form = document.getElementById('detailedResumeForm');
+            const formData = new FormData(form);
+            
+            console.log('🧪 Testing form data...');
+            console.log('📝 All form fields:');
+            for (let [key, value] of formData.entries()) {
+                console.log(`   ${key}: '${value}'`);
+            }
+            
+            // Check specific required fields
+            const name = form.querySelector('input[name="name"]')?.value?.trim() || '';
+            const email = form.querySelector('input[name="email"]')?.value?.trim() || '';
+            const summary = form.querySelector('textarea[name="summary"]')?.value?.trim() || '';
+            const skills = form.querySelector('textarea[name="skills"]')?.value?.trim() || '';
+            const experienceTitle = form.querySelector('input[name="experience[0][title]"]')?.value?.trim() || '';
+            const experienceCompany = form.querySelector('input[name="experience[0][company]"]')?.value?.trim() || '';
+            const experienceDescription = form.querySelector('textarea[name="experience[0][description]"]')?.value?.trim() || '';
+            
+            const missingFields = [];
+            if (!name) missingFields.push('Name');
+            if (!email) missingFields.push('Email');
+            if (!summary) missingFields.push('Summary');
+            if (!skills) missingFields.push('Skills');
+            if (!experienceTitle) missingFields.push('Experience Title');
+            if (!experienceCompany) missingFields.push('Experience Company');
+            if (!experienceDescription) missingFields.push('Experience Description');
+            
+            console.log('🔍 Field validation:');
+            console.log(`   Name: '${name}' (${name ? '✅' : '❌'})`);
+            console.log(`   Email: '${email}' (${email ? '✅' : '❌'})`);
+            console.log(`   Summary: '${summary}' (${summary ? '✅' : '❌'})`);
+            console.log(`   Skills: '${skills}' (${skills ? '✅' : '❌'})`);
+            console.log(`   Experience Title: '${experienceTitle}' (${experienceTitle ? '✅' : '❌'})`);
+            console.log(`   Experience Company: '${experienceCompany}' (${experienceCompany ? '✅' : '❌'})`);
+            console.log(`   Experience Description: '${experienceDescription}' (${experienceDescription ? '✅' : '❌'})`);
+            
+            if (missingFields.length > 0) {
+                alert(`Missing required fields: ${missingFields.join(', ')}`);
+            } else {
+                alert('All required fields are filled! ✅');
+            }
+        }
+
         // Form submission
         document.getElementById('detailedResumeForm').addEventListener('submit', function(e) {
             e.preventDefault();
+            
+            console.log('🔍 Form submission started');
+            
+            // Debug: Log form data before submission
+            const formData = new FormData(this);
+            console.log('📝 Form data to be submitted:');
+            for (let [key, value] of formData.entries()) {
+                console.log(`   ${key}: ${value}`);
+            }
+            
+            // Check if required fields are filled
+            const name = this.querySelector('input[name="name"]').value.trim();
+            const email = this.querySelector('input[name="email"]').value.trim();
+            const summary = this.querySelector('textarea[name="summary"]').value.trim();
+            const skills = this.querySelector('textarea[name="skills"]').value.trim();
+            const experienceTitle = this.querySelector('input[name="experience[0][title]"]').value.trim();
+            const experienceCompany = this.querySelector('input[name="experience[0][company]"]').value.trim();
+            const experienceDescription = this.querySelector('textarea[name="experience[0][description]"]').value.trim();
+            
+            console.log('🔍 Required field validation:');
+            console.log(`   Name: '${name}' (filled: ${!!name})`);
+            console.log(`   Email: '${email}' (filled: ${!!email})`);
+            console.log(`   Summary: '${summary}' (filled: ${!!summary})`);
+            console.log(`   Skills: '${skills}' (filled: ${!!skills})`);
+            console.log(`   Experience Title: '${experienceTitle}' (filled: ${!!experienceTitle})`);
+            console.log(`   Experience Company: '${experienceCompany}' (filled: ${!!experienceCompany})`);
+            console.log(`   Experience Description: '${experienceDescription}' (filled: ${!!experienceDescription})`);
             
             // Show loading state
             const submitBtn = document.getElementById('submitBtn');
@@ -814,14 +892,16 @@
             submitBtn.disabled = true;
             
             // Submit form data
-            const formData = new FormData(this);
-            
             fetch('/detailed-form', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
+            .then(response => {
+                console.log('📡 Response received:', response.status);
+                return response.json();
+            })
             .then(data => {
+                console.log('📋 Response data:', data);
                 if (data.success) {
                     // Show success message
                     submitBtn.innerHTML = '<i class="fas fa-check me-2"></i>Resume Generated!';
@@ -840,13 +920,14 @@
                     }, 1500);
                 } else {
                     // Show error
+                    console.error('❌ Form submission failed:', data.message);
                     alert('Error: ' + (data.message || 'Failed to process form data'));
                     submitBtn.innerHTML = originalText;
                     submitBtn.disabled = false;
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
+                console.error('💥 Fetch error:', error);
                 alert('An error occurred while processing your form. Please try again.');
                 submitBtn.innerHTML = originalText;
                 submitBtn.disabled = false;

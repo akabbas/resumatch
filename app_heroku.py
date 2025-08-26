@@ -138,6 +138,12 @@ def detailed_form():
     
     # POST method handling for detailed form
     try:
+        # Debug: Print all received form data
+        print("🔍 Detailed form submission received")
+        print("📝 Form data received:")
+        for key, value in request.form.items():
+            print(f"   {key}: {value}")
+        
         # Get form data from the detailed form
         name = request.form.get('name', '').strip()
         email = request.form.get('email', '').strip()
@@ -148,6 +154,12 @@ def detailed_form():
         summary = request.form.get('summary', '').strip()
         skills = request.form.get('skills', '').strip()
         
+        print(f"📋 Extracted data:")
+        print(f"   Name: '{name}'")
+        print(f"   Email: '{email}'")
+        print(f"   Summary: '{summary}'")
+        print(f"   Skills: '{skills}'")
+        
         # Get experience data (multiple entries)
         experience_data = []
         experience_count = 0
@@ -157,6 +169,11 @@ def detailed_form():
             duration = request.form.get(f'experience[{experience_count}][duration]', '').strip()
             description = request.form.get(f'experience[{experience_count}][description]', '').strip()
             
+            print(f"   Experience {experience_count}:")
+            print(f"     Title: '{title}'")
+            print(f"     Company: '{company}'")
+            print(f"     Description: '{description}'")
+            
             if title and company and description:  # Only add if required fields are filled
                 experience_data.append({
                     "title": title,
@@ -165,6 +182,8 @@ def detailed_form():
                     "description": [description]  # Convert to list format
                 })
             experience_count += 1
+        
+        print(f"   Total experience entries: {len(experience_data)}")
         
         # Get education data (multiple entries)
         education_data = []
@@ -183,10 +202,26 @@ def detailed_form():
             education_count += 1
         
         # Basic validation
+        print(f"🔍 Validation check:")
+        print(f"   Name filled: {bool(name)}")
+        print(f"   Email filled: {bool(email)}")
+        print(f"   Summary filled: {bool(summary)}")
+        print(f"   Skills filled: {bool(skills)}")
+        print(f"   Experience entries: {len(experience_data)}")
+        
         if not all([name, email, summary, skills]) or not experience_data:
+            missing_fields = []
+            if not name: missing_fields.append("Name")
+            if not email: missing_fields.append("Email")
+            if not summary: missing_fields.append("Summary")
+            if not skills: missing_fields.append("Skills")
+            if not experience_data: missing_fields.append("Work Experience")
+            
+            error_msg = f"Please fill in all required fields: {', '.join(missing_fields)}."
+            print(f"❌ Validation failed: {error_msg}")
             return jsonify({
                 'success': False,
-                'message': 'Please fill in all required fields: Name, Email, Summary, Skills, and at least one work experience.'
+                'message': error_msg
             })
         
         # Convert form data to JSON format expected by resume generator
