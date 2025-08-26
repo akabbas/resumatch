@@ -820,14 +820,25 @@
                 console.log(`   ${key}: '${value}'`);
             }
             
-            // Check specific required fields
-            const name = form.querySelector('input[name="name"]')?.value?.trim() || '';
-            const email = form.querySelector('input[name="email"]')?.value?.trim() || '';
-            const summary = form.querySelector('textarea[name="summary"]')?.value?.trim() || '';
-            const skills = form.querySelector('textarea[name="skills"]')?.value?.trim() || '';
-            const experienceTitle = form.querySelector('input[name="experience[0][title]"]')?.value?.trim() || '';
-            const experienceCompany = form.querySelector('input[name="experience[0][company]"]')?.value?.trim() || '';
-            const experienceDescription = form.querySelector('textarea[name="experience[0][description]"]')?.value?.trim() || '';
+            // Check specific required fields using more robust selectors
+            const nameField = form.querySelector('input[name="name"]');
+            const emailField = form.querySelector('input[name="email"]');
+            const summaryField = form.querySelector('textarea[name="summary"]');
+            const skillsField = form.querySelector('textarea[name="skills"]');
+            
+            // For experience fields, use a more flexible approach
+            const experienceTitleField = form.querySelector('input[name*="[title]"]');
+            const experienceCompanyField = form.querySelector('input[name*="[company]"]');
+            const experienceDescriptionField = form.querySelector('textarea[name*="[description]"]');
+            
+            // Get values with null checks
+            const name = nameField ? nameField.value.trim() : '';
+            const email = emailField ? emailField.value.trim() : '';
+            const summary = summaryField ? summaryField.value.trim() : '';
+            const skills = skillsField ? skillsField.value.trim() : '';
+            const experienceTitle = experienceTitleField ? experienceTitleField.value.trim() : '';
+            const experienceCompany = experienceCompanyField ? experienceCompanyField.value.trim() : '';
+            const experienceDescription = experienceDescriptionField ? experienceDescriptionField.value.trim() : '';
             
             const missingFields = [];
             if (!name) missingFields.push('Name');
@@ -868,13 +879,24 @@
             }
             
             // Check if required fields are filled
-            const name = this.querySelector('input[name="name"]').value.trim();
-            const email = this.querySelector('input[name="email"]').value.trim();
-            const summary = this.querySelector('textarea[name="summary"]').value.trim();
-            const skills = this.querySelector('textarea[name="skills"]').value.trim();
-            const experienceTitle = this.querySelector('input[name="experience[0][title]"]').value.trim();
-            const experienceCompany = this.querySelector('input[name="experience[0][company]"]').value.trim();
-            const experienceDescription = this.querySelector('textarea[name="experience[0][description]"]').value.trim();
+            const nameField = this.querySelector('input[name="name"]');
+            const emailField = this.querySelector('input[name="email"]');
+            const summaryField = this.querySelector('textarea[name="summary"]');
+            const skillsField = this.querySelector('textarea[name="skills"]');
+            
+            // For experience fields, use a more flexible approach
+            const experienceTitleField = this.querySelector('input[name*="[title]"]');
+            const experienceCompanyField = this.querySelector('input[name*="[company]"]');
+            const experienceDescriptionField = this.querySelector('textarea[name*="[description]"]');
+            
+            // Get values with null checks
+            const name = nameField ? nameField.value.trim() : '';
+            const email = emailField ? emailField.value.trim() : '';
+            const summary = summaryField ? summaryField.value.trim() : '';
+            const skills = skillsField ? skillsField.value.trim() : '';
+            const experienceTitle = experienceTitleField ? experienceTitleField.value.trim() : '';
+            const experienceCompany = experienceCompanyField ? experienceCompanyField.value.trim() : '';
+            const experienceDescription = experienceDescriptionField ? experienceDescriptionField.value.trim() : '';
             
             console.log('🔍 Required field validation:');
             console.log(`   Name: '${name}' (filled: ${!!name})`);
