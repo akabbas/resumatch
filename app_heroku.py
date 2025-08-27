@@ -154,12 +154,14 @@ def detailed_form():
         github = request.form.get('github', '').strip()
         summary = request.form.get('summary', '').strip()
         skills = request.form.get('skills', '').strip()
+        target_job_description = request.form.get('target_job_description', '').strip()
         
         print(f"📋 Extracted data:")
         print(f"   Name: '{name}'")
         print(f"   Email: '{email}'")
         print(f"   Summary: '{summary}'")
         print(f"   Skills: '{skills}'")
+        print(f"   Target Job Description: '{target_job_description[:100]}{'...' if len(target_job_description) > 100 else ''}'")
         
         # Get experience data (multiple entries)
         experience_data = []
@@ -227,14 +229,16 @@ def detailed_form():
         print(f"   Email filled: {bool(email)}")
         print(f"   Summary filled: {bool(summary)}")
         print(f"   Skills filled: {bool(skills)}")
+        print(f"   Target Job Description filled: {bool(target_job_description)}")
         print(f"   Experience entries: {len(experience_data)}")
         
-        if not all([name, email, summary, skills]) or not experience_data:
+        if not all([name, email, summary, skills, target_job_description]) or not experience_data:
             missing_fields = []
             if not name: missing_fields.append("Name")
             if not email: missing_fields.append("Email")
             if not summary: missing_fields.append("Summary")
             if not skills: missing_fields.append("Skills")
+            if not target_job_description: missing_fields.append("Target Job Description")
             if not experience_data: missing_fields.append("Work Experience")
             
             error_msg = f"Please fill in all required fields: {', '.join(missing_fields)}."
@@ -272,11 +276,12 @@ def detailed_form():
             include_projects=False
         )
         
-        # Use the first experience description as job description for generation
-        job_description = experience_data[0]['description'][0] if experience_data else summary
+        # Use target job description for intelligent bullet point generation
+        # If no target job description provided, fall back to first experience description
+        job_description_for_generation = target_job_description if target_job_description else (experience_data[0]['description'][0] if experience_data else summary)
         
         html_result = html_generator.generate_resume(
-            job_description=job_description,
+            job_description=job_description_for_generation,
             experience_data=resume_data,
             output_path=html_path,
             name=name,

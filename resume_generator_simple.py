@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Simplified Resume Generator for Heroku
-Basic version without heavy ML dependencies
+Enhanced Resume Generator for Heroku
+Creates intelligent, job-specific bullet points based on job requirements
 """
 
 import os
@@ -13,7 +13,7 @@ from jinja2 import Template
 import tempfile
 
 class SimpleResumeGenerator:
-    """Simplified resume generator for Heroku deployment"""
+    """Enhanced resume generator that creates job-specific bullet points"""
     
     def __init__(self, max_pages=2, include_projects=False):
         self.max_pages = max_pages
@@ -115,6 +115,139 @@ class SimpleResumeGenerator:
 </html>
         """)
     
+    def analyze_job_requirements(self, job_description: str) -> Dict[str, List[str]]:
+        """Analyze job description to extract key requirements and skills"""
+        requirements = {
+            'technical_skills': [],
+            'soft_skills': [],
+            'tools_platforms': [],
+            'methodologies': [],
+            'industries': []
+        }
+        
+        # Common technical skills to look for
+        technical_patterns = {
+            'programming': r'\b(python|java|javascript|typescript|sql|html|css|react|node\.js|angular|vue|django|flask|spring|\.net|php|ruby|go|rust|swift|kotlin)\b',
+            'databases': r'\b(mysql|postgresql|mongodb|redis|oracle|sql server|dynamodb|elasticsearch|snowflake)\b',
+            'cloud': r'\b(aws|azure|gcp|heroku|docker|kubernetes|terraform|jenkins|gitlab|github)\b',
+            'analytics': r'\b(tableau|power bi|excel|r|matlab|spss|sas|looker|quicksight)\b'
+        }
+        
+        # Common soft skills
+        soft_patterns = {
+            'leadership': r'\b(leadership|management|supervision|mentoring|coaching|team building)\b',
+            'communication': r'\b(communication|presentation|documentation|reporting|stakeholder management)\b',
+            'problem_solving': r'\b(problem solving|analytical|critical thinking|troubleshooting|optimization)\b',
+            'project_management': r'\b(project management|agile|scrum|kanban|waterfall|planning)\b'
+        }
+        
+        # Extract technical skills
+        for category, pattern in technical_patterns.items():
+            matches = re.findall(pattern, job_description.lower())
+            requirements['technical_skills'].extend([match.title() for match in matches])
+        
+        # Extract soft skills
+        for category, pattern in soft_patterns.items():
+            matches = re.findall(pattern, job_description.lower())
+            requirements['soft_skills'].extend([match.title() for match in matches])
+        
+        # Extract tools and platforms
+        tools_pattern = r'\b(salesforce|oracle|sap|microsoft|google|adobe|slack|zoom|teams|jira|confluence|notion)\b'
+        tools_matches = re.findall(tools_pattern, job_description.lower())
+        requirements['tools_platforms'].extend([match.title() for match in tools_matches])
+        
+        # Extract methodologies
+        methodology_pattern = r'\b(agile|scrum|kanban|waterfall|lean|six sigma|devops|ci/cd|tdd|bdd)\b'
+        methodology_matches = re.findall(methodology_pattern, job_description.lower())
+        requirements['methodologies'].extend([match.title() for match in methodology_matches])
+        
+        # Remove duplicates and clean up
+        for key in requirements:
+            requirements[key] = list(set(requirements[key]))
+        
+        return requirements
+    
+    def generate_job_specific_bullets(self, experience: Dict, job_requirements: Dict, original_description: str) -> List[str]:
+        """Generate multiple job-specific bullet points for an experience"""
+        bullets = []
+        
+        # Start with the original description as a base
+        if original_description:
+            bullets.append(original_description)
+        
+        # Generate additional relevant bullets based on job requirements
+        title = experience.get('title', '').lower()
+        company = experience.get('company', '')
+        
+        # Technical skills bullets
+        if job_requirements['technical_skills']:
+            for skill in job_requirements['technical_skills'][:3]:  # Top 3 skills
+                if skill.lower() in title or any(skill.lower() in original_description.lower()):
+                    bullets.append(f"Leveraged {skill} to develop scalable solutions and improve system performance")
+        
+        # Tools and platforms bullets
+        if job_requirements['tools_platforms']:
+            for tool in job_requirements['tools_platforms'][:2]:  # Top 2 tools
+                bullets.append(f"Utilized {tool} to streamline workflows and enhance team collaboration")
+        
+        # Methodologies bullets
+        if job_requirements['methodologies']:
+            for method in job_requirements['methodologies'][:2]:  # Top 2 methodologies
+                bullets.append(f"Applied {method.title()} methodologies to deliver projects on time and within scope")
+        
+        # Soft skills bullets
+        if job_requirements['soft_skills']:
+            for skill in job_requirements['soft_skills'][:2]:  # Top 2 soft skills
+                if 'leadership' in skill.lower():
+                    bullets.append("Led cross-functional teams and mentored junior team members")
+                elif 'communication' in skill.lower():
+                    bullets.append("Presented technical solutions to stakeholders and executive leadership")
+                elif 'problem' in skill.lower():
+                    bullets.append("Identified and resolved complex technical challenges through systematic analysis")
+        
+        # Quantified achievements (generic but effective)
+        if len(bullets) < 4:  # Ensure we have enough bullets
+            bullets.extend([
+                "Improved process efficiency by implementing automated workflows and reducing manual tasks",
+                "Collaborated with cross-functional teams to deliver high-quality solutions on schedule",
+                "Maintained high standards for code quality and system reliability"
+            ])
+        
+        # Ensure we don't have too many bullets (keep it to 4-6)
+        return bullets[:6]
+    
+    def enhance_experience_data(self, experience_data: Dict, job_description: str) -> Dict:
+        """Enhance experience data with job-specific bullet points"""
+        # Analyze job requirements
+        job_requirements = self.analyze_job_requirements(job_description)
+        
+        # Enhance each experience entry
+        enhanced_experience = []
+        for experience in experience_data.get('experience', []):
+            enhanced_exp = experience.copy()
+            
+            # Get original description
+            original_description = ""
+            if isinstance(experience.get('description'), list) and experience['description']:
+                original_description = experience['description'][0]
+            elif isinstance(experience.get('description'), str):
+                original_description = experience['description']
+            
+            # Generate enhanced bullet points
+            enhanced_bullets = self.generate_job_specific_bullets(
+                experience, job_requirements, original_description
+            )
+            
+            # Update the experience with enhanced bullets
+            enhanced_exp['description'] = enhanced_bullets
+            enhanced_experience.append(enhanced_exp)
+        
+        # Update the experience data
+        enhanced_data = experience_data.copy()
+        enhanced_data['experience'] = enhanced_experience
+        
+        return enhanced_data
+    
     def generate_resume(self, job_description: str, experience_data: Union[str, Dict], 
                        output_path: str, name: str = "Your Name", 
                        contact_info: str = "email@example.com | phone | location") -> str:
@@ -140,15 +273,18 @@ class SimpleResumeGenerator:
                 "skills": []
             }
         
+        # Enhance experience data with job-specific bullets
+        enhanced_experience_data = self.enhance_experience_data(experience_data, job_description)
+        
         # Generate HTML
         html_content = self.template.render(
             name=name,
             contact_info=contact_info,
-            summary=experience_data.get('summary', ''),
-            experience=experience_data.get('experience', []),
-            skills=experience_data.get('skills', []),
-            projects=experience_data.get('projects', []),
-            certifications=experience_data.get('certifications', []),
+            summary=enhanced_experience_data.get('summary', ''),
+            experience=enhanced_experience_data.get('experience', []),
+            skills=enhanced_experience_data.get('skills', []),
+            projects=enhanced_experience_data.get('projects', []),
+            certifications=enhanced_experience_data.get('certifications', []),
             include_projects=self.include_projects
         )
         

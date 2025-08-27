@@ -246,6 +246,21 @@
                 </div>
             </div>
 
+            <!-- Target Job Section -->
+            <div class="form-section" id="target-job-section">
+                <h5><i class="fas fa-bullseye me-2"></i>Target Job Requirements</h5>
+                <div class="mb-3">
+                    <label for="target_job_description" class="form-label">Job Description & Requirements</label>
+                    <textarea class="form-control" id="target_job_description" name="target_job_description" rows="6" 
+                              placeholder="Paste the job description here to generate relevant bullet points. Include requirements, skills needed, and job responsibilities. This will help create targeted, ATS-friendly bullet points for your resume."></textarea>
+                    <div class="form-text">
+                        <i class="fas fa-lightbulb me-1"></i>
+                        <strong>Pro Tip:</strong> Include the full job description with requirements, skills, and responsibilities. 
+                        Our AI will analyze this to create relevant bullet points that match the job requirements!
+                    </div>
+                </div>
+            </div>
+
             <!-- Education Section -->
             <div class="form-section" id="education-section">
                 <h5><i class="fas fa-graduation-cap me-2"></i>Education</h5>
@@ -629,6 +644,7 @@
                 'personal-section',
                 'experience-section', 
                 'skills-section',
+                'target-job-section',
                 'education-section',
                 'projects-section',
                 'certifications-section'
@@ -680,7 +696,7 @@
         }
         
         function getSectionName(number) {
-            const names = ['', 'personal', 'experience', 'skills', 'education', 'projects', 'certifications'];
+            const names = ['', 'personal', 'experience', 'skills', 'target-job', 'education', 'projects', 'certifications'];
             return names[number] || '';
         }
         
@@ -825,6 +841,7 @@
             const emailField = form.querySelector('input[name="email"]');
             const summaryField = form.querySelector('textarea[name="summary"]');
             const skillsField = form.querySelector('textarea[name="skills"]');
+            const targetJobDescriptionField = form.querySelector('textarea[name="target_job_description"]');
             
             // For experience fields, use a more flexible approach
             const experienceTitleField = form.querySelector('input[name*="[title]"]');
@@ -836,6 +853,7 @@
             const email = emailField ? emailField.value.trim() : '';
             const summary = summaryField ? summaryField.value.trim() : '';
             const skills = skillsField ? skillsField.value.trim() : '';
+            const targetJobDescription = targetJobDescriptionField ? targetJobDescriptionField.value.trim() : '';
             const experienceTitle = experienceTitleField ? experienceTitleField.value.trim() : '';
             const experienceCompany = experienceCompanyField ? experienceCompanyField.value.trim() : '';
             const experienceDescription = experienceDescriptionField ? experienceDescriptionField.value.trim() : '';
@@ -845,6 +863,7 @@
             if (!email) missingFields.push('Email');
             if (!summary) missingFields.push('Summary');
             if (!skills) missingFields.push('Skills');
+            if (!targetJobDescription) missingFields.push('Job Description');
             if (!experienceTitle) missingFields.push('Experience Title');
             if (!experienceCompany) missingFields.push('Experience Company');
             if (!experienceDescription) missingFields.push('Experience Description');
@@ -854,6 +873,7 @@
             console.log(`   Email: '${email}' (${email ? '✅' : '❌'})`);
             console.log(`   Summary: '${summary}' (${summary ? '✅' : '❌'})`);
             console.log(`   Skills: '${skills}' (${skills ? '✅' : '❌'})`);
+            console.log(`   Job Description: '${targetJobDescription}' (${targetJobDescription ? '✅' : '❌'})`);
             console.log(`   Experience Title: '${experienceTitle}' (${experienceTitle ? '✅' : '❌'})`);
             console.log(`   Experience Company: '${experienceCompany}' (${experienceCompany ? '✅' : '❌'})`);
             console.log(`   Experience Description: '${experienceDescription}' (${experienceDescription ? '✅' : '❌'})`);
@@ -883,6 +903,7 @@
             const emailField = this.querySelector('input[name="email"]');
             const summaryField = this.querySelector('textarea[name="summary"]');
             const skillsField = this.querySelector('textarea[name="skills"]');
+            const targetJobDescriptionField = this.querySelector('textarea[name="target_job_description"]');
             
             // For experience fields, use a more flexible approach
             const experienceTitleField = this.querySelector('input[name*="[title]"]');
@@ -894,6 +915,7 @@
             const email = emailField ? emailField.value.trim() : '';
             const summary = summaryField ? summaryField.value.trim() : '';
             const skills = skillsField ? skillsField.value.trim() : '';
+            const targetJobDescription = targetJobDescriptionField ? targetJobDescriptionField.value.trim() : '';
             const experienceTitle = experienceTitleField ? experienceTitleField.value.trim() : '';
             const experienceCompany = experienceCompanyField ? experienceCompanyField.value.trim() : '';
             const experienceDescription = experienceDescriptionField ? experienceDescriptionField.value.trim() : '';
@@ -903,6 +925,7 @@
             console.log(`   Email: '${email}' (filled: ${!!email})`);
             console.log(`   Summary: '${summary}' (filled: ${!!summary})`);
             console.log(`   Skills: '${skills}' (filled: ${!!skills})`);
+            console.log(`   Job Description: '${targetJobDescription}' (filled: ${!!targetJobDescription})`);
             console.log(`   Experience Title: '${experienceTitle}' (filled: ${!!experienceTitle})`);
             console.log(`   Experience Company: '${experienceCompany}' (filled: ${!!experienceCompany})`);
             console.log(`   Experience Description: '${experienceDescription}' (filled: ${!!experienceDescription})`);
