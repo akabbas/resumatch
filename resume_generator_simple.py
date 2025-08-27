@@ -175,28 +175,39 @@ class SimpleResumeGenerator:
         if original_description:
             bullets.append(original_description)
         
+        # Ensure job_requirements has the expected structure
+        if not isinstance(job_requirements, dict):
+            print(f"⚠️ Warning: job_requirements is not a dict: {type(job_requirements)}")
+            job_requirements = {
+                'technical_skills': [],
+                'soft_skills': [],
+                'tools_platforms': [],
+                'methodologies': [],
+                'industries': []
+            }
+        
         # Generate additional relevant bullets based on job requirements
         title = experience.get('title', '').lower()
         company = experience.get('company', '')
         
         # Technical skills bullets
-        if job_requirements['technical_skills']:
+        if job_requirements.get('technical_skills') and isinstance(job_requirements['technical_skills'], list):
             for skill in job_requirements['technical_skills'][:3]:  # Top 3 skills
                 if skill.lower() in title or any(skill.lower() in original_description.lower()):
                     bullets.append(f"Leveraged {skill} to develop scalable solutions and improve system performance")
         
         # Tools and platforms bullets
-        if job_requirements['tools_platforms']:
+        if job_requirements.get('tools_platforms') and isinstance(job_requirements['tools_platforms'], list):
             for tool in job_requirements['tools_platforms'][:2]:  # Top 2 tools
                 bullets.append(f"Utilized {tool} to streamline workflows and enhance team collaboration")
         
         # Methodologies bullets
-        if job_requirements['methodologies']:
+        if job_requirements.get('methodologies') and isinstance(job_requirements['methodologies'], list):
             for method in job_requirements['methodologies'][:2]:  # Top 2 methodologies
                 bullets.append(f"Applied {method.title()} methodologies to deliver projects on time and within scope")
         
         # Soft skills bullets
-        if job_requirements['soft_skills']:
+        if job_requirements.get('soft_skills') and isinstance(job_requirements['soft_skills'], list):
             for skill in job_requirements['soft_skills'][:2]:  # Top 2 soft skills
                 if 'leadership' in skill.lower():
                     bullets.append("Led cross-functional teams and mentored junior team members")
@@ -218,8 +229,11 @@ class SimpleResumeGenerator:
     
     def enhance_experience_data(self, experience_data: Dict, job_description: str) -> Dict:
         """Enhance experience data with job-specific bullet points"""
+        print(f"🔍 Enhancing experience data with job description: {job_description[:100]}...")
+        
         # Analyze job requirements
         job_requirements = self.analyze_job_requirements(job_description)
+        print(f"📋 Extracted job requirements: {job_requirements}")
         
         # Enhance each experience entry
         enhanced_experience = []
@@ -233,10 +247,15 @@ class SimpleResumeGenerator:
             elif isinstance(experience.get('description'), str):
                 original_description = experience['description']
             
+            print(f"   Processing experience: {experience.get('title')} at {experience.get('company')}")
+            print(f"   Original description: {original_description[:100]}...")
+            
             # Generate enhanced bullet points
             enhanced_bullets = self.generate_job_specific_bullets(
                 experience, job_requirements, original_description
             )
+            
+            print(f"   Generated {len(enhanced_bullets)} bullet points")
             
             # Update the experience with enhanced bullets
             enhanced_exp['description'] = enhanced_bullets
