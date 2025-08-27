@@ -232,7 +232,8 @@ def detailed_form():
         print(f"   Target Job Description filled: {bool(target_job_description)}")
         print(f"   Experience entries: {len(experience_data)}")
         
-        if not all([name, email, summary, skills, target_job_description]) or not experience_data:
+        # Check if required fields are filled (use actual string values, not boolean conversions)
+        if not name or not email or not summary or not skills or not target_job_description or not experience_data:
             missing_fields = []
             if not name: missing_fields.append("Name")
             if not email: missing_fields.append("Email")
