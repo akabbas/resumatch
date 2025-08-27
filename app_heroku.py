@@ -278,7 +278,19 @@ def detailed_form():
         
         # Use target job description for intelligent bullet point generation
         # If no target job description provided, fall back to first experience description
-        job_description_for_generation = target_job_description if target_job_description else (experience_data[0]['description'][0] if experience_data else summary)
+        if target_job_description:
+            job_description_for_generation = target_job_description
+        elif experience_data and experience_data[0].get('description'):
+            # Handle both string and list descriptions
+            first_description = experience_data[0]['description']
+            if isinstance(first_description, list) and first_description:
+                job_description_for_generation = first_description[0]
+            elif isinstance(first_description, str):
+                job_description_for_generation = first_description
+            else:
+                job_description_for_generation = summary
+        else:
+            job_description_for_generation = summary
         
         html_result = html_generator.generate_resume(
             job_description=job_description_for_generation,
