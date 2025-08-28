@@ -193,7 +193,7 @@ class SimpleResumeGenerator:
         # Technical skills bullets
         if job_requirements.get('technical_skills') and isinstance(job_requirements['technical_skills'], list):
             for skill in job_requirements['technical_skills'][:3]:  # Top 3 skills
-                if skill.lower() in title or any(skill.lower() in original_description.lower()):
+                if skill.lower() in title or skill.lower() in original_description.lower():
                     bullets.append(f"Leveraged {skill} to develop scalable solutions and improve system performance")
         
         # Tools and platforms bullets
