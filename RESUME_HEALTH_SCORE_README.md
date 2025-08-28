@@ -286,3 +286,4 @@ To add new analyzers or improve existing ones:
 
 This feature is part of the ResumeMatch project and follows the same licensing terms.
 
+

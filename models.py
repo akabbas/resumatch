@@ -144,3 +144,4 @@ class Subscription(db.Model):
             return False
         return True
 
+

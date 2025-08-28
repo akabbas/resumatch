@@ -167,3 +167,4 @@ def delete_user_account(user_id):
         db.session.rollback()
         return False, f"Error deleting account: {str(e)}"
 
+

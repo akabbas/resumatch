@@ -246,3 +246,4 @@ class SimpleResumeTailor:
 ResumeTailor = SimpleResumeTailor
 BulletPoint = BulletPoint
 
+
